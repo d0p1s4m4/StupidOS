@@ -1,0 +1,18 @@
+
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential llvm lld nasm
+      - name: Build
+        run: |
+          make
+
