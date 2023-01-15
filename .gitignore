@@ -2,3 +2,6 @@
 *.img
 *.bin
 *~
+
+*.elf
+*.dump

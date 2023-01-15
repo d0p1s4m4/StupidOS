@@ -1,0 +1,16 @@
+#!/bin/env sh
+
+vers="$(git describe --abbrev=4 --match='v[0-9]*' HEAD 2>/dev/null)"
+
+if [ ! -n "$vers" ]; then
+	vers="0.0"
+fi
+
+commit="$(git rev-parse --short HEAD)"
+
+full_vers="${vers}-${commit}"
+if [ -n "$(git status)" ]; then
+	full_vers="${full_vers}-dirty"
+fi
+
+echo -n "${full_vers}"

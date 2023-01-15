@@ -1,4 +1,4 @@
 # StupidOS
 
-16bit real mode Operating System in assembly
+32-bit Operating System in assembly.
 
