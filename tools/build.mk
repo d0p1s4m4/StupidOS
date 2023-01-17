@@ -4,6 +4,6 @@ $(1) = $$(addprefix $$(TOOLS_DIR)/, $$(shell echo -n $(1) | tr A-Z a-z))
 
 endef
 
-TOOLS = GIT-VERSION
+TOOLS = GIT-VERSION CREATE-ISO
 
-$(foreach tool, $(TOOLS), $(eval $(call TOOLS_TEMPLATE, $(tool))))
+$(foreach tool, $(TOOLS), $(eval $(call TOOLS_TEMPLATE,$(tool))))

@@ -1,7 +1,13 @@
 *.o
 *.img
 *.bin
+*.iso
 *~
 
 *.elf
+*.a
 *.dump
+vmstupid
+
+
+/sysroot

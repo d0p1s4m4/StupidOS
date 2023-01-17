@@ -11,7 +11,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential llvm lld nasm
+          sudo apt-get install build-essential llvm lld nasm mtools
       - name: Build
         run: |
           make

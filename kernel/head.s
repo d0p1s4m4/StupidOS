@@ -29,14 +29,21 @@ entry:
 	extern serial_init
 	call serial_init
 
+	LOG msg_hello_world
+
 	extern setup_gdt
 	call setup_gdt
+
+	extern setup_pic
+	call setup_pic
 
 	extern setup_idt
 	call setup_idt
 
-	extern setup_paging
-	call setup_paging
+	int3
+
+	;extern setup_paging
+	;call setup_paging
 
 	LOG file
 
@@ -44,4 +51,8 @@ hang:
 	hlt
 	jmp hang
 
+
+section .rodata
+
+msg_hello_world db "StupidOS ", STUPID_VERSION, 0
 file db __FILE__, 0

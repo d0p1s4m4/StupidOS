@@ -56,10 +56,13 @@ log_impl:
 	add esp, 4
 %else
 %endif
+
+.loop:
 	mov eax, [ebp + 12]
 	push eax
 	call putstr
 	add esp, 4
+.end:
 
 %ifdef __KERNEL__
 	mov al, 0xA

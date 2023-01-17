@@ -1,0 +1,26 @@
+#!/bin/env sh
+
+grub_config=$(cat <<EOF
+
+set timeout=15
+set default=0
+
+menuentry "StupidOS" {
+   echo "verify system integrity"
+   hashsum --hash sha256 --check /boot/hashfile --prefix /
+   multiboot /vmstupid
+   boot
+}
+
+EOF
+)
+
+gen_iso_file() {
+	mkdir -p "$2/boot/grub"
+	echo "$grub_config" > "$2/boot/grub/grub.cfg"
+	sha256sum "$2"/vmstupid > "$2/boot/hashfile"
+
+	grub-mkrescue -o $1 $2
+}
+
+gen_iso_file "$1" "$2"

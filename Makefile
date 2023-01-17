@@ -5,10 +5,13 @@
 AS		= nasm
 LD		= ld.lld
 OBJDUMP = llvm-objdump
+QEMU	= qemu-system-i386
 RM		= rm -f
+MKCWD	= mkdir -p $(@D)
+INSTALL = install
 
 BIN_DIR		= bin
-DOC_DIR		= doc
+DOC_DIR		= docs
 KERNEL_DIR	= kernel
 LIB_DIR		= lib
 TOOLS_DIR	= tools
@@ -16,22 +19,28 @@ TOOLS_DIR	= tools
 include $(TOOLS_DIR)/build.mk
 
 ASFLAGS	= -DSTUPID_VERSION=\"$(shell $(GIT-VERSION))\" -Ilib
+QEMUFLAGS = -serial stdio
 
-GARBADGE	= stupid.img
+GARBADGE	= stupid.iso
 
 include $(KERNEL_DIR)/build.mk
+include $(LIB_DIR)/build.mk
+include $(BIN_DIR)/build.mk
 
-all: stupid.img
+all: stupid.iso
 
-stupid.img: $(KERNEL_BIN) $(KERNEL_DUMP)
+sysroot: $(KERNEL_BIN) $(KERNEL_DUMP) $(LIBS_BIN)
+	$(INSTALL) -d $@
+	$(INSTALL) -d $@/bin
+	$(INSTALL) -d $@/lib
+	$(INSTALL) $(KERNEL_BIN) $@
+	$(INSTALL) $(LIBS_BIN) $@/lib
 
-#stupid.img: floppy.bin kern.bin
-#	mkdosfs -F 12 -C $@ 1440
-#	dd status=noxfer conv=notrunc if=floppy.bin of=$@
-#	mcopy -i $@ kern.bin ::kern.sys
+stupid.iso: sysroot
+	$(CREATE-ISO) $@ $<
 
-%.dump: %.elf
-	$(OBJDUMP) -D $^ > $@
+run: stupid.iso
+	$(QEMU) $(QEMUFLAGS) -cdrom $<
 
 clean:
 	$(RM) $(GARBADGE)
