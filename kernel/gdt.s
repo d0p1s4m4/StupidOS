@@ -7,7 +7,7 @@ setup_gdt:
 	lgdt [gdt_ptr]
 	jmp 0x08:.flush_cs
 .flush_cs:
-	mov ax, 0x10
+	mov ax, 0x10 ; data segment
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
@@ -23,20 +23,16 @@ gdt_ptr:
 
 gdt_entries:
 	;; null descriptor
-	dw 0x0 ; limit
-	dw 0x0 ; base (low)
-	db 0x0 ; base (mid)
-	db 0x0 ; access
-	db 0x0 ; granularity
-	db 0x0 ; base (high)
+	dd 0x0
+	dd 0x0
 
 	;; kernel mode code segment
-	dw 0xFFFF
-	dw 0x00
-	db 0x00
-	db 0x9A
-	db 0xCF
-	db 0x00
+	dw 0xFFFF ; Limit
+	dw 0x00   ; Base (low)
+	db 0x00   ; Base (mid)
+	db 0x9A   ; Access: 1 (P) 0 (DPL), 1 (S), 1010 (Type)
+	db 0xCF   ; Granularity: 1 (G), 1 (D/B), 0 (AVL), Limit
+	db 0x00   ; Base (high)
 
 	;; kernel mode data segment
 	dw 0xFFFF

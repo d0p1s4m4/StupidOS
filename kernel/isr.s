@@ -15,7 +15,6 @@ isr%1:
 global isr%1
 isr%1:
 	cli
-	push byte 1
 	push byte %1
 	jmp isr_handler
 %endmacro
@@ -68,6 +67,9 @@ isr_handler:
 	mov gs, ax
 
 	LOG msg_interrupt
+
+	extern pic_eoi
+	call pic_eoi
 
 	pop eax
 	mov ds, ax

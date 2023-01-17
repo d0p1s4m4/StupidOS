@@ -40,13 +40,14 @@ entry:
 	extern setup_idt
 	call setup_idt
 
-	int3
-
 	;extern setup_paging
 	;call setup_paging
 
+	int3
+
 	LOG file
 
+	cli
 hang:
 	hlt
 	jmp hang

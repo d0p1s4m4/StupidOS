@@ -4,7 +4,7 @@ section .data
 align 4096
 
 page_directory:
-	times 1024 dd 0x00000002
+	times 1024 dd 0x00000000
 
 section .text
 

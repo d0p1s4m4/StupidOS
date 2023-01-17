@@ -1,24 +1,37 @@
 [BITS 32]
+
+PIC1_CMD	equ 0x20
+PIC1_DATA	equ 0x21
+PIC2_CMD	equ 0xA0
+PIC2_DATA	equ 0xA1
+
 section .text
 
 global setup_pic
 setup_pic:
 	mov al, 0x11
-	out 0x20, al
-	out 0xA0, al
+	out PIC1_CMD, al
+	out PIC2_CMD, al
 	
 	mov al, 0x20
-	out 0x21, al
+	out PIC1_DATA, al
 	mov al, 0x28
-	out 0xA1, al
+	out PIC2_DATA, al
 
 	mov al, 4
-	out 0x21, al
+	out PIC1_DATA, al
 	mov al, 2
-	out 0xA1, al
+	out PIC2_DATA, al
 
 	; mask all
 	mov al, 0xFF
-	out 0x21, al
-	out 0xA1, al
+	out PIC1_DATA, al
+	out PIC2_DATA, al
+	ret
+
+global pic_eoi
+pic_eoi:
+	mov al, 0x20
+	out PIC2_CMD, al
+	out PIC1_CMD, al
 	ret
