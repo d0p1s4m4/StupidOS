@@ -44,5 +44,5 @@ serial_write:
 	mov ebp, esp
 	mov ecx, [ebp + 8]
 	COM_OUT COM1, THR, cl 
-	pop ebp
+	leave
 	ret
