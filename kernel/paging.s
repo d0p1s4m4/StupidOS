@@ -1,5 +1,11 @@
 [BITS 32]
 
+PE_PRESENT equ 1 << 0
+PE_WRITABLE equ 1 << 1
+PE_USERMODE equ 1 << 2
+PE_ACCESSED equ 1 << 5
+PE_DIRTY equ 1 << 6
+
 section .data
 align 4096
 

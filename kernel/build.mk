@@ -1,11 +1,11 @@
 include kernel/drivers/build.mk
 
-KERNEL_SRCS	= head.s gdt.s pic.s isr.s idt.s paging.s lib/log.s
+KERNEL_SRCS	= head.s gdt.s pic.s isr.s idt.s pmm.s paging.s lib/log.s
 KERNEL_OBJS	= $(addprefix kernel/, $(KERNEL_SRCS:.s=.o) $(DRIVERS_OBJS))
 KERNEL_BIN	= vmstupid
 KERNEL_DUMP = $(KERNEL_BIN).dump
 
-KERNEL_ASFLAGS	= $(ASFLAGS) -D__KERNEL__
+KERNEL_ASFLAGS	= $(ASFLAGS) -D__KERNEL__ -Ikernel
 
 GARBADGE += $(KERNEL_OBJS) $(KERNEL_BIN) $(KERNEL_DUMP)
 

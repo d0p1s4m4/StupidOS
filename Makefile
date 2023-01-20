@@ -18,7 +18,9 @@ TOOLS_DIR	= tools
 
 include $(TOOLS_DIR)/build.mk
 
-ASFLAGS	= -DSTUPID_VERSION=\"$(shell $(GIT-VERSION))\" -Ilib
+ASFLAGS	= -DSTUPID_VERSION="\"$(shell $(GIT-VERSION))\"" -Ilib \
+	-DBUILD_DATE="\"$(shell date --iso)\"" \
+	-DNASM_VERSION="\"$(shell nasm -v)\""
 QEMUFLAGS = -serial stdio
 
 GARBADGE	= stupid.iso

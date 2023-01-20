@@ -1,6 +1,7 @@
 [BITS 32]
 
 %include "base.inc"
+%include "multiboot.inc"
 
 MULTIBOOT_MAGIC equ 0x1BADB002
 MULTIBOOT_ALIGN equ 1 << 0
@@ -23,14 +24,29 @@ section .text
 global entry
 entry:
 	mov esp, stack_top
-
 	cli
 
+	mov edi, eax
+	mov esi, ebx
+
+	;; initialize serial (mostly used for debug)
 	extern serial_init
 	call serial_init
 
-	LOG msg_hello_world
+	;; eax <- magic
+	;; ebx <- multiboot struct
+	cmp edi, 0x2BADB002
+	je .multiboot_valid
 
+	LOG err_invalid_boot_magic, edi
+	jmp hang
+	
+.multiboot_valid:
+	
+	LOG msg_hello_world
+	mov eax, [esi + mb_info.bootloader_name]
+	LOG msg_boot_info, eax
+	
 	extern setup_gdt
 	call setup_gdt
 
@@ -40,20 +56,32 @@ entry:
 	extern setup_idt
 	call setup_idt
 
-	;extern setup_paging
-	;call setup_paging
+	push esi
+	extern setup_pmm
+	call setup_pmm
+	add esp, 4
+	test eax, 0
+	jz .mem_ok
 
-	int3
+	LOG err_cannot_map_memory
 
-	LOG file
-
-	cli
-hang:
-	hlt
 	jmp hang
 
+.mem_ok:
 
+	extern setup_paging
+	call setup_paging
+
+hang:
+	cli
+	hlt
+	jmp hang
+	
 section .rodata
 
-msg_hello_world db "StupidOS ", STUPID_VERSION, 0
+msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", NASM_VERSION, " on ", BUILD_DATE, ")", 0
+msg_boot_info db "Bootloader: %s", 0
+err_invalid_boot_magic db "[ERROR] Invalid boot magic (got: %x, expected: 0x2BADB002)", 0
+err_cannot_map_memory db "[ERROR] Can't map memory", 0
+
 file db __FILE__, 0

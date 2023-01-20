@@ -30,7 +30,6 @@ putstr:
 	ret
 
 puthex:
-	xchg bx, bx
 	push ebp
 	mov ebp, esp
 	push edi
