@@ -26,3 +26,5 @@ SECTIONS
 
 	kernel_end = .;
 }
+
+kernel_size = kernel_end - kernel_start;

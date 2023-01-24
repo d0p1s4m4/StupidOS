@@ -5,7 +5,7 @@
 [Website](https://stupidos.d0p1.eu)
 ![GitHub](https://img.shields.io/github/license/d0p1s4m4/stupidos?logoColor=white&style=flat-square)
 ![GitHub issues](https://img.shields.io/github/issues/d0p1s4m4/stupidos?style=flat-square)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/d0p1s4m4)](https://github.com/sponsors/d0p1s4m4?style=flat-square)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/d0p1s4m4?style=flat-square)](https://github.com/sponsors/d0p1s4m4)
 
 </div>
 

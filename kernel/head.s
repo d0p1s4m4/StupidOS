@@ -68,6 +68,7 @@ entry:
 	jmp hang
 
 .mem_ok:
+	LOG msg_pmm_initialized
 
 	extern setup_paging
 	call setup_paging
@@ -81,6 +82,7 @@ section .rodata
 
 msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", NASM_VERSION, " on ", BUILD_DATE, ")", 0
 msg_boot_info db "Bootloader: %s", 0
+msg_pmm_initialized db "PMM initialized", 0
 err_invalid_boot_magic db "[ERROR] Invalid boot magic (got: %x, expected: 0x2BADB002)", 0
 err_cannot_map_memory db "[ERROR] Can't map memory", 0
 

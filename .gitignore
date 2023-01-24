@@ -3,6 +3,7 @@
 *.bin
 *.iso
 *~
+\#*\#
 
 *.elf
 *.a
@@ -11,3 +12,5 @@ vmstupid
 
 
 /sysroot
+
+log.txt

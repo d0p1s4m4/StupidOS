@@ -4,6 +4,7 @@ global setup_idt
 setup_idt:
 %assign i 0
 %rep 32
+	;; TODO: refactor
 extern isr %+ i
 	mov eax, isr %+ i
 	; offset (low)
