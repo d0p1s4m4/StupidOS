@@ -7,6 +7,14 @@ PIC2_DATA	equ 0xA1
 
 section .text
 
+	; Function: setup_pic
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global setup_pic
 setup_pic:
 	mov al, 0x11
@@ -29,6 +37,14 @@ setup_pic:
 	out PIC2_DATA, al
 	ret
 
+	; Function: pic_eoi
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global pic_eoi
 pic_eoi:
 	mov al, 0x20

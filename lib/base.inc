@@ -1,5 +1,7 @@
+; file: base.inc
 extern log_impl
 
+; macro: LOG
 %macro LOG 1-*
 %rep %0
 %rotate -1

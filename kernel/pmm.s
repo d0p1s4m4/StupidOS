@@ -164,8 +164,8 @@ setup_pmm_mmap:
 	
 	;; TODO: mark as free in bitmap
 .third_pass:
-	push dword [edi + mb_mmap.addr]
 	push dword [edi + mb_mmap.length]
+	push dword [edi + mb_mmap.addr]
 	call bitmap_mark_range_free
 	add esp, 8
 	jmp .next
@@ -338,18 +338,26 @@ setup_pmm:
 	leave
 	ret
 
-global alloc_frame
-alloc_frame:
+global alloc_frames
+alloc_frames:
 	push esp
 	mov ebp, esp
-	
+	push edi
+	push esi
+
+	mov edi, [ebp + 8]	; count
+
+	pop esi
+	pop edi
 	leave
 	ret
 
-global free_frame
-free_frame:
+global free_frames
+free_frames:
 	push esp
 	mov ebp, esp
+
+	call bitmap_mark_range_free
 
 	leave
 	ret

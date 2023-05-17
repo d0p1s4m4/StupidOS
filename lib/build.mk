@@ -21,4 +21,4 @@ include lib/*/build.mk
 $(foreach lib, $(LIBS), $(eval $(call LIBS_TEMPLATE,$(lib))))
 
 lib/%.o: lib/%.s
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(AS) -felf $(ASFLAGS) -o $@ $<

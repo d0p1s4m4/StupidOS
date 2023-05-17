@@ -1,3 +1,5 @@
+; file: head.s
+; 
 [BITS 32]
 
 %include "base.inc"
@@ -21,6 +23,16 @@ stack_bottom:
 stack_top:
 
 section .text
+
+	; Function: entry
+	; 
+	; in:
+	;     EAX - Multiboot magic
+	;     EBX - Multiboot structure
+	;
+	; out:
+	;     none
+	;
 global entry
 entry:
 	mov esp, stack_top

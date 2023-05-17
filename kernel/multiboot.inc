@@ -1,3 +1,5 @@
+; file: multiboot.inc
+
 struc mb_info
 	.flags: resd 1
 

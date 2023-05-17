@@ -27,6 +27,14 @@ DLH equ 0x0
 	in al, dx
 %endmacro
 
+	; Function: serial_init
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global serial_init
 serial_init:
 	COM_OUT COM1, IER, 0x00
@@ -38,6 +46,14 @@ serial_init:
 
 	ret
 
+	; Function: serial_write
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global serial_write
 serial_write:
 	push ebp

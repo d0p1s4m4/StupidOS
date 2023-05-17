@@ -18,16 +18,17 @@ TOOLS_DIR	= tools
 
 include $(TOOLS_DIR)/build.mk
 
-ASFLAGS	= -DSTUPID_VERSION="\"$(shell $(GIT-VERSION))\"" -Ilib \
+ASFLAGS	=  -F dwarf -g -DSTUPID_VERSION="\"$(shell $(GIT-VERSION))\"" -Ilib \
 	-DBUILD_DATE="\"$(shell date --iso)\"" \
 	-DNASM_VERSION="\"$(shell nasm -v)\""
-QEMUFLAGS = -serial stdio
+QEMUFLAGS = -serial stdio -no-reboot
 
 GARBADGE	= stupid.iso
 
 include $(KERNEL_DIR)/build.mk
 include $(LIB_DIR)/build.mk
 include $(BIN_DIR)/build.mk
+include $(DOC_DIR)/build.mk
 
 all: stupid.iso
 

@@ -1,0 +1,76 @@
+Format: 1.51
+
+
+Title: StupidOS
+
+# You can also add a sub-title to your menu like this:
+# SubTitle: [subtitle]
+
+# You can add a footer to your documentation like this:
+# Footer: [text]
+# If you want to add a copyright notice, this would be the place to do it.
+Timestamp: Updated yyyy/mm/dd
+#   m     - One or two digit month.  January is "1"
+#   mm    - Always two digit month.  January is "01"
+#   mon   - Short month word.  January is "Jan"
+#   month - Long month word.  January is "January"
+#   d     - One or two digit day.  1 is "1"
+#   dd    - Always two digit day.  1 is "01"
+#   day   - Day with letter extension.  1 is "1st"
+#   yy    - Two digit year.  2006 is "06"
+#   yyyy  - Four digit year.  2006 is "2006"
+#   year  - Four digit year.  2006 is "2006"
+
+
+# --------------------------------------------------------------------------
+# 
+# Cut and paste the lines below to change the order in which your files
+# appear on the menu.  Don't worry about adding or removing files, Natural
+# Docs will take care of that.
+# 
+# You can further organize the menu by grouping the entries.  Add a
+# "Group: [name] {" line to start a group, and add a "}" to end it.
+# 
+# You can add text and web links to the menu by adding "Text: [text]" and
+# "Link: [name] ([URL])" lines, respectively.
+# 
+# The formatting and comments are auto-generated, so don't worry about
+# neatness when editing the file.  Natural Docs will clean it up the next
+# time it is run.  When working with groups, just deal with the braces and
+# forget about the indentation and comments.
+# 
+# --------------------------------------------------------------------------
+
+
+Group: Kernel  {
+
+   File: head.s  (kernel/head.s)
+   File: idt.s  (kernel/idt.s)
+   File: multiboot.inc  (kernel/multiboot.inc)
+   File: pic.s  (kernel/pic.s)
+   File: setup_paging  (kernel/paging.s)
+
+   Group: Driver  {
+
+      File: serial.s  (no auto-title, kernel/drivers/serial.s)
+      }  # Group: Driver
+
+   }  # Group: Kernel
+
+Group: Lib  {
+
+   File: base.inc  (lib/base.inc)
+   }  # Group: Lib
+
+Group: Index  {
+
+   Index: Everything
+   Class Index: Classes
+   Constant Index: Constants
+   File Index: Files
+   Function Index: Functions
+   Macro Index: Macros
+   Type Index: Types
+   Variable Index: Variables
+   }  # Group: Index
+

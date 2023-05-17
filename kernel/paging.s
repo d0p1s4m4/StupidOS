@@ -14,13 +14,21 @@ page_directory:
 
 section .text
 
+	; Function: setup_paging
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global setup_paging
 setup_paging:
 	mov eax, page_directory
 	mov cr3, eax
 
 	mov eax, cr0
-	or eax, 0x80000001
+	or eax, 1 << 31				; enable paging
 	mov cr0, eax
 
 	ret

@@ -1,3 +1,5 @@
+; file: idt.s
+;
 [BITS 32]
 section .text
 global setup_idt
@@ -29,9 +31,10 @@ extern isr %+ i
 section .data
 align 8
 idt_ptr:
-	dw 255 * 8
+	dw idt_entries.end-idt_entries-1
 	dd idt_entries
 
+; variable: idt_entries
 align 8
 idt_entries:
 	times 256 dd 0x00000000, 0x00000000

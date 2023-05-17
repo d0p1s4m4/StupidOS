@@ -5,20 +5,50 @@
 %macro ISR_NO_ERR 1
 global isr%1
 isr%1:
-	cli
-	push byte 0
-	push byte %1
+	xchg bx, bx
+	push dword 0
+	push dword %1
 	jmp isr_handler
 %endmacro
 
 %macro ISR_ERR 1
 global isr%1
 isr%1:
-	cli
-	push byte %1
+	xchg bx, bx
+	push dword 1
+	push dword %1
 	jmp isr_handler
 %endmacro
 
+struc intframe
+	;; registers
+	.edi: resd 1
+	.esi: resd 1
+	.ebp: resd 1
+	.esp: resd 1
+	.ebx: resd 1
+	.edx: resd 1
+	.ecx: resd 1
+	.eax: resd 1
+
+	;;
+	.gs: resd 1
+	.fs: resd 1
+	.es: resd 1
+	.ds: resd 1
+	.intno: resd 1
+
+	;; by x86 hardware
+	.err: resd 1
+	.eip: resd 1
+	.cs:  resd 1
+	.eflags: resd 1
+
+	;; crossring
+	.useresp: resd 1
+	.ss: resd 1
+endstruc	
+	
 section .text
 
 ISR_NO_ERR 0
@@ -54,36 +84,47 @@ ISR_NO_ERR 29
 ISR_NO_ERR 30
 ISR_NO_ERR 31
 
+panic:
+	LOG msg_interrupt
+	htl
+	jmp panic
+
 global isr_handler
 isr_handler:
+	push ds
+	push es
+	push fs
+	push gs
+	mov edi, 0x11111111
+	mov eax, 0xAAAAAAAA
 	pusha
 
-	mov ax, ds
-	push eax
-	mov ax, 0x10
+	mov ax, 0x10				; data segment
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
 
-	LOG msg_interrupt
+	call panic
 
-	extern pic_eoi
-	call pic_eoi
-
-	pop eax
-	mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
-
+	;extern pic_eoi
+	;call pic_eoi
+	
 	popa
-	add esp, 8
+	pop gs
+	pop fs
+	pop es
+	pop ds
+	add esp, 8					; int no & error code
 
-	sti
 	iret
 
 section .rodata
 
-msg_interrupt db "interrupt", 0
+msg_interrupt db "interrupt", 0xA
+	db "edi: %x esi: %x ebp: %x esp: %x", 0xA
+	db "ebx: %x edx: %x ecx: %x eax: %x", 0xA
+	db "gs:  %x fs:  %x es:  %x ds:  %x", 0xA
+	db "int: %x err: %x eip: %x cs:  %x", 0xA
+	db "flg: %x usp: %x ss:  %x", 0x0
 file db __FILE__, 0
