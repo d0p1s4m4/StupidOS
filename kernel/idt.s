@@ -16,7 +16,7 @@ extern isr %+ i
 
 	; zero (skip)
 	; attr:  1 (Present) 00 (DPL) 0 1 (D: 32bits) 110
-	mov byte [idt_entries + (i * 8) + 5], 0x8E
+	mov byte [idt_entries + (i * 8) + 5], 0x8F
 
 	; offset (high)
 	shr eax, 16

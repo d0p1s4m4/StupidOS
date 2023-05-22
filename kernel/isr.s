@@ -15,7 +15,6 @@ isr%1:
 global isr%1
 isr%1:
 	xchg bx, bx
-	push dword 1
 	push dword %1
 	jmp isr_handler
 %endmacro
@@ -86,17 +85,16 @@ ISR_NO_ERR 31
 
 panic:
 	LOG msg_interrupt
-	htl
-	jmp panic
+	;htl
+	;jmp panic
+	ret
 
-global isr_handler
+;global isr_handler
 isr_handler:
 	push ds
 	push es
 	push fs
 	push gs
-	mov edi, 0x11111111
-	mov eax, 0xAAAAAAAA
 	pusha
 
 	mov ax, 0x10				; data segment
@@ -105,7 +103,7 @@ isr_handler:
 	mov fs, ax
 	mov gs, ax
 
-	call panic
+	LOG msg_interrupt
 
 	;extern pic_eoi
 	;call pic_eoi

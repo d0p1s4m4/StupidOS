@@ -60,17 +60,15 @@ Group: Kernel  {
 Group: Lib  {
 
    File: base.inc  (lib/base.inc)
+   File: log.s  (lib/base/log.s)
    }  # Group: Lib
 
 Group: Index  {
 
    Index: Everything
-   Class Index: Classes
-   Constant Index: Constants
    File Index: Files
    Function Index: Functions
    Macro Index: Macros
-   Type Index: Types
    Variable Index: Variables
    }  # Group: Index
 

@@ -62,8 +62,11 @@ entry:
 	extern setup_gdt
 	call setup_gdt
 
-	extern setup_pic
-	call setup_pic
+	;extern setup_pic
+	;call setup_pic
+	mov al, 0xff
+	out 0xa1, al
+	out 0x21, al
 
 	extern setup_idt
 	call setup_idt

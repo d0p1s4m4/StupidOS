@@ -5,6 +5,9 @@ section .text
 global setup_gdt
 setup_gdt:
 	lgdt [gdt_ptr]
+	mov eax, cr0
+	or al, 1
+	mov cr0, eax
 	jmp 0x08:.flush_cs
 .flush_cs:
 	mov ax, 0x10 ; data segment
@@ -28,7 +31,7 @@ gdt_entries:
 
 	;; kernel mode code segment
 	dw 0xFFFF ; Limit
-	dw 0x00   ; Base (low)
+	dw 0x0000 ; Base (low)
 	db 0x00   ; Base (mid)
 	db 0x9A   ; Access: 1 (P) 0 (DPL), 1 (S), 1010 (Type)
 	db 0xCF   ; Granularity: 1 (G), 1 (D/B), 0 (AVL), Limit
@@ -36,7 +39,7 @@ gdt_entries:
 
 	;; kernel mode data segment
 	dw 0xFFFF
-	dw 0x00
+	dw 0x0000
 	db 0x00
 	db 0x92
 	db 0xCF
@@ -44,7 +47,7 @@ gdt_entries:
 
 	;; user mode code segment
 	dw 0xFFFF
-	dw 0x00
+	dw 0x0000
 	db 0x00
 	db 0xFA
 	db 0xCF
@@ -52,7 +55,7 @@ gdt_entries:
 
 	;; user mode data segment
 	dw 0xFFFF
-	dw 0x00
+	dw 0x0000
 	db 0x00
 	db 0xF2
 	db 0xCF

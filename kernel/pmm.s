@@ -80,9 +80,10 @@ init_bitmap:
 	push edi
 
 	mov ecx, [bitmap_info]
-	mov al, 0xFF
 	mov edi, [bitmap_info + bitmap.addr]
 	rep stosb
+
+	xchg bx, bx
 
 	pop edi
 	leave
@@ -203,7 +204,8 @@ setup_pmm_mmap:
 	mov [bitmap_info], eax
 
 .bitmap_size_already_set:
-	
+	mov edi, [ebp + 8]			; mb_mmap struct addr
+	mov esi, [ebp + 12]			; mmap length
 	inc ebx
 	cmp ebx, 2
 	jbe .loop
@@ -364,8 +366,10 @@ free_frames:
 	
 section .data
 bitmap_info:
-	dd 0 ; size
-	dd 0 ; ptr
+	istruc bitmap
+		at bitmap.length, dd 0
+		at bitmap.addr, dd 0
+	iend
 
 section .rodata
 warn_no_mmap db "[WARN] mmap flag not set", 0
@@ -377,5 +381,6 @@ msg_mem_block db "Free Memory:", 0xA
 	db 0x9, "Address: %x", 0xA
 	db 0x9, "Length: %x", 0
 msg_max_mem db "Max memory: %x", 0
+msg_dump_x db "dump: %x", 0
 msg_bitmap_stored_at db "Bitmap stored at: %x", 0
 file db __FILE__, 0

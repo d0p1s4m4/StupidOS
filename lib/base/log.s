@@ -1,3 +1,4 @@
+; file: log.s
 [BITS 32]
 
 %ifdef __KERNEL__
@@ -5,7 +6,8 @@ extern serial_write
 %endif
 
 section .text
-
+; Function: putstr
+;
 putstr:
 	push ebp
 	mov ebp, esp
@@ -29,6 +31,8 @@ putstr:
 	leave
 	ret
 
+; Function: puthex
+;
 puthex:
 	push ebp
 	mov ebp, esp
@@ -64,6 +68,8 @@ puthex:
 	leave
 	ret
 
+; Function: log_impl
+;
 global log_impl
 log_impl:
 	push ebp
