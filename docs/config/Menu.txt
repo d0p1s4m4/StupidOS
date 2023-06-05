@@ -2,13 +2,9 @@ Format: 1.51
 
 
 Title: StupidOS
+SubTitle: Tiny *NIX-like Operating System
 
-# You can also add a sub-title to your menu like this:
-# SubTitle: [subtitle]
-
-# You can add a footer to your documentation like this:
-# Footer: [text]
-# If you want to add a copyright notice, this would be the place to do it.
+Footer: Copyright (C) 2023 d0p1
 Timestamp: Updated yyyy/mm/dd
 #   m     - One or two digit month.  January is "1"
 #   mm    - Always two digit month.  January is "01"
@@ -80,8 +76,6 @@ Group: Lib  {
 
    File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
    }  # Group: Lib
-
-File: crt0.s  (bin/crt0.s)
 
 Group: Index  {
 
