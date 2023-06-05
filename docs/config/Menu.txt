@@ -45,6 +45,7 @@ Timestamp: Updated yyyy/mm/dd
 Group: Kernel  {
 
    File: head.s  (kernel/head.s)
+   File: gdt.s  (kernel/gdt.s)
    File: idt.s  (kernel/idt.s)
    File: multiboot.inc  (kernel/multiboot.inc)
    File: pic.s  (kernel/pic.s)
@@ -55,17 +56,37 @@ Group: Kernel  {
       File: serial.s  (no auto-title, kernel/drivers/serial.s)
       }  # Group: Driver
 
+   File: msg_en  (kernel/debug/msg_en.s)
    }  # Group: Kernel
 
 Group: Lib  {
 
    File: base.inc  (lib/base.inc)
-   File: log.s  (lib/base/log.s)
+
+   Group: Base  {
+
+      File: log.s  (lib/base/log.s)
+      }  # Group: Base
+
+   Group: Crypto  {
+
+      Group: Hash  {
+
+         File: sha256.s  (lib/crypto/hash/sha256.s)
+         File: keccak.s  (lib/crypto/hash/keccak.s)
+         }  # Group: Hash
+
+      }  # Group: Crypto
+
+   File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
    }  # Group: Lib
+
+File: crt0.s  (bin/crt0.s)
 
 Group: Index  {
 
    Index: Everything
+   Constant Index: Constants
    File Index: Files
    Function Index: Functions
    Macro Index: Macros

@@ -1,3 +1,5 @@
+; file: pic.s
+;
 [BITS 32]
 
 PIC1_CMD	equ 0x20

@@ -1,7 +1,18 @@
+; file: gdt.s
+;
+;
 [BITS 32]
 
 section .text
 
+	; Function: setup_gdt
+	; 
+	; in:
+	;     none
+	;
+	; out:
+	;     none
+	;
 global setup_gdt
 setup_gdt:
 	lgdt [gdt_ptr]

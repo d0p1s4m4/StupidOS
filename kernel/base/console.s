@@ -1,0 +1,4 @@
+struc console
+	.init:
+	
+endstruc

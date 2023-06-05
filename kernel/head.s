@@ -1,5 +1,5 @@
 ; file: head.s
-; 
+;
 [BITS 32]
 
 %include "base.inc"
