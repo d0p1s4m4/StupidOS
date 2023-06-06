@@ -1,0 +1,32 @@
+File: Introduction
+
+About: StupidOS
+
+>   _____ _               _     _ _____ _____ 
+>  /  ___| |             (_)   | |  _  /  ___|
+>  \ `--.| |_ _   _ _ __  _  __| | | | \ `--. 
+>   `--. \ __| | | | '_ \| |/ _` | | | |`--. \
+>  /\__/ / |_| |_| | |_) | | (_| \ \_/ /\__/ /
+>  \____/ \__|\__,_| .__/|_|\__,_|\___/\____/ 
+>                  | |                        
+>                  |_|                         
+
+Donate:
+
+- <Liberapay at https://liberapay.com/d0p1/>
+- <Github Sponsors at https://github.com/sponsors/d0p1s4m4>
+- Monero: 85cm3SuAs98dcqXcdiyCNz6hkb5fKwHbtJYr8cyFdAGWKgj8rG3kPENNv1BXVp2HsiaC8otTzxxaEEuUVZQFxrSr7eBY2uw
+- Zcash: zs1sqsdn4acrqygvupmhwl5vvzcdjk6fd4p6n3k4nzdey0huq7cwkl2ca7dru8alhhtan47wjes0x9
+- Bitcoin: bc1qhpxa0hgj0mjstttkjgg6ees9dj5kadty04kgpp
+- Oxen: LDrNKN6iXh98zUZbwa9iGmeuiWbrzU2WTKWwcwMYFSeCj2QACxfyFXNVQyN8QBe61bFgqtykTYpgcaWvf2C1K77KMQ82DaC
+- Gridcoin: S8tw8EWXQ6p529kLEniCePceNAFTyc3GKM
+
+About: License
+
+StupidOS is a free (as in freedom) software and is licensed under the 3-Clause 
+BSD License.
+
+
+The full text of the license can be accessed via 
+<this link at https://opensource.org/licenses/BSD-3-Clause> and is also 
+included in the license file of this software package.

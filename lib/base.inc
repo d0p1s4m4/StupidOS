@@ -1,7 +1,13 @@
 ; file: base.inc
+
 extern log_impl
 
 ; macro: LOG
+; 
+; example:
+; (start code)
+; LOG msg_boot_info, eax
+; (end)
 %macro LOG 1-*
 %rep %0
 %rotate -1

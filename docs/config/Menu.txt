@@ -38,6 +38,8 @@ Timestamp: Updated yyyy/mm/dd
 # --------------------------------------------------------------------------
 
 
+File: Introduction  (docs/intro.txt)
+
 Group: Kernel  {
 
    File: head.s  (kernel/head.s)
@@ -45,14 +47,18 @@ Group: Kernel  {
    File: idt.s  (kernel/idt.s)
    File: multiboot.inc  (kernel/multiboot.inc)
    File: pic.s  (kernel/pic.s)
-   File: setup_paging  (kernel/paging.s)
+   File: paging.s  (no auto-title, kernel/paging.s)
 
    Group: Driver  {
 
       File: serial.s  (no auto-title, kernel/drivers/serial.s)
       }  # Group: Driver
 
-   File: msg_en  (kernel/debug/msg_en.s)
+   Group: Debug  {
+
+      File: msg_en  (kernel/debug/msg_en.s)
+      }  # Group: Debug
+
    }  # Group: Kernel
 
 Group: Lib  {
@@ -77,6 +83,12 @@ Group: Lib  {
    File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
    }  # Group: Lib
 
+Group: Bin  {
+
+   File: crt0.s  (bin/crt0.s)
+   File: main.pls  (bin/motd/main.pls)
+   }  # Group: Bin
+
 Group: Index  {
 
    Index: Everything
@@ -85,5 +97,6 @@ Group: Index  {
    Function Index: Functions
    Macro Index: Macros
    Variable Index: Variables
+   Class Index: Classes
    }  # Group: Index
 

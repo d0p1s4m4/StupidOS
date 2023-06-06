@@ -1,6 +1,9 @@
 ; file: multiboot.inc
 
+; Structure: mb_info
 struc mb_info
+
+	; Field: flags
 	.flags: resd 1
 
 	;; flags[0] is set
@@ -22,6 +25,8 @@ struc mb_info
 
 	;; flags[6] is set
 	.mmap_length: resd 1
+	; Field: mmap_addr
+	; see <mb_mmap>
 	.mmap_addr: resd 1
 
 	;; flags[7] is set
@@ -54,6 +59,7 @@ struc mb_info
 	.framebuffer_misc: resw 3
 endstruc
 
+; Structure: mb_mmap
 struc mb_mmap
 	.size: resd 1
 	.addr: resq 1

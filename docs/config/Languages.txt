@@ -116,3 +116,12 @@ Format: 1.51
 Alter Language: Assembly
 
    Add Extensions: s inc
+
+
+Language: PL/S
+
+   Extension: pls
+   Line Comment: //
+   Block Comment: /* */
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; =
