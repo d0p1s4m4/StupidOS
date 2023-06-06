@@ -40,6 +40,7 @@ Timestamp: Updated yyyy/mm/dd
 
 File: Introduction  (docs/intro.txt)
 Link: Source Code  (https://github.com/d0p1s4m4/StupidOS)
+File: FAQ  (docs/faq.txt)
 
 Group: Kernel  {
 
@@ -79,15 +80,31 @@ Group: Lib  {
          File: keccak.s  (lib/crypto/hash/keccak.s)
          }  # Group: Hash
 
+      Group: Sign  {
+
+         File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
+         }  # Group: Sign
+
       }  # Group: Crypto
 
-   File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
+   Group: PL/Stupid  {
+
+      Group: Runtime  {
+
+         File: crt0.s  (lib/pls/runtime/crt0.s)
+         }  # Group: Runtime
+
+      }  # Group: PL/Stupid
+
    }  # Group: Lib
 
 Group: Bin  {
 
-   File: crt0.s  (bin/crt0.s)
-   File: main.pls  (bin/motd/main.pls)
+   Group: motd  {
+
+      File: main.pls  (bin/motd/main.pls)
+      }  # Group: motd
+
    }  # Group: Bin
 
 Group: Index  {
