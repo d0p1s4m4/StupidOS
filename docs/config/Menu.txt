@@ -39,6 +39,7 @@ Timestamp: Updated yyyy/mm/dd
 
 
 File: Introduction  (docs/intro.txt)
+Link: Source Code  (https://github.com/d0p1s4m4/StupidOS)
 
 Group: Kernel  {
 
