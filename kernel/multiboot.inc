@@ -1,9 +1,54 @@
-; file: multiboot.inc
+; File: multiboot.inc
+
+; Define: MB_HDR_MAGIC
+; Multiboot Header Magic
+MB_HDR_MAGIC equ 0x1BADB002
+
+; Define: MB_MAGIC
+; Multiboot Magic passed by the bootloader.
+MB_MAGIC equ 0x2BADB002
+
+; Structure: mb_header
+;
+; .magic       - todo
+; .flags       - See <flags>
+; .checksum    - todo
+; .aout_kludge - todo
+; .mode_type   - todo
+; .width       - todo
+; .height      - todo
+; .depth       - todo
+struc mb_header
+	.magic: resd 1
+	.flags: resd 1
+	.checksum: resd 1
+	.aout_kludge: resd 5
+	.mode_type: resd 1
+	.width: resd 1
+	.height: resd 1
+	.depth: resd 1
+endstruc
+
+; Defines: flags
+;
+; MB_HDR_ALIGN   - todo
+; MB_HDR_MEMINFO - <mb_info.mem_lower>
+; MB_HDR_VIDEO   - todo
+MB_HDR_ALIGN equ 1 << 0
+MB_HDR_MEMINFO equ 1 << 1
+MB_HDR_VIDEO equ 1 << 2
 
 ; Structure: mb_info
+; 
+; Fields:
+; .flags       - See <flags>
+; .mem_lower   - todo
+; .mem_upper   - todo
+; .boot_device - todo
+;    .
 struc mb_info
 
-	; Field: flags
+	;; flags
 	.flags: resd 1
 
 	;; flags[0] is set
@@ -25,7 +70,7 @@ struc mb_info
 
 	;; flags[6] is set
 	.mmap_length: resd 1
-	; Field: mmap_addr
+	; <mb_info.mmap_length>
 	; see <mb_mmap>
 	.mmap_addr: resd 1
 
@@ -59,6 +104,13 @@ struc mb_info
 	.framebuffer_misc: resw 3
 endstruc
 
+; Defines: flags
+; 
+; MB_INFO_MEM     - todo
+; MB_INFO_BOOTDEV - todo 
+MB_INFO_MEM equ 1 << 0
+MB_INFO_BOOTDEV equ 1 << 1
+
 ; Structure: mb_mmap
 struc mb_mmap
 	.size: resd 1
@@ -67,6 +119,13 @@ struc mb_mmap
 	.type: resd 1
 endstruc
 
+; Defines: types
+;
+; MB_MEMORY_AVAILABLE - 1
+; MB_MEMORY_RESERVED  - 2
+; MB_MEMORY_ACPI      - 3
+; MB_MEMORY_NVS       - 4
+; MB_MEMORY_BADRAM    - 5
 %define MB_MEMORY_AVAILABLE 1
 %define MB_MEMORY_RESERVED 2
 %define MB_MEMORY_ACPI 3

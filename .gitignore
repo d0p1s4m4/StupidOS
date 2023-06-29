@@ -9,6 +9,7 @@
 *.a
 *.dump
 vmstupid
+vmstupid-dbg
 
 
 /sysroot
@@ -17,3 +18,8 @@ log.txt
 
 /docs/html
 /docs/config/Data
+
+a.out
+*.old
+/bx_enh_dbg.ini
+bochsrc.bxrc

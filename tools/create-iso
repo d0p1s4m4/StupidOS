@@ -12,6 +12,12 @@ menuentry "StupidOS" {
    boot
 }
 
+menuentry "StupidOS (debug)" {
+	hashsum --hash sha256 --check /boot/hashfile --prefix /
+	multiboot /vmstupid-dbg "lang=en"
+	boot
+}
+
 EOF
 )
 
@@ -19,6 +25,7 @@ gen_iso_file() {
 	mkdir -p "$2/boot/grub"
 	echo "$grub_config" > "$2/boot/grub/grub.cfg"
 	sha256sum vmstupid > "$2/boot/hashfile"
+	sha256sum vmstupid-dbg >> "$2/boot/hashfile"
 
 	grub-mkrescue -o $1 $2
 }

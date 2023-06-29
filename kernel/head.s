@@ -5,16 +5,22 @@
 %include "base.inc"
 %include "multiboot.inc"
 
-MULTIBOOT_MAGIC equ 0x1BADB002
-MULTIBOOT_ALIGN equ 1 << 0
-MULTIBOOT_MEMINFO equ 1 << 1
-MULTIBOOT_FLAGS equ MULTIBOOT_ALIGN | MULTIBOOT_MEMINFO
+; Define: MB_HDR_FLAGS 
+MB_HDR_FLAGS equ MB_HDR_ALIGN | MB_HDR_MEMINFO | MB_HDR_VIDEO
 
 section .multiboot
 align 4
-	dd MULTIBOOT_MAGIC
-	dd MULTIBOOT_FLAGS
-	dd -(MULTIBOOT_MAGIC + MULTIBOOT_FLAGS)
+	istruc mb_header
+		at mb_header.magic,    dd MB_HDR_MAGIC
+		at mb_header.flags,    dd MB_HDR_FLAGS
+		at mb_header.checksum, dd -(MB_HDR_MAGIC + MB_HDR_FLAGS)
+
+		; video mode info
+		at mb_header.mode_type, dd 0
+		at mb_header.width,     dd 1024
+		at mb_header.height,    dd 768
+		at mb_header.depth,     dd 32
+	iend
 
 section .bss
 align 16
@@ -25,7 +31,8 @@ stack_top:
 section .text
 
 	; Function: entry
-	; 
+	; setup cpu and paging before calling <kmain>
+	;
 	; in:
 	;     EAX - Multiboot magic
 	;     EBX - Multiboot structure
@@ -36,18 +43,17 @@ section .text
 global entry
 entry:
 	mov esp, stack_top
-	cli
+	cli ; disable interrupt
 
-	mov edi, eax
-	mov esi, ebx
+	mov edi, eax ; save multiboot magic in EDI
+	mov esi, ebx ; save multiboot structure in ESI
 
 	;; initialize serial (mostly used for debug)
 	extern serial_init
 	call serial_init
 
-	;; eax <- magic
-	;; ebx <- multiboot struct
-	cmp edi, 0x2BADB002
+	;; make sure we use a multiboot compliant bootloader
+	cmp edi, MB_MAGIC
 	je .multiboot_valid
 
 	LOG err_invalid_boot_magic, edi
@@ -95,7 +101,7 @@ hang:
 	
 section .rodata
 
-msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", NASM_VERSION, " on ", BUILD_DATE, ")", 0
+msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", __NASM_VER__, " on ",  __DATE__, " ", __TIME__, ")", 0
 msg_boot_info db "Bootloader: %s", 0
 msg_pmm_initialized db "PMM initialized", 0
 err_invalid_boot_magic db "[ERROR] Invalid boot magic (got: %x, expected: 0x2BADB002)", 0

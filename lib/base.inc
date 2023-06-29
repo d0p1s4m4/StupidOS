@@ -9,6 +9,7 @@ extern log_impl
 ; LOG msg_boot_info, eax
 ; (end)
 %macro LOG 1-*
+%ifdef DEBUG
 %rep %0
 %rotate -1
 	push %1
@@ -21,4 +22,5 @@ extern log_impl
 %rep %0
 	add esp, 4
 %endrep
+%endif
 %endmacro

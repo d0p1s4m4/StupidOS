@@ -3,14 +3,26 @@
  */
 
 /*
- * Procedure: Motd
- * Program entry point
+ * Procedure: main
+ *
+ * Program entry point.
  */
-Motd: PROC OPTIONS(MAIN);
-	DCL in FILE;
-	OPEN FILE(in) TITLE('/etc/motd') INPUT;
-	DO ;
 
+
+PROC main;
+	DCL in AS File;
+	DCL line AS String;
+	DCL now AS DateTime;
+
+	now = [[DateTime allocate] now];
+	IF now == NIL THEN exit(1);
+	in = [[File allocate] initOpen:"/etc/motd"];
+	IF in == NIL THEN exit(1);
+
+	WHILE [in readLine:line] != EOF;
+		print(line);
 	END;
-	CLOSE FILE(in);
+
+	[in release];
+	[now release];
 END;

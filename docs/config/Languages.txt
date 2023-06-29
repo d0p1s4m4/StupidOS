@@ -116,6 +116,7 @@ Format: 1.51
 Alter Language: Assembly
 
    Add Extensions: s inc
+   Struct Prototype Ender: endstruc
 
 
 Language: PL/S

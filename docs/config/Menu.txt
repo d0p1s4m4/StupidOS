@@ -40,6 +40,7 @@ Timestamp: Updated yyyy/mm/dd
 
 File: Introduction  (docs/intro.txt)
 Link: Source Code  (https://github.com/d0p1s4m4/StupidOS)
+File: Coding Style  (docs/coding-style.txt)
 File: FAQ  (docs/faq.txt)
 
 Group: Kernel  {
@@ -56,11 +57,9 @@ Group: Kernel  {
       File: serial.s  (no auto-title, kernel/drivers/serial.s)
       }  # Group: Driver
 
-   Group: Debug  {
-
-      File: msg_en  (kernel/debug/msg_en.s)
-      }  # Group: Debug
-
+   File: kernel.s  (kernel/kernel.s)
+   File: msg_en  (kernel/i18n/msg_en.s)
+   File: pmm.s  (kernel/pmm.s)
    }  # Group: Kernel
 
 Group: Lib  {
@@ -106,6 +105,21 @@ Group: Bin  {
       }  # Group: motd
 
    }  # Group: Bin
+
+Group: Share  {
+
+   Group: Mk  {
+
+      File: stupid.clean.mk  (share/mk/stupid.clean.mk)
+      File: stupid.kernel.mk  (share/mk/stupid.kernel.mk)
+      File: stupid.lib.mk  (share/mk/stupid.lib.mk)
+      File: stupid.own.mk  (share/mk/stupid.own.mk)
+      File: stupid.prog.mk  (share/mk/stupid.prog.mk)
+      File: stupid.subdir.mk  (share/mk/stupid.subdir.mk)
+      File: stupid.sys.mk  (share/mk/stupid.sys.mk)
+      }  # Group: Mk
+
+   }  # Group: Share
 
 Group: Index  {
 
