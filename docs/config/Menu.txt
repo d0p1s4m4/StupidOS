@@ -45,29 +45,49 @@ File: FAQ  (docs/faq.txt)
 
 Group: Kernel  {
 
-   File: head.s  (kernel/head.s)
+   Group: Boot  {
+
+      File: feat.s  (kernel/boot/feat.s)
+      File: head.s  (kernel/boot/head.s)
+      }  # Group: Boot
+
    File: gdt.s  (kernel/gdt.s)
    File: idt.s  (kernel/idt.s)
-   File: multiboot.inc  (kernel/multiboot.inc)
    File: pic.s  (kernel/pic.s)
-   File: paging.s  (no auto-title, kernel/paging.s)
 
    Group: Driver  {
 
       File: serial.s  (no auto-title, kernel/drivers/serial.s)
       }  # Group: Driver
 
+   Group: i18n  {
+
+      File: msg_en.s  (kernel/i18n/msg_en.s)
+      }  # Group: i18n
+
    File: kernel.s  (kernel/kernel.s)
-   File: msg_en  (kernel/i18n/msg_en.s)
    File: pmm.s  (kernel/pmm.s)
+
+   Group: Sys  {
+
+      File: multiboot.inc  (kernel/sys/multiboot.inc)
+
+      Group: I386  {
+
+         File: cpuid.inc  (kernel/sys/i386/cpuid.inc)
+         File: mmu.inc  (kernel/sys/i386/mmu.inc)
+         File: registers.inc  (kernel/sys/i386/registers.inc)
+         }  # Group: I386
+
+      }  # Group: Sys
+
    }  # Group: Kernel
 
 Group: Lib  {
 
-   File: base.inc  (lib/base.inc)
-
    Group: Base  {
 
+      File: base.inc  (lib/base/base.inc)
       File: log.s  (lib/base/log.s)
       }  # Group: Base
 

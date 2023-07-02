@@ -16,13 +16,14 @@ LD		= ld.lld
 PLSCC	= plsc
 OBJCOPY	= llvm-objcopy
 OBJDUMP = llvm-objdump
+INSTALL	= install
 
 MKCWD	= mkdir -p $(@D)
 
 TARGETS	= all clean install
 .PHONY: $(TARGETS)
 
-EXTRAFLAGS	= -DSTUPID_VERSION="0.0" -D__STUPID__
+EXTRAFLAGS	= -DSTUPID_VERSION="\"0.0\"" -D__STUPID__
 
 CFLAGS		+= -Wall -Werror -Wextra $(EXTRAFLAGS)
 CXXFLAGS	+= -Wall -Werror -Wextra $(EXTRAFLAGS)

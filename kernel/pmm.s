@@ -3,7 +3,7 @@
 	;; XXX: align address to page
 
 %include "base.inc"
-%include "multiboot.inc"
+%include "sys/multiboot.inc"
 
 extern kernel_size
 extern kernel_end

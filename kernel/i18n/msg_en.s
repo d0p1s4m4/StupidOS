@@ -1,4 +1,4 @@
-; file: msg_en
+; file: msg_en.s
 ; English strings
 
 %include "i18n.inc"
@@ -52,7 +52,7 @@ msg_en:
 	iend
 
 msg_hello_world:
-	db "StupidOS v", STUPID_VERSION, " (built with ", NASM_VERSION, " on ", BUILD_DATE, ")", 0
+	db "StupidOS v", STUPID_VERSION, " (built with NASM v", __NASM_VER__, " on ",  __DATE__, " ", __TIME__, ")", 0
 msg_boot_info:
 	db "Bootloader: %s", 0
 msg_pmm_initialized:

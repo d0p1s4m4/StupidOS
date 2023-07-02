@@ -3,9 +3,12 @@
 ;
 [BITS 32]
 
+%include "cpu.inc"
+
 section .text
 
-	; Function: setup_gdt
+
+	; Function: gdt_setup
 	; 
 	; in:
 	;     none
@@ -13,8 +16,8 @@ section .text
 	; out:
 	;     none
 	;
-global setup_gdt
-setup_gdt:
+global gdt_setup
+gdt_setup:
 	lgdt [gdt_ptr]
 	mov eax, cr0
 	or al, 1
@@ -41,36 +44,49 @@ gdt_entries:
 	dd 0x0
 
 	;; kernel mode code segment
-	dw 0xFFFF ; Limit
-	dw 0x0000 ; Base (low)
-	db 0x00   ; Base (mid)
-	db 0x9A   ; Access: 1 (P) 0 (DPL), 1 (S), 1010 (Type)
-	db 0xCF   ; Granularity: 1 (G), 1 (D/B), 0 (AVL), Limit
-	db 0x00   ; Base (high)
+	istruc gdt_entry
+		at gdt_entry.limit_low, dw 0xFFFF
+		at gdt_entry.base_low,  dw 0x0000
+		at gdt_entry.base_mid,  db 0x00
+		at gdt_entry.access,    db 0x9A
+		at gdt_entry.flags,     db 0xCF
+		at gdt_entry.base_high, db 0x00
+	iend
 
 	;; kernel mode data segment
-	dw 0xFFFF
-	dw 0x0000
-	db 0x00
-	db 0x92
-	db 0xCF
-	db 0x00
+	istruc gdt_entry
+		at gdt_entry.limit_low, dw 0xFFFF
+		at gdt_entry.base_low,  dw 0x0000
+		at gdt_entry.base_mid,  db 0x00
+		at gdt_entry.access,    db 0x92
+		at gdt_entry.flags,     db 0xCF
+		at gdt_entry.base_high, db 0x00
+	iend
 
 	;; user mode code segment
-	dw 0xFFFF
-	dw 0x0000
-	db 0x00
-	db 0xFA
-	db 0xCF
-	db 0x00
+	istruc gdt_entry
+		at gdt_entry.limit_low, dw 0xFFFF
+		at gdt_entry.base_low,  dw 0x0000
+		at gdt_entry.base_mid,  db 0x00
+		at gdt_entry.access,    db 0xFA
+		at gdt_entry.flags,     db 0xCF
+		at gdt_entry.base_high, db 0x00
+	iend
 
 	;; user mode data segment
-	dw 0xFFFF
-	dw 0x0000
-	db 0x00
-	db 0xF2
-	db 0xCF
-	db 0x00
+	istruc gdt_entry
+		at gdt_entry.limit_low, dw 0xFFFF
+		at gdt_entry.base_low,  dw 0x0000
+		at gdt_entry.base_mid,  db 0x00
+		at gdt_entry.access,    db 0xF2
+		at gdt_entry.flags,     db 0xCF
+		at gdt_entry.base_high, db 0x00
+	iend
 
+;;.tss:
 	;; TSS
+	;;istruc gdt_entry
+	;;	at gdt_entry.access, db 0x89
+	;;	at gdt_entry.flags, db 0x0
+	;;iend
 .end:

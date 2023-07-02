@@ -35,6 +35,10 @@ endif
 
 all: $(PROG)
 
+install:: $(PROG)
+	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
+	$(INSTALL) $< $(DESTDIR)$(LIBDIR)
+
 endif
 
 include $(TOPDIR)/share/mk/stupid.clean.mk

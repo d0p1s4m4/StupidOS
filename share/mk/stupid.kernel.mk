@@ -4,7 +4,10 @@ include $(TOPDIR)/share/mk/stupid.own.mk
 
 ifdef KERNEL
 
-ASFLAGS	+= -D__KERNEL__ -I$(TOPDIR)/kernel
+KERNBASE ?= 0xC0000000
+
+ASFLAGS	+= -D__KERNEL__ -I$(TOPDIR)/kernel -DKERNBASE=$(KERNBASE) \
+			-I$(TOPDIR)/lib/base
 
 OBJS = $(addsuffix .o, $(basename $(SRCS)))
 OBJS-dbg  = $(addsuffix .dbg.o, $(basename $(SRCS)))
@@ -32,6 +35,10 @@ lib/%.dbg.o: ../lib/base/%.s
 	$(AS) $(ASFLAGS) $(ASDBGFLAGS) -o $@ $<
 
 all: $(KERNEL) $(KERNEL)-dbg
+
+install:: $(KERNEL) $(KERNEL)-dbg
+	$(INSTALL) -d $(DESTDIR)/
+	$(INSTALL) $^ $(DESTDIR)/
 
 endif
 

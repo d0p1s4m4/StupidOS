@@ -27,6 +27,10 @@ endif
 
 all: lib$(LIB).a
 
+install:: lib$(LIB).a
+	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
+	$(INSTALL) $< $(DESTDIR)$(LIBDIR)
+
 endif
 
 include $(TOPDIR)/share/mk/stupid.clean.mk

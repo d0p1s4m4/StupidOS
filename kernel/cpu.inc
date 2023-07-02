@@ -1,22 +1,58 @@
 struc tss
-	.link: resd 1
-	
+	.link:   resw 1
+		     resw 1
+	.esp0:   resd 1
+	.ss0:    resw 1
+	         resw 1
+	.esp1:   resd 1
+	.ss1:    resw 1
+	         resw 1
+	.esp2:   resd 1
+	.ss2:    resw 1
+	         resw 1
+	.cr3:    resd 1
+	.eip:    resd 1
+	.eflags: resd 1
+	.eax:    resd 1
+	.ecx:    resd 1
+	.edx:    resd 1
+	.ebx:    resd 1
+	.esp:    resd 1
+	.ebp:    resd 1
+	.esi:    resd 1
+	.edi:    resd 1
+	.es:     resw 1
+	         resw 1
+	.cs:     resw 1
+	         resw 1
+	.ss:     resw 1
+	         resw 1
+	.ds:     resw 1
+	         resw 1
+	.fs:     resw 1
+	         resw 1
+	.gs:     resw 1
+	         resw 1
+	.ldtr:   resw 1
+	         resw 1
+	.iopb:   resw 1
+	         resw 1
 endstruc
 
 struc gdt_entry
 	.limit_low: resw 1
-	.base_low: resw 1
-	.base_mid: resb 1
-	.access: resb 1
-	.flags: resb 1
+	.base_low:  resw 1
+	.base_mid:  resb 1
+	.access:    resb 1
+	.flags:     resb 1
 	.base_high: resb 1
 endstruc
 
 struc idt_entry
 	.limit_low: resw 1
-	.selector: resw 1
-	.zero: resb 1
-	.attr: resb 1
+	.selector:  resw 1
+	.zero:      resb 1
+	.attr:      resb 1
 	.base_high: resw 1
 endstruc
 
@@ -32,20 +68,19 @@ struc intframe
 	.eax: resd 1
 
 	;;
-	.gs: resd 1
-	.fs: resd 1
-	.es: resd 1
-	.ds: resd 1
+	.gs:    resd 1
+	.fs:    resd 1
+	.es:    resd 1
+	.ds:    resd 1
 	.intno: resd 1
 
 	;; by x86 hardware
-	.err: resd 1
-	.eip: resd 1
-	.cs:  resd 1
+	.err:    resd 1
+	.eip:    resd 1
+	.cs:     resd 1
 	.eflags: resd 1
 
 	;; crossring
 	.useresp: resd 1
-	.ss: resd 1
+	.ss:      resd 1
 endstruc
-
