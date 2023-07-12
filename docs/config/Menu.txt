@@ -81,6 +81,8 @@ Group: Kernel  {
 
       }  # Group: Sys
 
+   File: vm.inc  (kernel/vm/vm.inc)
+   File: pmap.s  (kernel/vm/pmap.s)
    }  # Group: Kernel
 
 Group: Lib  {

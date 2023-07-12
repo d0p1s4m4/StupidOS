@@ -7,4 +7,4 @@ INCS	= sys/multiboot.inc \
 			sys/i386/registers.inc
 
 include $(TOPDIR)/share/mk/stupid.kernel.mk
-include $(TOPDIR)/share/mk/stupid.inc.mk
+#include $(TOPDIR)/share/mk/stupid.inc.mk
