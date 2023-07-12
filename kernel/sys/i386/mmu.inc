@@ -45,8 +45,12 @@
 %define PDE2P(addr) (addr << 22)
 %define P2PTE(addr) ((addr >> 12) & 0x3FF)
 
-	;; Defines: PDE
-	;; PTE_P    - Present
+	;; Defines: Page Directory Flags
+	;; PDE_P   - Present
+	;; PDE_W   - Writable
+	;; PDE_U   - User
+	;; PDE_PWT - Write-Through
+	;; PDE_PS  - 4MiB page
 PDE_P   equ 1 << 0
 PDE_W   equ 1 << 1
 PDE_U   equ 1 << 2
@@ -57,7 +61,7 @@ PDE_D   equ 1 << 6
 PDE_PS  equ 1 << 7
 PDE_G   equ 1 << 8
 
-	;; Defines: PTE
+	;; Defines: Page Table Flags
 	;; PTE_P   - Present
 	;; PTE_W   - Writable
 	;; PTE_U   - User

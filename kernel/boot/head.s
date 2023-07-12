@@ -1,8 +1,11 @@
 	;; File: head.s
-
+	;;
+	;; About: CPU compatibility
+	;; /!\ Only work on *486+* for now.
+	;; - `invlpg` which is not part of 386 ISA.
+	;;
 [BITS 32]
 
-%include "machdep.inc"
 %include "sys/multiboot.inc"
 %include "sys/i386/registers.inc"
 %include "sys/i386/mmu.inc"
@@ -38,15 +41,12 @@ section .multiboot.text
 	;;
 global entry
 entry:
-	extern stack_top
-	mov esp, V2P(stack_top)
+	;; disable interrupt
+	cli
 
 	;; save boot params
 	mov edi, eax
 	mov esi, ebx
-
-	extern feat_detect
-	call feat_detect
 
 	;; setup 4MB paging
 	;; TODO: check if 4MB paging is available
@@ -54,8 +54,22 @@ entry:
 	or eax, CR4_PSE
 	mov cr4, eax
 
+	cmp edi, MB_MAGIC
+	jne .skip_map_multiboot
+	;; check if multiboot struct is in first 4Mib
+	;; otherwith add entry in page dir
+	mov eax, 400000
+	cmp ebx, eax
+	jg .map_multiboot
+	jmp .skip_map_multiboot
+.map_multiboot:
+	;; TODO: for now let's assume data are bellow 4Mib 
+	jmp .end
+.skip_map_multiboot:
+	add esi, KERNBASE
+.end:
 	extern page_directory
-	mov eax, V2P(page_directory)
+	mov eax, V2P(boot_page_dir)
 	mov cr3, eax
 
 	;; enable paging
@@ -63,7 +77,34 @@ entry:
 	or eax, CR0_PG | CR0_PE | CR0_WP
 	mov cr0, eax
 
-	extern page_directory
-	mov eax, page_directory - KERNBASE
-	extern kernel_start
-	mov ebx, kernel_start
+	;; Jump to higher half
+	lea eax, entry_high
+	jmp eax						; near jump, indirect
+
+section .text
+
+entry_high:
+	mov dword [boot_page_dir], 0
+	invlpg [0]
+
+	extern stack_top
+	mov esp, stack_top
+	xor ebp, ebp
+
+	push edi
+	push esi
+	extern kmain
+	call kmain
+
+	cli
+hang:
+	hlt
+	jmp hang
+
+section .data
+align 0x1000
+boot_page_dir:
+	dd 0 | PDE_P | PDE_W | PDE_PS
+	times (P2PDE(KERNBASE) - 1) dd 0
+	dd 0 | PDE_P | PDE_W | PDE_PS
+	times 0x400 - (boot_page_dir - $$) dd 0

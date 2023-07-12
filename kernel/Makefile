@@ -1,5 +1,6 @@
 KERNEL	= vmstupid
-SRCS	= boot/head.s boot/feat.s kernel.s gdt.s pic.s isr.s idt.s pmm.s paging.s \
+SRCS	= boot/head.s \
+			kernel.s gdt.s pic.s isr.s idt.s \
 			lib/log.s drivers/serial.s
 INCS	= sys/multiboot.inc \
 			sys/i386/cpuid.inc \

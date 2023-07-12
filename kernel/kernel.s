@@ -1,7 +1,7 @@
 ; File: kernel.s
 [BITS 32]
 
-%include "machdep.inc"
+%include "base.inc"
 
 section .bss
 align 16
@@ -17,14 +17,16 @@ kmain:
 	push ebp
 	mov ebp, esp
 
+	extern serial_init
+	call serial_init
+
+	LOG msg_hello_world
+	
 	leave
 	ret
 
-section .data
-global machdep
-machdep:
-	istruc machinfo
-		at machinfo.has_cpuid, db 0
-		at machinfo.has_pse, db 0
-		at machinfo.has_pae, db 0
-	iend
+section .rodata
+
+msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", __NASM_VER__, " on ",  __DATE__, " ", __TIME__, ")", 0
+
+file db __FILE__, 0

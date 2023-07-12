@@ -105,11 +105,18 @@ struc mb_info
 endstruc
 
 ; Defines: flags
-; 
+;
 ; MB_INFO_MEM     - todo
-; MB_INFO_BOOTDEV - todo 
-MB_INFO_MEM equ 1 << 0
-MB_INFO_BOOTDEV equ 1 << 1
+; MB_INFO_BOOTDEV - todo
+MB_INFO_MEM             equ 1 << 0
+MB_INFO_BOOTDEV         equ 1 << 1
+MB_INFO_CMDLINE         equ 1 << 2
+MB_INFO_MODULES         equ 1 << 3
+MB_INFO_MMAP            equ 1 << 6
+MB_INFO_DRIVES          equ 1 << 7
+MB_INFO_BOOTLOADER_NAME equ 1 << 9
+MB_INFO_VBE             equ 1 << 11
+MB_INFO_FRAMEBUFFER     equ 1 << 12
 
 ; Structure: mb_mmap
 struc mb_mmap

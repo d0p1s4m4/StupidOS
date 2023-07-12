@@ -7,7 +7,7 @@ SECTIONS
 	
 	kernel_start = .;
 
-	.multiboot : {
+	.multiboot ALIGN(0x1000): {
 		KEEP(*(.multiboot.data))
 		KEEP(*(.multiboot.text))
 	}
