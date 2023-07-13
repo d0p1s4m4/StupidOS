@@ -1,6 +1,6 @@
 [BITS 32]
 
-%include "cpu.inc"
+%include "sys/i386/cpu.inc"
 %include "base.inc"
 
 %macro ISR_NO_ERR 1

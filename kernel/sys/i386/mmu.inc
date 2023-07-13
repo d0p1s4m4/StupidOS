@@ -81,3 +81,11 @@ PTE_D   equ 1 << 6
 PTE_PAT equ 1 << 7
 PTE_G   equ 1 << 8
 
+struc gdt_entry
+	.limit_low: resw 1
+	.base_low:  resw 1
+	.base_mid:  resb 1
+	.access:    resb 1
+	.flags:     resb 1
+	.base_high: resb 1
+endstruc

@@ -50,12 +50,12 @@ Group: Kernel  {
 
    Group: boot  {
 
+      File: gdt.s  (kernel/boot/gdt.s)
       File: head.s  (kernel/boot/head.s)
+      File: idt.s  (kernel/boot/idt.s)
       }  # Group: boot
 
    File: kernel.s  (kernel/kernel.s)
-   File: gdt.s  (kernel/gdt.s)
-   File: idt.s  (kernel/idt.s)
    File: pic.s  (kernel/pic.s)
 
    Group: dev  {
@@ -83,6 +83,7 @@ Group: Kernel  {
 
       Group: i386  {
 
+         File: cpu.inc  (kernel/sys/i386/cpu.inc)
          File: cpuid.inc  (kernel/sys/i386/cpuid.inc)
          File: mmu.inc  (kernel/sys/i386/mmu.inc)
          File: registers.inc  (kernel/sys/i386/registers.inc)
@@ -92,7 +93,6 @@ Group: Kernel  {
 
    File: vm.inc  (kernel/vm/vm.inc)
    File: pmap.s  (kernel/vm/pmap.s)
-   File: cpu.inc  (kernel/cpu.inc)
    }  # Group: Kernel
 
 Group: Lib  {

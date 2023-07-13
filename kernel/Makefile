@@ -1,9 +1,13 @@
 KERNEL	= vmstupid
+
 SRCS	= boot/head.s \
-			kernel.s gdt.s pic.s isr.s idt.s \
+			boot/gdt.s \
+			boot/idt.s \
+			boot/isr.s \
+			boot/tss.s \
+			kernel.s \
 			lib/log.s dev/at/serial.s \
-			i18n/msg_en.s \
-			base/console.s
+			i18n/msg_en.s
 INCS	= sys/multiboot.inc \
 			sys/i386/cpuid.inc \
 			sys/i386/mmu.inc \

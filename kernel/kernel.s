@@ -16,17 +16,23 @@ global kmain
 kmain:
 	push ebp
 	mov ebp, esp
+	;; TODO: console init
 
 	extern serial_init
 	call serial_init
 
 	LOG msg_hello_world
-	
+	LOG msg_print_boot, esi, edi
+
+	int3
+	;; setup cpu
+	;; initialize vm
+
 	leave
 	ret
 
 section .rodata
 
 msg_hello_world db "StupidOS v", STUPID_VERSION, " (built with ", __NASM_VER__, " on ",  __DATE__, " ", __TIME__, ")", 0
-
+msg_print_boot db "ESI: %x | EDI: %x", 0
 file db __FILE__, 0

@@ -96,6 +96,16 @@ entry_high:
 	mov esp, stack_top
 	xor ebp, ebp
 
+	;; Setup GDT: we "disable" segmentation
+	extern gdt_setup
+	call gdt_setup
+
+	extern tss_flush
+	call tss_flush
+
+	extern idt_setup
+	call idt_setup
+
 	push esi					; multiboot struct
 	push edi					; multiboot magic
 	extern kmain

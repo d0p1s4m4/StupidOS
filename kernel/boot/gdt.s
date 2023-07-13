@@ -1,12 +1,10 @@
-; file: gdt.s
-;
-;
+	;; File: gdt.s
+	;;
 [BITS 32]
 
-%include "cpu.inc"
+%include "sys/i386/mmu.inc"
 
 section .text
-
 
 	; Function: gdt_setup
 	; 
@@ -18,6 +16,14 @@ section .text
 	;
 global gdt_setup
 gdt_setup:
+	;; install tss
+	lea eax, gdt_entries.tss
+	push eax
+	extern tss_install
+	call tss_install
+	pop eax
+
+	;; setup gdt
 	lgdt [gdt_ptr]
 	mov eax, cr0
 	or al, 1
@@ -83,10 +89,6 @@ gdt_entries:
 		at gdt_entry.base_high, db 0x00
 	iend
 
-;;.tss:
-	;; TSS
-	;;istruc gdt_entry
-	;;	at gdt_entry.access, db 0x89
-	;;	at gdt_entry.flags, db 0x0
-	;;iend
+.tss:
+	times gdt_entry_size db 0
 .end:
