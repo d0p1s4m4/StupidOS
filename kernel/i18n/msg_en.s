@@ -1,22 +1,22 @@
 ; file: msg_en.s
 ; English strings
 
-%include "i18n.inc"
+%include "i18n/lang.inc"
 
-.section rodata
+section .rodata
 global lang_en
 lang_en:
 	istruc lang_entry
-		at lang_entry.code: db "en"
-		at lang_entry.data: dd msg_en
-		at lang_entry.next: dd 0
+		at lang_entry.code, db "en"
+		at lang_entry.data, dd msg_en
+		at lang_entry.next, dd 0
 	iend
 
+global msg_en
 msg_en:
 	istruc msg_table
-		at msg_table.hello_world: dd msg_hello_world
-
-		at msg_table.cpu_exceptions:
+		at msg_table.hello_world, dd msg_hello_world
+		at msg_table.cpu_exceptions,
 			dd msg_int_division_zero
 			dd msg_int_debug
 			dd msg_int_nmi

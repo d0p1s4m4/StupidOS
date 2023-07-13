@@ -30,7 +30,8 @@ align 4
 section .multiboot.text
 
 	;; Function: entry
-	;;
+	;; Setup boot page table, map kernel to higher half
+	;; then jump to <entry_high>
 	;;
 	;; in:
 	;;     EAX - Multiboot magic
@@ -83,16 +84,20 @@ entry:
 
 section .text
 
+	;; Function: entry_high
+	;; Invalidate page[0], setup stack then call <kmain>
 entry_high:
+	;; unmap first 4MiB, since it's not needed anymore
 	mov dword [boot_page_dir], 0
 	invlpg [0]
 
+	;; Setup stack
 	extern stack_top
 	mov esp, stack_top
 	xor ebp, ebp
 
-	push edi
-	push esi
+	push esi					; multiboot struct
+	push edi					; multiboot magic
 	extern kmain
 	call kmain
 

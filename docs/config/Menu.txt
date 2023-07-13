@@ -41,48 +41,58 @@ Timestamp: Updated yyyy/mm/dd
 File: Introduction  (docs/intro.txt)
 Link: Source Code  (https://github.com/d0p1s4m4/StupidOS)
 File: Coding Style  (docs/coding-style.txt)
+File: Building  (building.txt)
 File: FAQ  (docs/faq.txt)
 
 Group: Kernel  {
 
-   Group: Boot  {
+   File: Introduction  (kernel/intro.txt)
 
-      File: feat.s  (kernel/boot/feat.s)
+   Group: boot  {
+
       File: head.s  (kernel/boot/head.s)
-      }  # Group: Boot
+      }  # Group: boot
 
+   File: kernel.s  (kernel/kernel.s)
    File: gdt.s  (kernel/gdt.s)
    File: idt.s  (kernel/idt.s)
    File: pic.s  (kernel/pic.s)
 
-   Group: Driver  {
+   Group: dev  {
 
-      File: serial.s  (no auto-title, kernel/drivers/serial.s)
-      }  # Group: Driver
+      Group: AT  {
+
+         File: IBM PC/AT  (kernel/dev/at/intro.txt)
+         File: cmos.s  (kernel/dev/at/cmos.s)
+         File: pit.s  (kernel/dev/at/pit.s)
+         File: serial.s  (kernel/dev/at/serial.s)
+         }  # Group: AT
+
+      }  # Group: dev
 
    Group: i18n  {
 
       File: msg_en.s  (kernel/i18n/msg_en.s)
       }  # Group: i18n
 
-   File: kernel.s  (kernel/kernel.s)
    File: pmm.s  (kernel/pmm.s)
 
-   Group: Sys  {
+   Group: sys  {
 
       File: multiboot.inc  (kernel/sys/multiboot.inc)
 
-      Group: I386  {
+      Group: i386  {
 
          File: cpuid.inc  (kernel/sys/i386/cpuid.inc)
          File: mmu.inc  (kernel/sys/i386/mmu.inc)
          File: registers.inc  (kernel/sys/i386/registers.inc)
-         }  # Group: I386
+         }  # Group: i386
 
-      }  # Group: Sys
+      }  # Group: sys
 
    File: vm.inc  (kernel/vm/vm.inc)
    File: pmap.s  (kernel/vm/pmap.s)
+   File: cpu.inc  (kernel/cpu.inc)
    }  # Group: Kernel
 
 Group: Lib  {
