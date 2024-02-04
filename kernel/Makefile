@@ -1,17 +1,27 @@
+AS	= fasm
+RM	= rm -f
+INSTALL = install
+
 KERNEL	= vmstupid
+SRCS	= kernel.asm \
+			const.inc \
+			boot/multiboot.inc \
+			boot/boot.inc \
+			mm/mm.inc
 
-SRCS	= boot/head.s \
-			boot/gdt.s \
-			boot/idt.s \
-			boot/isr.s \
-			boot/tss.s \
-			kernel.s \
-			lib/log.s dev/at/serial.s \
-			i18n/msg_en.s
-INCS	= sys/multiboot.inc \
-			sys/i386/cpuid.inc \
-			sys/i386/mmu.inc \
-			sys/i386/registers.inc
+.PHONY: all
+all: $(KERNEL)
 
-include $(TOPDIR)/share/mk/stupid.kernel.mk
-#include $(TOPDIR)/share/mk/stupid.inc.mk
+$(KERNEL): $(SRCS)
+	$(AS) kernel.asm $@
+
+.PHONY: clean
+clean:
+	$(RM) $(KERNEL)
+
+.PHONY: install
+install: $(KERNEL)
+	@ mkdir -p $(DESTDIR)
+	install $< $(DESTDIR)
+
+.PHONY: all clean

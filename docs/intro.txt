@@ -9,10 +9,7 @@ Donate:
 - <Liberapay at https://liberapay.com/d0p1/>
 - <Github Sponsors at https://github.com/sponsors/d0p1s4m4>
 - Monero: 85cm3SuAs98dcqXcdiyCNz6hkb5fKwHbtJYr8cyFdAGWKgj8rG3kPENNv1BXVp2HsiaC8otTzxxaEEuUVZQFxrSr7eBY2uw
-- Zcash: zs1sqsdn4acrqygvupmhwl5vvzcdjk6fd4p6n3k4nzdey0huq7cwkl2ca7dru8alhhtan47wjes0x9
 - Bitcoin: bc1qhpxa0hgj0mjstttkjgg6ees9dj5kadty04kgpp
-- Oxen: LDrNKN6iXh98zUZbwa9iGmeuiWbrzU2WTKWwcwMYFSeCj2QACxfyFXNVQyN8QBe61bFgqtykTYpgcaWvf2C1K77KMQ82DaC
-- Gridcoin: S8tw8EWXQ6p529kLEniCePceNAFTyc3GKM
 
 About: License
 

@@ -1,3 +1,11 @@
-NOSUBDIR := 1
+SUBDIRS = cmd
 
-include $(TOPDIR)/share/mk/stupid.subdir.mk
+TOPGOALS = all clean install
+
+.PHONY: $(SUBDIRS)
+$(SUBDIRS):
+	@echo "📁 bin/$@"
+	DESTDIR=$(DESTDIR)/bin $(MAKE) -C $@ $(MAKECMDGOALS)
+
+.PHONY: $(TOPGOALS)
+$(TOPGOALS): $(SUBDIRS)

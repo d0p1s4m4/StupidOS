@@ -1,31 +1,32 @@
-.DEFAULT_GOAL := all
-TOPDIR	:= $(CURDIR)
-export TOPDIR
+TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+SYSROOTDIR := $(TOPDIR)/sysroot
+TOOLSDIR   := $(TOPDIR)/tools
 
-SUBDIR := thirdparty lib bin kernel
+RM = echo
 
-CLEANFILES += stupid.iso stupid.tar.gz
+SUBDIRS	:= kernel lib bin
 
-.PHONY: docs
-docs:
-	-mkdir -p docs/html
-	naturaldocs -p docs/config -img docs/img -xi tmp -i . -o HTML docs/html
-	cp docs/img/favicon.ico docs/html/
+TARGET	= stupid.iso stupid.tar.gz
+
+.PHONY: all
+all: $(TARGET)
+
+GOAL:=install
+clean: GOAL:=clean
+
+.PHONY: $(SUBDIRS)
+$(SUBDIRS):
+	@echo "📁 $@"
+	DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(GOAL)
 
 .PHONY: stupid.iso
-stupid.iso:
-	$(MAKE) all
-	DESTDIR=$(TOPDIR)/sysroot $(MAKE) install
+stupid.iso: $(SUBDIRS)
 	$(TOPDIR)/tools/create-iso $@ sysroot
 
 .PHONY: stupid.tar.gz
-stupid.tar.gz:
-	$(MAKE) all
-	DESTDIR=$(TOPDIR)/sysroot $(MAKE) install
+stupid.tar.gz: $(SUBDIRS)
 	tar -czvf $@ sysroot
 
-run: stupid.iso
-	qemu-system-i386 -cdrom $< -serial stdio
-
-include $(TOPDIR)/share/mk/stupid.subdir.mk
-include $(TOPDIR)/share/mk/stupid.clean.mk
+.PHONY: clean
+clean: $(SUBDIRS)
+	$(RM) $(TARGET) $(SYSROOTDIR)
