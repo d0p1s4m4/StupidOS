@@ -4,9 +4,12 @@ TOOLSDIR   := $(TOPDIR)/tools
 
 RM = echo
 
-SUBDIRS	:= kernel lib bin
+SUBDIRS	:= boot kernel lib bin
 
-TARGET	= stupid.iso stupid.tar.gz
+TARGET	= stupid.tar.gz
+ifneq ($(OS),Windows_NT)
+TARGET	+= stupid.iso
+endif
 
 .PHONY: all
 all: $(TARGET)
