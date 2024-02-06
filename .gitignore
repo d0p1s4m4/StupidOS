@@ -24,3 +24,5 @@ a.out
 /bx_enh_dbg.ini
 bochsrc.bxrc
 /tmp
+*.tar.gz
+*.sys

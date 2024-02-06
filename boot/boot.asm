@@ -5,7 +5,7 @@
         nop
 
         ; Boot Record
-OEM_identifier      db 'STUPID '
+OEM_identifier      db 'STUPID  '
 bytes_per_sector    dw 512
 sectors_per_cluster db 1
 reserved_sectors    dw 1
@@ -20,11 +20,11 @@ hidden_sectors      dd 0
 large_sector_count  dd 0
 
         ; Extended Boot Record
-drive_number db 0
-reserved     db 0x90
+drive_number db 0x0
+reserved     db 0x0
 signature    db 0x29   ; 0x28 or 0x29
 volume_id    dd 0xB00B135 ; hope mine will grow :'(
-volume_label db 'StupidOS   '
+volume_label db 'Stupid Boot'
 system_id    db 'FAT12  '
 
 
