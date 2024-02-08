@@ -1,4 +1,5 @@
-
+CR   = 0x0D
+LF   = 0x0A
 ; -------- Address ----------
 STAGE0_BASE    = 0x7C00
 STAGE1_BASE    = 0x1000

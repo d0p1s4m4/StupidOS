@@ -1,17 +1,24 @@
 AS = fasm
 RM = rm
 
-TARGET = bootcode.bin
+TARGET = bootsector.bin stpdboot.sys
 
-SRCS	= boot.asm \
+STAGE0_SRCS	= boot0.asm \
+			const.inc \
+			fat12.inc
+
+STAGE1_SRCS	= boot1.asm \
 			const.inc \
 			a20.inc
 
 .PHONY: all
 all: $(TARGET)
 
-$(TARGET): $(SRCS)
-	$(AS) boot.asm $@
+bootsector.bin: $(STAGE0_SRCS)
+	$(AS) boot0.asm $@
+
+stpdboot.sys: $(STAGE1_SRCS)
+	$(AS) boot1.asm $@
 
 .PHONY: clean
 clean:

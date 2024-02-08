@@ -32,7 +32,11 @@ stupid.tar.gz: $(SUBDIRS)
 
 .PHONY: floppy_boot.img
 floppy_boot.img:
-	@ echo
+	dd if=/dev/zero of=$@ bs=512 count=1440
+	mformat -C -f 1440 -i $@
+	dd if=boot/bootsector.bin of=$@ conv=notrunc
+	mcopy -i $@ boot/stpdboot.sys ::/STPDBOOT.SYS
+	mcopy -i $@ kernel/vmstupid ::/VMSTUPID.SYS
 
 .PHONY: clean
 clean: $(SUBDIRS)
