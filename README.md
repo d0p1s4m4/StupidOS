@@ -3,8 +3,9 @@
 # StupidOS
 
 [Website](https://stupidos.d0p1.eu)
-[![GitHub](https://img.shields.io/github/license/d0p1s4m4/stupidos?logoColor=white&style=flat-square)](LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/d0p1s4m4/stupidos?style=flat-square)](https://github.com/d0p1s4m4/StupidOS/issues)
+[![License](https://img.shields.io/github/license/d0p1s4m4/stupidos?logoColor=white&style=flat-square)](LICENSE)
+[![Issues](https://img.shields.io/gitea/issues/open/d0p1/StupidOS?gitea_url=https%3A%2F%2Fgit.cute.engineering&style=flat-square)
+](https://git.cute.engineering/d0p1/StupidOS/issues)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/d0p1s4m4?style=flat-square)](https://github.com/sponsors/d0p1s4m4)
 
 </div>
