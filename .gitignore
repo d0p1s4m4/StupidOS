@@ -2,6 +2,7 @@
 *.img
 *.bin
 *.iso
+*.exe
 *~
 \#*\#
 
@@ -11,7 +12,7 @@
 vmstupid
 vmstupid-dbg
 
-
+/tools/fat
 /sysroot
 
 log.txt

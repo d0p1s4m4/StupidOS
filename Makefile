@@ -1,14 +1,22 @@
+.EXPORT_ALL_VARIABLES:
+
 TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SYSROOTDIR := $(TOPDIR)/sysroot
 TOOLSDIR   := $(TOPDIR)/tools
 
 RM = echo
 
-SUBDIRS	:= boot kernel lib bin
+MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
+MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
+
+SUBDIRS	:= tools boot kernel lib bin
 
 TARGET	= stupid.tar.gz floppy_boot.img
 ifneq ($(OS),Windows_NT)
-TARGET	+= stupid.iso
+EXEXT	=
+TARGET	+= stupid.iso stdupid.hdd
+else
+EXEXT	= .exe
 endif
 
 .PHONY: all
@@ -26,17 +34,32 @@ $(SUBDIRS):
 stupid.iso: $(SUBDIRS)
 	$(TOPDIR)/tools/create-iso $@ sysroot
 
+.PHONY: stupid.hdd
+stupid.hdd: $(SUBDIRS)
+	@echo ""
+
 .PHONY: stupid.tar.gz
 stupid.tar.gz: $(SUBDIRS)
 	tar -czvf $@ sysroot
 
 .PHONY: floppy_boot.img
-floppy_boot.img:
+floppy_boot.img: $(SUBDIRS)
 	dd if=/dev/zero of=$@ bs=512 count=1440
 	mformat -C -f 1440 -i $@
 	dd if=boot/bootsector.bin of=$@ conv=notrunc
 	mcopy -i $@ boot/stpdboot.sys ::/STPDBOOT.SYS
-	mcopy -i $@ kernel/vmstupid ::/VMSTUPID.SYS
+	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
+
+.PHONY: run
+run: all
+	qemu-system-i386 \
+		-rtc base=localtime \
+		-drive file=floppy_boot.img,if=none,format=raw,id=boot \
+		-drive file=fat:rw:./sysroot,if=none,id=hdd \
+		-device floppy,drive=boot \
+		-device ide-hd,drive=hdd \
+		-global isa-fdc.bootindexA=0 \
+		-serial mon:stdio
 
 .PHONY: clean
 clean: $(SUBDIRS)
