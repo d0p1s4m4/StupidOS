@@ -2,11 +2,9 @@ AS	= fasm
 RM	= rm -f
 INSTALL = install
 
-KERNEL	= vmstupid
+KERNEL	= vmstupid.sys
 SRCS	= kernel.asm \
 			const.inc \
-			boot/multiboot.inc \
-			boot/boot.inc \
 			mm/mm.inc
 
 .PHONY: all

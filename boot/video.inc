@@ -1,0 +1,3 @@
+video_setup:
+	ret
+

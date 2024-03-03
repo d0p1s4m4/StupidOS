@@ -1,6 +1,9 @@
-        INCLUDE 'boot/boot.inc'
+	INCLUDE 'const.inc'
 
-        ORG $ + KBASE
+        ORG KBASE
+	USE32
+
+	jmp kmain
 
         INCLUDE 'mm/mm.inc'
 

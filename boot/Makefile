@@ -9,7 +9,8 @@ STAGE0_SRCS	= boot0.asm \
 
 STAGE1_SRCS	= boot1.asm \
 			const.inc \
-			a20.inc
+			a20.inc \
+			multiboot.inc
 
 .PHONY: all
 all: $(TARGET)
@@ -27,3 +28,5 @@ clean:
 .PHONY: install
 install: $(TARGET)
 	@ mkdir -p $(DESTDIR)
+	install stpdboot.sys $(DESTDIR)
+
