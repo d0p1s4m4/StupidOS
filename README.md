@@ -20,7 +20,7 @@ Nowaday, all Software are overengineered bloatware. So let's try to keep things 
 
 ```
 $ sudo apt install build-essential fasm mtools
-$ git clone git@github.com:d0p1s4m4/StupidOS.git
+$ git clone https://git.cute.engineering/d0p1/StupidOS.git
 $ cd StupidOS
 $ make
 ```
