@@ -1,10 +1,11 @@
 MULTIBOOT_HDR_MAGIC = 0x1BADB002
 MULTIBOOT_MAGIC     = 0x2BADB002
 
-MULTIBOOT_HDR_ALIGN   = 0x1
-MULTIBOOT_HDR_MEMINFO = 0x2
-MULTIBOOT_HDR_VIDEO   = 0x4
-MULTIBOOT_FLAGS       = MULTIBOOT_HDR_ALIGN or MULTIBOOT_HDR_MEMINFO or MULTIBOOT_HDR_VIDEO
+MULTIBOOT_HDR_ALIGN       = 0x1
+MULTIBOOT_HDR_MEMINFO     = 0x2
+MULTIBOOT_HDR_VIDEO       = 0x4
+MULTIBOOT_HDR_AOUT_KLUDGE = 0x10000
+MULTIBOOT_FLAGS = MULTIBOOT_HDR_ALIGN or MULTIBOOT_HDR_MEMINFO or MULTIBOOT_HDR_VIDEO or MULTIBOOT_HDR_AOUT_KLUDGE
 
 struc MultibootHeader addr
 {
@@ -15,8 +16,8 @@ struc MultibootHeader addr
         ; address fields (we'll just skip them)
         .header_addr   dd addr
         .load_addr     dd STAGE1_BASE
-        .load_end_addr dd _edata - STAGE1_BASE
-        .bss_end_addr  dd _end - STAGE1_BASE
+        .load_end_addr dd _edata
+        .bss_end_addr  dd _end
         .entry_addr    dd _start
 
         ; Video mode

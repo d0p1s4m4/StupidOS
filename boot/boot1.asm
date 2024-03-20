@@ -1,51 +1,54 @@
 	INCLUDE 'const.inc'
-        INCLUDE 'multiboot.inc'
+	INCLUDE 'multiboot.inc'
 
-        ORG STAGE1_BASE
-        USE16
+	ORG STAGE1_BASE
+	USE32
 
 	jmp _start
 
-	mb_header MultibootHeader mb_header
+	ALIGN 4
+multiboot_header:
+	mb_header MultibootHeader multiboot_header
 
 _start:
-        cmp eax, MULTIBOOT_MAGIC
-        je .multiboot
+	cmp eax, MULTIBOOT_MAGIC
+	je .multiboot
 
+	USE16
 	;; non multiboot process
-        push cs
-        pop ds
+	push cs
+	pop ds
 
-        mov si, msg_stage2
-        call bios_print
+	mov si, msg_stage2
+	call bios_print
 
-        call a20_enable
-        jc .error_a20
+	call a20_enable
+	jc .error_a20
 
-        ; detect memory
-        call memory_get_map
-        jc .error_memory
-        xchg bx, bx
+    ; detect memory
+    call memory_get_map
+    jc .error_memory
+    xchg bx, bx
 
 	call video_setup
 
 .multiboot:
-        jmp .hang
+	jmp .hang
 
 .error_memory:
-        mov si, msg_error_memory
-        jmp .error
+	mov si, msg_error_memory
+	jmp .error
 .error_a20:
-        mov si, msg_error_a20
+	mov si, msg_error_a20
 .error:
-        call bios_print
+	call bios_print
 .hang:
-        hlt
-        jmp $
+	hlt
+	jmp $
 
-        INCLUDE 'a20.inc'
-        INCLUDE 'utils.inc'
-        INCLUDE 'memory.inc'
+	INCLUDE 'a20.inc'
+	INCLUDE 'utils.inc'
+	INCLUDE 'memory.inc'
 	INCLUDE 'video.inc'
 
 msg_stage2       db "StupidOS Bootloader (Stage 1)", CR, LF, 0
@@ -59,7 +62,7 @@ bi_screen_height:	dw 0
 
 _edata:
 
-        ; BSS
-        rb 0x4000
+	; BSS
+	rb 0x4000
 
 _end:

@@ -14,7 +14,7 @@ SUBDIRS	:= tools boot kernel lib bin
 TARGET	= stupid.tar.gz floppy_boot.img
 ifneq ($(OS),Windows_NT)
 EXEXT	=
-TARGET	+= stupid.iso stdupid.hdd
+TARGET	+= stupid.iso stupid.hdd
 else
 EXEXT	= .exe
 endif
