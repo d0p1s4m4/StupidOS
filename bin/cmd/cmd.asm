@@ -1,8 +1,11 @@
-        format ELF
-        entry start
+	format COFF
 
-        include 'builtins.inc'
+	section '.text' code
 
-start:
+	public main
+main:
+	int 0x2A
 
-        int 0x2A
+	section '.data' data
+
+	INCLUDE 'builtins.inc'

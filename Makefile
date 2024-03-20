@@ -9,7 +9,7 @@ RM = echo
 MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
 
-SUBDIRS	:= tools boot kernel lib bin
+SUBDIRS	:= tools include boot kernel lib bin
 
 TARGET	= stupid.tar.gz floppy_boot.img
 ifneq ($(OS),Windows_NT)

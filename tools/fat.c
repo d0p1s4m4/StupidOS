@@ -189,7 +189,7 @@ usage(int retcode)
 static void
 version(void)
 {
-  printf("%S commit %s\n", prg_name, MK_COMMIT);
+  printf("%s commit %s\n", prg_name, MK_COMMIT);
   exit(EXIT_SUCCESS);
 }
 

@@ -13,6 +13,7 @@ vmstupid
 vmstupid-dbg
 
 /tools/fat
+/tools/coff-ld
 /sysroot
 
 log.txt

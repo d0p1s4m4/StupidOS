@@ -2,6 +2,8 @@ SUBDIRS = cmd
 
 TOPGOALS = all clean install
 
+SUBDIRS = cmd
+
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
 	@echo "📁 bin/$@"

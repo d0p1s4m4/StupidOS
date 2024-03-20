@@ -1,18 +1,18 @@
 	INCLUDE 'const.inc'
 
-        ORG KBASE
+	ORG KBASE
 	USE32
 
 	jmp kmain
 
-        INCLUDE 'mm/mm.inc'
+	INCLUDE 'mm/mm.inc'
 
 kmain:
-       nop
+	nop
 
 _edata:
 
-        ; BSS
-        rb 0x4000
+	; BSS
+	rb 0x4000
 
 _end:

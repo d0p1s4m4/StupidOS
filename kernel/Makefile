@@ -22,4 +22,4 @@ install: $(KERNEL)
 	@ mkdir -p $(DESTDIR)
 	install $< $(DESTDIR)
 
-.PHONY: all clean
+.PHONY: all clean install

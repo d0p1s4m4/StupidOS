@@ -1,5 +1,6 @@
 all:
+	fasm cmd.asm
 
 clean:
 
-install:
+install: all
