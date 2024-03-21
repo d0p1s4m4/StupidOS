@@ -57,7 +57,7 @@ typedef struct scnhdr
 	uint16_t s_nreloc;
 	uint16_t s_nlnno;
 	int32_t s_flags;
-} SCNHDR;
+} __attribute__((packed)) SCNHDR;
 
 # define SCNHSZ sizeof(SCNHDR)
 
@@ -79,7 +79,7 @@ typedef struct reloc
 	uint32_t r_vaddr;
 	uint32_t r_symndx;
 	uint16_t r_type;
-} RELOC;
+} __attribute__((packed)) RELOC;
 # define RELSZ 10
 
 # define R_ABS     0x000
@@ -96,8 +96,25 @@ typedef struct lineno
 		uint32_t l_paddr;
 	} l_addr;
 	uint16_t l_lnno;
-} LINENO;
-
+} __attribute__((packed)) LINENO;
 # define LINESZ 6
+
+typedef struct sym
+{
+	uint8_t n_name[8];
+	int32_t n_value;
+	int16_t n_scnum;
+	uint16_t n_type;
+	uint8_t n_sclass;
+	uint8_t n_numaux;
+} __attribute__((packed)) SYM;
+# define SYMSZ 18
+
+# define N_UNDEF (0x0)
+# define N_ABS   (-0x1)
+# define N_DEBUG (-0x2)
+
+# define C_EXT  0x2
+# define C_STAT 0x3
 
 #endif /* !COFF_H */

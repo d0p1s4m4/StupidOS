@@ -1,0 +1,69 @@
+#+TITLE: Common Object File Format (COFF)
+
+** COFF File Structure
+
+#+begin_src
+         +-----------------------+
+         |                       |
+         | File Header           |
+         |                       |
+         +-----------------------+----
+         |                       |    \
+         | Optional File Header  |    | Only for executable file
+         |    (a.out header)     |    /
+         +-----------------------+----
+         |                       |    \
+         | Section Header 1      |    |
+         |                       |    |
+         +-----------------------+    |
+         .                       .    | Section Headers
+         .                       .    |
+         +-----------------------+    |
+         |                       |    |
+         | Section Header n      |    |
+         |                       |    /
+         +-----------------------+----
+         |                       |    \
+         | Section 1 Raw Data    |    |
+         |                       |    |
+         +-----------------------+    |
+         .                       .    | Raw data
+         .                       .    | (Executable Code and Initialized Data)
+         +-----------------------+    |
+         |                       |    |
+         | Section n Raw Data    |    |
+         |                       |    /
+         +-----------------------+----
+         |                       |    \
+         | Section 1 Relocation  |    |
+         |      Information      |    |
+         +-----------------------+    |
+         .                       .    | Relocation
+         .                       .    | Information
+         +-----------------------+    |
+         |                       |    |
+         | Section n Relocation  |    |
+         |      Information      |    /
+         +-----------------------+----
+         |                       |
+         | Symbol Table          |
+         |                       |
+         +-----------------------+
+         |                       |
+         | String Table          |
+         |                       |
+         +-----------------------+
+
+#+end_src
+
+*** File Header
+
+| Type     | Description                     |
+|----------+---------------------------------|
+| uint16_t | Version ID (~0x014c~ for i386)  |
+| uint16_t | Number of section headers       |
+| uint32_t | Timestamp                       |
+| uint32_t | Symtab address                  |
+| uint32_t | Number of entries in the symtab |
+| uint16_t | Optional header size            |
+| uint16_t | Flags                           |

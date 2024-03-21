@@ -5,6 +5,11 @@
 static char *prg_name;
 static char *outfile = "a.out";
 
+typedef struct section
+{
+} Section;
+
+
 static void
 usage(int retcode)
 {
@@ -38,7 +43,9 @@ main(int argc, char **argv)
 	FILE *fp;
 	FILHDR fhdr;
 	SCNHDR shdr;
-	AOUTHDR aout;
+	uint8_t *buffer;
+    SYM entry;
+	int idx;
 
 	prg_name = argv[0];
 
@@ -82,12 +89,31 @@ main(int argc, char **argv)
 
 	if (fhdr.f_opthdr > 0)
 	{
-		fread(&aout, 1, AOUTHSZ, fp);
+		buffer = malloc(fhdr.f_opthdr);
+		fread(buffer, 1, fhdr.f_opthdr, fp);
+		free(buffer);
 	}
 
-	fread(&shdr, 1, SCNHSZ, fp);
-	printf("name: %c%c%c%c%c%c%c%c\n", shdr.s_name[0], shdr.s_name[1],shdr.s_name[2],shdr.s_name[3],shdr.s_name[4],shdr.s_name[5],shdr.s_name[6],shdr.s_name[7]);
-	printf("flags: 0x%x\n", shdr.s_flags);
+	for (idx = 0; idx < fhdr.f_nscns; idx++)
+	{
+		fread(&shdr, 1, SCNHSZ, fp);
+		printf("Section: %c%c%c%c%c%c%c%c\n", shdr.s_name[0], shdr.s_name[1],shdr.s_name[2],shdr.s_name[3],shdr.s_name[4],shdr.s_name[5],shdr.s_name[6],shdr.s_name[7]);
+		printf("\tflags: 0x%x\n", shdr.s_flags);
+		printf("\tsize: %d\n", shdr.s_size);
+	}
+
+	fseek(fp, fhdr.f_symptr, SEEK_SET);
+
+	for (idx = 0; idx < fhdr.f_nsyms; idx++)
+	{
+		fread(&entry, 1, SYMSZ, fp);
+		printf("name: %c%c%c%c%c%c%c%c\n", entry.n_name[0], entry.n_name[1],entry.n_name[2],entry.n_name[3],entry.n_name[4],entry.n_name[5],entry.n_name[6],entry.n_name[7]);
+		printf("\tvalue: %d\n", entry.n_value);
+		printf("\tscnum: %hd\n", entry.n_scnum);
+		printf("\ttype: %hd\n", entry.n_type);
+		printf("\tsclass: %d\n", entry.n_sclass);
+		printf("\tnumaux: %d\n", entry.n_numaux);
+	}
 
 	fclose(fp);
 
