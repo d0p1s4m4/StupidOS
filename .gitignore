@@ -28,3 +28,5 @@ bochsrc.bxrc
 /tmp
 *.tar.gz
 *.sys
+*.obj
+*.efi
