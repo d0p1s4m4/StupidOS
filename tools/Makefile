@@ -17,3 +17,6 @@ coff-ld$(EXEXT): coff-ld.c
 
 .PHONY: install
 install: $(TARGET)
+
+.PHONY: clean
+clean:

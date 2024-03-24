@@ -4,12 +4,13 @@ TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SYSROOTDIR := $(TOPDIR)/sysroot
 TOOLSDIR   := $(TOPDIR)/tools
 
-RM = echo
+AS = fasm
+RM = rm -f
 
 MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
 
-SUBDIRS	:= tools include boot kernel lib bin
+SUBDIRS	:= external tools include boot kernel lib bin
 
 TARGET	= stupid.tar.gz floppy_boot.img
 ifneq ($(OS),Windows_NT)
@@ -28,7 +29,7 @@ clean: GOAL:=clean
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
 	@echo "📁 $@"
-	DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(GOAL)
+	@DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(GOAL)
 
 .PHONY: stupid.iso
 stupid.iso: $(SUBDIRS)
@@ -46,8 +47,8 @@ stupid.tar.gz: $(SUBDIRS)
 floppy_boot.img: $(SUBDIRS)
 	dd if=/dev/zero of=$@ bs=512 count=1440
 	mformat -C -f 1440 -i $@
-	dd if=boot/bootsector.bin of=$@ conv=notrunc
-	mcopy -i $@ boot/stpdboot.sys ::/STPDBOOT.SYS
+	dd if=boot/bootsect/bootsector.bin of=$@ conv=notrunc
+	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
 	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
 
 .PHONY: run
@@ -63,4 +64,4 @@ run: all
 
 .PHONY: clean
 clean: $(SUBDIRS)
-	$(RM) $(TARGET) $(SYSROOTDIR)
+	$(RM) $(TARGET) 

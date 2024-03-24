@@ -1,12 +1,14 @@
-	INCLUDE 'const.inc'
-	INCLUDE 'multiboot.inc'
+	format binary
 
-	ORG STAGE1_BASE
-	USE32
+	include '../common/const.inc'
+	include 'multiboot.inc'
+
+	org LOADER_BASE
+	use32
 
 	jmp _start
 
-	ALIGN 4
+	align 4
 multiboot_header:
 	mb_header MultibootHeader multiboot_header
 
@@ -14,7 +16,7 @@ _start:
 	cmp eax, MULTIBOOT_MAGIC
 	je .multiboot
 
-	USE16
+	use16
 	;; non multiboot process
 	push cs
 	pop ds
@@ -46,15 +48,14 @@ _start:
 	hlt
 	jmp $
 
-	INCLUDE 'a20.inc'
-	INCLUDE 'utils.inc'
-	INCLUDE 'memory.inc'
-	INCLUDE 'video.inc'
+	include 'a20.inc'
+	include '../common/bios.inc'
+	include 'memory.inc'
+	include 'video.inc'
 
 msg_stage2       db "StupidOS Bootloader (Stage 1)", CR, LF, 0
 msg_error_a20    db "ERROR: can't enable a20 line", CR, LF, 0
 msg_error_memory db "ERROR: can't detect available memory", CR, LF, 0
-
 
 	;;
 bi_screen_width:	dw 0

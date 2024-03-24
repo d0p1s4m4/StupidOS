@@ -3,6 +3,8 @@
 
 	section '.text' code executable readable
 
+	include '../common/const.inc'
+	include '../common/macro.inc'
 	include 'uefi.inc'
 
 	; ESP     => return address
@@ -29,14 +31,15 @@ efimain:
 
 	jmp $
 
+	xor eax, eax
 	ret
-
 
 	section '.reloc' fixups data discardable
 
 	section '.data' data readable writeable
 
-hello_msg du 'StupidOS EFI Bootloader', 13, 10, 0
+hello_msg   du 'StupidOS EFI Bootloader', 13, 10, 0
+kernel_file du 'vmstupid.sys', 0
 
 handle       dd ?
 system_table dd ? 

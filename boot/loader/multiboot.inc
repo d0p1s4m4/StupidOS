@@ -15,7 +15,7 @@ struc MultibootHeader addr
 
         ; address fields (we'll just skip them)
         .header_addr   dd addr
-        .load_addr     dd STAGE1_BASE
+        .load_addr     dd LOADER_BASE
         .load_end_addr dd _edata
         .bss_end_addr  dd _end
         .entry_addr    dd _start
@@ -106,3 +106,11 @@ MULTIBOOT_MEMORY_RESERVED  = 0x2
 MULTIBOOT_MEMORY_ACPI      = 0x3
 MULTIBOOT_MEMORY_NVS       = 0x4
 MULTIBOOT_MEMORY_BADPARAM  = 0x5
+
+struc MultibootModule
+{
+	.mod_start dd ?
+	.mod_end   dd ?
+	.cmdline   dd ?
+	.pad       dd ?
+}
