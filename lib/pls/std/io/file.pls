@@ -1,3 +1,0 @@
-CLASS File;
-
-END;

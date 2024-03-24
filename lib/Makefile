@@ -1,11 +1,11 @@
-SUBDIRS = crypto
+SUBDIRS = csu crypto
 
 TOPGOALS = all clean install
 
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
 	@echo "📁 lib/$@"
-	@DESTDIR=$(DESTDIR)/lib $(MAKE) -C $@ $(MAKECMDGOALS)
+	@DESTDIR=$(DESTDIR)/usr/lib $(MAKE) -C $@ $(MAKECMDGOALS)
 
 .PHONY: $(TOPGOALS)
 $(TOPGOALS): $(SUBDIRS)

@@ -1,16 +1,12 @@
-TARGET	= libcrypto.a
-OBJS	= hash/sha256.o
+TARGET	= crt0.o
 
 all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(AR) rcs $@ $^
 
 %.o: %.asm
 	$(AS) $< $@
 
 clean:
-	$(RM) $(TARGET) $(OBJS)
+	$(RM) $(TARGET)
 
 install: $(TARGET)
 	@ mkdir -p $(DESTDIR)

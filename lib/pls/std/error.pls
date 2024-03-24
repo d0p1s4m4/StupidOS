@@ -1,5 +1,0 @@
-CLASS Error;
-
-MESSAGE 
-
-END;
