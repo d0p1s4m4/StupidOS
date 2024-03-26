@@ -8,7 +8,7 @@ clean:
 
 .PHONY: install
 install: $(INCS)
-	@ mkdir -p $(INCDIR)
-	install $< $(INCDIR)
+	@ mkdir -p $(DESTDIR)$(INCDIR)
+	install $< $(DESTDIR)$(INCDIR)
 
 .PHONY: all clean install

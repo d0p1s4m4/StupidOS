@@ -21,6 +21,23 @@ struc INT32
 	. dd ?
 }
 
+struc UINT16
+{
+	align 2
+	. dw ?
+}
+
+struc INT16
+{
+	align 2
+	. dw ?
+}
+
+struc UINT8
+{
+	. db ?
+}
+
 struc UINTN
 {
 	align 4
@@ -38,6 +55,30 @@ struc UINTPTR
 	align 4
 	. dd ?
 }
+
+struc EFI_GUID 
+{
+	.Data1 dd ?
+	.Data2 dw ?
+	.Data3 dw ?
+	.Data4 db 8 dup(?)
+}
+
+struc EFI_TIME
+{
+	.Year       UINT16
+	.Month      UINT8
+	.Day        UINT8
+	.Hour       UINT8
+	.Minute     UINT8
+	.Second     UINT8
+	.Pad1       UINT8
+	.Nanosecond UINT32
+	.TimeZone   INT16
+	.Daylight   UINT8
+	.Pad2       UINT8
+}
+defn EFI_TIME
 
 struc EFI_TABLE_HEADER
 {
@@ -112,8 +153,50 @@ struc EFI_RUNTIMES_SERVICES
 }
 
 	;; ========================================================================
+	;; EFI_LOADED_IMAGE_PROTOCOL
+	;; ========================================================================
+EFI_LOADED_IMAGE_PROTOCOL_GUID equ 0x5B1B31A1, 0x9562, 0x11d2, 0x8E, 0x3F, 0x00, 0xA0, 0xC9, 0x69, 0x72, 0x3D
+EFI_LOADED_IMAGE_PROTOCOL_REVISION = 0x1000
+
+struc EFI_LOADED_IMAGE_PROTOCOL
+{
+	.Revision       UINT32
+	.ParentHandle   EFI_HANDLE
+	.SystemTable    UINTPTR
+
+	.DeviceHandle   EFI_HANDLE
+	.FilePath       UINTPTR
+	.Reserved       UINTPTR
+
+	.LoadOptionsSize UINT32
+	.LoadOptions     UINTPTR
+
+	.ImageBase       UINTPTR
+	.ImageSize       UINT64
+	.ImageCodeType   UINT32
+	.ImageDataType   UINT32
+	.Unload          UINTPTR
+}
+defn EFI_LOADED_IMAGE_PROTOCOL
+
+	;; ========================================================================
+	;; EFI_DEVICE_PATH_PROTOCOL
+	;; ========================================================================
+EFI_DEVICE_PATH_PROTOCOL_GUID equ 0x09576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0x69, 0x72, 0x3b
+
+struc EFI_DEVICE_PATH_PROTOCOL
+{
+	.Type    UINT8
+	.SubType UINT8
+	.Length  db 2 dup(?)
+}
+defn EFI_DEVICE_PATH_PROTOCOL
+
+	;; ========================================================================
 	;; EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
 	;; ========================================================================
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_GUID equ 0x387477c2, 0x69c7, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
+
 struc EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
 {
 	.Reset             UINTPTR
@@ -138,3 +221,105 @@ struc SIMPLE_TEXT_OUTPUT_MODE
 	.CursorRow     INT32
 	.CursorVisible BOOLEAN
 }
+
+EFI_BLACK        = 0x00
+EFI_BLUE         = 0x01
+EFI_GREEN        = 0x02
+EFI_CYAN         = 0x03
+EFI_RED          = 0x04
+EFI_MAGENTA      = 0x05
+EFI_BROWN        = 0x06
+EFI_LIGHTGRAY    = 0x07
+EFI_BRIGHT       = 0x08
+EFI_DARKGRAY     = (EFI_BLACK or EFI_BRIGHT)
+EFI_LIGHTBLUE    = 0x09
+EFI_LIGHTGREEN   = 0x0A
+EFI_LIGHTCYAN    = 0x0B
+EFI_LIGHTRED     = 0x0C
+EFI_LIGHTMAGENTA = 0x0D
+EFI_YELLOW       = 0x0E
+EFI_WHITE        = 0x0F
+
+EFI_BACKGROUND_BLACK     = 0x00
+EFI_BACKGROUND_BLUE      = 0x10
+EFI_BACKGROUND_GREEN     = 0x20
+EFI_BACKGROUND_CYAN      = 0x30
+EFI_BACKGROUND_RED       = 0x40
+EFI_BACKGROUND_MAGENTA   = 0x50
+EFI_BACKGROUND_BROWN     = 0x60
+EFI_BACKGROUND_LIGHTGRAY = 0x70
+
+	;; ========================================================================
+	;; EFI_LOAD_FILE_PROTOCOL
+	;; ========================================================================
+EFI_LOAD_FILE_PROTOCOL_GUID equ 0x56ec3091, 0x954c, 0x11d2, 0x8e, 0x3f, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
+
+struc EFI_LOAD_FILE_PROTOCOL
+{
+	.LoadFile UINTPTR
+}
+defn EFI_LOAD_FILE_PROTOCOL
+
+
+	;; ========================================================================
+	;; EFI_LOAD_FILE2_PROTOCOL
+	;; ========================================================================
+EFI_LOAD_FILE2_PROTOCOL_GUID equ 0x4006c0c1, 0xfcb3, 0x403e, 0x99, 0x6d, 0x4a, 0x6c, 0x87, 0x24, 0xe0, 0x6d
+
+EFI_LOAD_FILE2_PROTOCOL equ EFI_LOAD_FILE_PROTOCOL
+
+	;; ========================================================================
+	;; EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
+	;; ========================================================================
+EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID equ 0x0964e5b22, 0x6459, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
+
+EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_REVISION = 0x00010000
+
+struc EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
+{
+	.Revision   UINT64
+	.OpenVolume UINTPTR
+}
+defn EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
+
+	;; ========================================================================
+	;; EFI_FILE_PROTOCOL
+	;; ========================================================================
+
+EFI_FILE_PROTOCOL_REVISION        = 0x00010000
+EFI_FILE_PROTOCOL_REVISION2       = 0x00020000
+EFI_FILE_PROTOCOL_LATEST_REVISION = EFI_FILE_PROTOCOL_REVISION2
+
+struc EFI_FILE_PROTOCOL
+{
+	.Revision    UINT64
+	.Open        UINTPTR
+	.Close       UINTPTR
+	.Delete      UINTPTR
+	.Read        UINTPTR
+	.Write       UINTPTR
+	.GetPosition UINTPTR
+	.SetPosition UINTPTR
+	.GetInfo     UINTPTR
+	.SetInfo     UINTPTR
+	.Flush       UINTPTR
+	.OpenEx      UINTPTR
+	.ReadEx      UINTPTR
+	.WriteEx     UINTPTR
+	.FlushEx     UINTPTR
+}
+defn EFI_FILE_PROTOCOL
+
+	; Open Mode
+EFI_FILE_MODE_READ   = 0x0000000000000001
+EFI_FILE_MODE_WRITE  = 0x0000000000000002
+EFI_FILE_MODE_CREATE = 0x8000000000000000
+
+	; File Attributes
+EFI_FILE_READ_ONLY  = 0x0000000000000001
+EFI_FILE_HIDDEN     = 0x0000000000000002
+EFI_FILE_SYSTEM     = 0x0000000000000004
+EFI_FILE_RESERVED   = 0x0000000000000008
+EFI_FILE_DIRECTORY  = 0x0000000000000010
+EFI_FILE_ARCHIVE    = 0x0000000000000020
+EFI_FILE_VALID_ATTR = 0x0000000000000037 

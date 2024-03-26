@@ -56,6 +56,9 @@ floppy_boot.img: $(SUBDIRS)
 	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
 	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
 
+OVMF32.fd:
+	wget 'https://retrage.github.io/edk2-nightly/bin/DEBUGIa32_OVMF.fd' -O $@
+
 .PHONY: run
 run: all
 	qemu-system-i386 \
@@ -66,6 +69,15 @@ run: all
 		-device ide-hd,drive=hdd \
 		-global isa-fdc.bootindexA=0 \
 		-serial mon:stdio
+	
+.PHONY: run-efi
+run-efi: all OVMF32.fd
+	qemu-system-i386 \
+		-bios OVMF32.fd \
+		-rtc base=localtime \
+		-drive file=fat:rw:./sysroot,if=none,id=hdd \
+		-device ide-hd,drive=hdd \
+		-serial stdio
 
 .PHONY: clean
 clean: $(SUBDIRS)
