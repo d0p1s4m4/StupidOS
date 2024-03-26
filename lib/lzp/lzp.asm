@@ -1,6 +1,9 @@
-	;; Lempel-Ziv + Prediction (a fast, efficient, and memory-use
-	;; conservative compression algorithm)
-	;; (paper: https://ieeexplore.ieee.org/document/488353)
+	;; File: lzp.asm
+
+	
+	; Lempel-Ziv + Prediction (a fast, efficient, and memory-use
+	; conservative compression algorithm)
+	; (paper: https://ieeexplore.ieee.org/document/488353)
 	format COFF
 	use32
 
@@ -15,39 +18,44 @@
 
 	section '.code' code
 
-	;; xor hash, hash
-	;; xor mask, mask
-	;; j = 1
-	;; while (insz > 0)
-	;; {
-	;;    if (ecx == 8)
-	;;    {
-	;;       mov [out], mask
-	;;       xor ecx, ecx
-	;;       xor mask, mask
-	;;       j = 1;
-	;;    }
-	;;    c = in[inpos++]
-	;;    if (c == table[hash])
-	;;    {
-	;;        mask |= 1 << ecx
-	;;    }
-	;;    else
-	;;    {
-	;;        table[hash] = c
-	;;        out[j] = c;
-	;;    }
-	;;    HASH(hash, c)
-	;;    ecx++;
-	;; }
+	; xor hash, hash
+	; xor mask, mask
+	; j = 1
+	; while (insz > 0)
+	; {
+	;    if (ecx == 8)
+	;    {
+	;       mov [out], mask
+	;       xor ecx, ecx
+	;       xor mask, mask
+	;       j = 1;
+	;    }
+	;    c = in[inpos++]
+	;    if (c == table[hash])
+	;    {
+	;        mask |= 1 << ecx
+	;    }
+	;    else
+	;    {
+	;        table[hash] = c
+	;        out[j] = c;
+	;    }
+	;    HASH(hash, c)
+	;    ecx++;
+	; }
 
-	;; Function: lzp_compress(void *out, const void *in, int size)
-	;; In:
-	;;     - [esp+8]:  out buffer address (can be null)
-	;;     - [esp+12]:  input buffer address
-	;;     - [esp+16]: size of the input buffer
-	;; Out:
-	;;     - eax: size of compressed data
+	;; Function: lzp_compress
+	;; 
+	;; Parameters:
+	;;
+	;;     [esp+8]  - output buffer (can be NULL)
+	;;     [esp+12] - input buffer
+	;;     [esp+16] - size of the input buffer
+	;;
+	;; Returns:
+	;; 
+	;;     eax - size of compressed data
+	;;
 	param_out   equ [ebp+8]
 	param_in    equ [ebp+12]
 	param_insz  equ [ebp+16]
@@ -105,6 +113,18 @@ lzp_compress:
 	leave
 	ret
 
+	;; Function: lzp_decompress
+	;; 
+	;; Parameters:
+	;;
+	;;     [esp+8]  - output buffer (can be null)
+	;;     [esp+12] - input buffer
+	;;     [esp+16] - size of the input buffer
+	;;
+	;; Returns:
+	;; 
+	;;     eax - size of uncompressed data
+	;;
 lzp_decompress:
 	push ebp
 	mov ebp, esp

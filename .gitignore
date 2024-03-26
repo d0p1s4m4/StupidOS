@@ -30,3 +30,4 @@ bochsrc.bxrc
 *.sys
 *.obj
 *.efi
+*.EFI

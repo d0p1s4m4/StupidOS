@@ -1,16 +1,13 @@
-; file: sha256.s
-; SHA-256 cryptographic hash
-;
-; Implementation is based on <Wikipedia's pseudocode at https://en.wikipedia.org/wiki/SHA-2#Pseudocode>
-;
-; About: CPU compatibility
-; /!\ Only work on *486+* due to bswap for now.
+	;; File: sha256.asm
+	;; SHA-256 cryptographic hash
+
+	; Implementation is based on <Wikipedia's pseudocode at https://en.wikipedia.org/wiki/SHA-2#Pseudocode>
 	format COFF
 	use32
 
 	section '.data' data
-; Constant: K
-; SHA-256 round constants 
+	; Constant: K
+	; SHA-256 round constants 
 K:
 	dd 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5
 	dd 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174
@@ -23,7 +20,7 @@ K:
 
 section '.text' code
 
-	; Function: sha256_compute_block
+	;; Function: sha256_compute_block
 sha256_compute_block:
 	push ebp
 	mov ebp, esp
@@ -31,16 +28,14 @@ sha256_compute_block:
 	leave
 	ret
 
-	; Function: sha256_internal
-	; 
-	; in:
-	;      - state
-	;      - Input buffer
-	;      - Input buffer size
-	;
-	; out:
-	;     none
-	;
+	;; Function: sha256_internal
+	;; 
+	;; Parameters:
+	;;
+	;;     [esp+8]  - state
+	;;     [esp+12] - input buffer
+	;;     [esp+16] - size of the input buffer
+	;;
 sha256_internal:
 	push ebp
 	push edi
@@ -80,16 +75,14 @@ sha256_internal:
 	leave
 	ret
 
-	; Function: sha256
-	; 
-	; in:
-	;      - Output buffer
-	;      - Input buffer
-	;      - Input buffer size
-	;
-	; out:
-	;     none
-	;
+	;; Function: sha256
+	;; 
+	;; Parameters:
+	;;
+	;;     [esp+8]  - output buffer
+	;;     [esp+12] - input buffer
+	;;     [esp+16] - size of the input buffer
+	;;
 	public sha256
 sha256:
 	push ebp

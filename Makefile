@@ -69,7 +69,7 @@ run: all
 		-device ide-hd,drive=hdd \
 		-global isa-fdc.bootindexA=0 \
 		-serial mon:stdio
-	
+
 .PHONY: run-efi
 run-efi: all OVMF32.fd
 	qemu-system-i386 \
@@ -78,6 +78,12 @@ run-efi: all OVMF32.fd
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device ide-hd,drive=hdd \
 		-serial stdio
+
+.PHONY: docs
+docs:
+	@mkdir -p docs/html
+	naturaldocs -p docs/config -img docs/img -xi sysroot -i . -ro -o HTML docs/html
+	cp docs/img/favicon.ico docs/html/
 
 .PHONY: clean
 clean: $(SUBDIRS)

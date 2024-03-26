@@ -1,3 +1,4 @@
+	;; File: loader.asm
 	format binary
 
 	include '../common/const.inc'

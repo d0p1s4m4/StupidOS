@@ -2,9 +2,9 @@ Format: 1.51
 
 
 Title: StupidOS
-SubTitle: Tiny *NIX-like Operating System
+SubTitle: 32-bit Operating System written in x86 assembly.
 
-Footer: Copyright (C) 2023 d0p1
+Footer: Copyright (C) 2024 d0p1
 Timestamp: Updated yyyy/mm/dd
 #   m     - One or two digit month.  January is "1"
 #   mm    - Always two digit month.  January is "01"
@@ -39,119 +39,51 @@ Timestamp: Updated yyyy/mm/dd
 
 
 File: Introduction  (docs/intro.txt)
-Link: Source Code  (https://github.com/d0p1s4m4/StupidOS)
+Link: Source Code  (https://git.cute.engineering/d0p1/StupidOS)
 File: Coding Style  (docs/coding-style.txt)
-File: Building  (building.txt)
 File: FAQ  (docs/faq.txt)
+
+Group: BootLoader  {
+
+   Group: BootSector  {
+
+      File: floppy.asm  (boot/bootsect/floppy.asm)
+      }  # Group: BootSector
+
+   Group: Loader  {
+
+      File: loader.asm  (boot/loader/loader.asm)
+      }  # Group: Loader
+
+   Group: EFI  {
+
+      File: bootia32.asm  (boot/efi/bootia32.asm)
+      }  # Group: EFI
+
+   }  # Group: BootLoader
 
 Group: Kernel  {
 
-   File: Introduction  (kernel/intro.txt)
-
-   Group: boot  {
-
-      File: gdt.s  (kernel/boot/gdt.s)
-      File: head.s  (kernel/boot/head.s)
-      File: idt.s  (kernel/boot/idt.s)
-      }  # Group: boot
-
-   File: kernel.s  (kernel/kernel.s)
-   File: pic.s  (kernel/pic.s)
-
-   Group: dev  {
-
-      Group: AT  {
-
-         File: IBM PC/AT  (kernel/dev/at/intro.txt)
-         File: cmos.s  (kernel/dev/at/cmos.s)
-         File: pit.s  (kernel/dev/at/pit.s)
-         File: serial.s  (kernel/dev/at/serial.s)
-         }  # Group: AT
-
-      }  # Group: dev
-
-   Group: i18n  {
-
-      File: msg_en.s  (kernel/i18n/msg_en.s)
-      }  # Group: i18n
-
-   File: pmm.s  (kernel/pmm.s)
-
-   Group: sys  {
-
-      File: multiboot.inc  (kernel/sys/multiboot.inc)
-
-      Group: i386  {
-
-         File: cpu.inc  (kernel/sys/i386/cpu.inc)
-         File: cpuid.inc  (kernel/sys/i386/cpuid.inc)
-         File: mmu.inc  (kernel/sys/i386/mmu.inc)
-         File: registers.inc  (kernel/sys/i386/registers.inc)
-         }  # Group: i386
-
-      }  # Group: sys
-
-   File: vm.inc  (kernel/vm/vm.inc)
-   File: pmap.s  (kernel/vm/pmap.s)
+   File: kernel.asm  (kernel/kernel.asm)
    }  # Group: Kernel
 
 Group: Lib  {
 
-   Group: Base  {
+   Group: LZP  {
 
-      File: base.inc  (lib/base/base.inc)
-      File: log.s  (lib/base/log.s)
-      }  # Group: Base
+      File: lzp.asm  (lib/lzp/lzp.asm)
+      }  # Group: LZP
 
    Group: Crypto  {
 
-      Group: Hash  {
+      Group: SHA2  {
 
-         File: sha256.s  (lib/crypto/hash/sha256.s)
-         File: keccak.s  (lib/crypto/hash/keccak.s)
-         }  # Group: Hash
-
-      Group: Sign  {
-
-         File: ecdsa.s  (lib/crypto/sign/ecdsa.s)
-         }  # Group: Sign
+         File: sha256.asm  (lib/crypto/sha2/sha256.asm)
+         }  # Group: SHA2
 
       }  # Group: Crypto
 
-   Group: PL/Stupid  {
-
-      Group: Runtime  {
-
-         File: crt0.s  (lib/pls/runtime/crt0.s)
-         }  # Group: Runtime
-
-      }  # Group: PL/Stupid
-
    }  # Group: Lib
-
-Group: Bin  {
-
-   Group: motd  {
-
-      File: main.pls  (bin/motd/main.pls)
-      }  # Group: motd
-
-   }  # Group: Bin
-
-Group: Share  {
-
-   Group: Mk  {
-
-      File: stupid.clean.mk  (share/mk/stupid.clean.mk)
-      File: stupid.kernel.mk  (share/mk/stupid.kernel.mk)
-      File: stupid.lib.mk  (share/mk/stupid.lib.mk)
-      File: stupid.own.mk  (share/mk/stupid.own.mk)
-      File: stupid.prog.mk  (share/mk/stupid.prog.mk)
-      File: stupid.subdir.mk  (share/mk/stupid.subdir.mk)
-      File: stupid.sys.mk  (share/mk/stupid.sys.mk)
-      }  # Group: Mk
-
-   }  # Group: Share
 
 Group: Index  {
 
@@ -159,8 +91,5 @@ Group: Index  {
    Constant Index: Constants
    File Index: Files
    Function Index: Functions
-   Macro Index: Macros
-   Variable Index: Variables
-   Class Index: Classes
    }  # Group: Index
 

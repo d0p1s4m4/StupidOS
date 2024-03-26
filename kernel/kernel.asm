@@ -1,11 +1,12 @@
-	INCLUDE 'const.inc'
+	;; File: kernel.asm
+	include 'const.inc'
 
-	ORG KBASE
-	USE32
+	org KBASE
+	use32
 
 	jmp kmain
 
-	INCLUDE 'mm/mm.inc'
+	include 'mm/mm.inc'
 
 kmain:
 	nop
