@@ -1,5 +1,3 @@
-INCDIR = $(DESTDIR)/usr/include
-
 INCS = coff.h
 
 .PHONY: all

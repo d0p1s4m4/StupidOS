@@ -1,0 +1,2 @@
+	format COFF
+	use32

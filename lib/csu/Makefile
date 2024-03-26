@@ -9,5 +9,5 @@ clean:
 	$(RM) $(TARGET)
 
 install: $(TARGET)
-	@ mkdir -p $(DESTDIR)
-	install $(TARGET) $(DESTDIR)
+	@ mkdir -p $(DESTDIR)$(LIBDIR)
+	install $(TARGET) $(DESTDIR)$(LIBDIR)

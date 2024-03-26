@@ -4,6 +4,11 @@ TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SYSROOTDIR := $(TOPDIR)/sysroot
 TOOLSDIR   := $(TOPDIR)/tools
 
+BINDIR = /bin
+LIBDIR = /usr/lib
+INCDIR = /usr/include
+ASMDIR = /usr/asm
+
 AS = fasm
 RM = rm -f
 
