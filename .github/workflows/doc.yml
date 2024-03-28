@@ -1,24 +1,42 @@
 
 name: Docs
 
-on: [push]
+on:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  test:
+  docs-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-page
+      url: ${{ steps.deployement.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install build-essential naturaldocs
-      - name: Build
+      - name: generate-docs
         run: |
           make docs
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: setup-pages
+        uses: actions/configure-pages@v4
+      - name: upload-artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/html
-          cname: stupidos.d0p1.eu
+          path: './docs/html'
+      - name: deploy-github-page
+        id: deployment
+        uses: actions/deploy-pages@v4
+
 
