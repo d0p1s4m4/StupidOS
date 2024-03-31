@@ -45,6 +45,8 @@ File: FAQ  (docs/faq.txt)
 
 Group: BootLoader  {
 
+	File: Introduction  (boot/intro.txt)
+
    Group: BootSector  {
 
       File: floppy.asm  (boot/bootsect/floppy.asm)
@@ -54,6 +56,12 @@ Group: BootLoader  {
 
       File: loader.asm  (boot/loader/loader.asm)
       }  # Group: Loader
+
+   Group: Common {
+
+      File: bios.inc  (boot/common/bios.inc)
+      }  # Group: Common
+
 
    Group: EFI  {
 

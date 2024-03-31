@@ -1,2 +1,12 @@
 File: Coding Style
 
+About: Assembly
+
+Comments:
+
+	TO BE ADDED
+
+
+About: C
+
+For C related stuff please follow these coding guidelines: <https://style.d0p1.eu>

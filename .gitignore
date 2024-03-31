@@ -31,3 +31,4 @@ bochsrc.bxrc
 *.obj
 *.efi
 *.EFI
+*.fd
