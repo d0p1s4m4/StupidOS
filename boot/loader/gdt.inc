@@ -1,0 +1,18 @@
+
+gdt:
+	; null descriptor
+	dd 0
+	dd 0
+
+	; code descriptor
+	dw 0xFFFF, 0x0000
+	db 0x00, 0x9a, 0xcf, 0x00
+
+	; data descriptor
+	dw 0xFFFF, 0x0000
+	db 0x00, 0x92, 0xcf, 0x00
+.end:
+	
+gdt_ptr:
+	dw gdt.end - gdt - 1
+	dd gdt

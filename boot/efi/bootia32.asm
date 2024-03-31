@@ -1,4 +1,4 @@
-	; File: bootia32.asm
+	;; File: bootia32.asm
 	format PE DLL EFI at 10000000h
 	entry efimain
 
@@ -8,9 +8,17 @@
 	include '../common/macro.inc'
 	include 'uefi.inc'
 
-	; ESP     => return address
-	; ESP + 4 => Handle
-	; ESP + 8 => SysTable
+	;; Function: efimain
+	;;
+	;; Parameters:
+	;;
+	;;     [esp+4] - handle
+	;;     [esp+8] - <EFI_SYSTEM_TABLE>
+	;;
+	;; Returns:
+	;;
+	;;     eax - efi status
+	;;
 efimain:
 	mov eax, [esp+4]
 	mov [handle], eax

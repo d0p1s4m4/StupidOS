@@ -1,3 +1,2 @@
 video_setup:
 	ret
-
