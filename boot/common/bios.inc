@@ -1,6 +1,5 @@
 	;; File: bios.inc
 
-
 	;; Function: bios_print
 	;;
 	;; Parameters:

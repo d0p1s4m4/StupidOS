@@ -3,7 +3,7 @@
 
 # include <stdint.h>
 
-# define CHACHA20_KEY_BYTES 32
+# define CHACHA20_KEY_BYTES   32
 # define CHACHA20_NONCE_BYTES 12
 # define CHACHA20_BLOCK_BYTES 64
 

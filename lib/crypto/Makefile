@@ -2,7 +2,10 @@ TARGET	= libcrypto.a
 OBJS	= sha2/sha256.o sha2/sha512.o \
 			chacha20/chacha20.o
 INCS	= sha2/sha2.h \
-			chacha20/chacha20.h
+			chacha20/chacha20.h \
+			dilithium/dilithium.h \
+			falcon/falcon.h \
+			keccak/keccak.h
 ASMS	= sha2/sha2.inc \
 			chacha20/chacha20.inc
 

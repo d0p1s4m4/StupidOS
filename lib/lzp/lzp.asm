@@ -1,5 +1,4 @@
 	;; File: lzp.asm
-
 	
 	; Lempel-Ziv + Prediction (a fast, efficient, and memory-use
 	; conservative compression algorithm)
@@ -9,10 +8,11 @@
 
 	;; https://hugi.scene.org/online/coding/hugi%2012%20-%20colzp.htm
 
-	include 'lzp.inc'
+LZP_HASH_ORDER = 16
+LZP_HASH_SIZE  = (1 shl LZP_HASH_ORDER)
 
-	LZP_HASH_ORDER = 16
-	LZP_HASH_SIZE  = (1 shl LZP_HASH_ORDER)
+	public lzp_compress
+	public lzp_decompress
 
 	; hash(h, x) (h = (h << 4) ^ x)
 

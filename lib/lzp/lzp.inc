@@ -1,2 +1,2 @@
-	public lzp_compress
-	public lzp_decompress
+	extrn lzp_compress
+	extrn lzp_decompress

@@ -48,6 +48,8 @@ efimain:
 	section '.data' data readable writeable
 
 hello_msg   du 'StupidOS EFI Bootloader', 13, 10, 0
+
+			; Search path: / /boot /boot/efi
 kernel_file du 'vmstupid.sys', 0
 
 handle       dd ?

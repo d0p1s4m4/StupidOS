@@ -1,4 +1,4 @@
-Format: 1.51
+Format: 1.52
 
 
 Title: StupidOS
@@ -16,6 +16,11 @@ Timestamp: Updated yyyy/mm/dd
 #   yy    - Two digit year.  2006 is "06"
 #   yyyy  - Four digit year.  2006 is "2006"
 #   year  - Four digit year.  2006 is "2006"
+
+# These are indexes you deleted, so Natural Docs will not add them again
+# unless you remove them from this line.
+
+Don't Index: Macros, Variables, Classes
 
 
 # --------------------------------------------------------------------------
@@ -45,7 +50,7 @@ File: FAQ  (docs/faq.txt)
 
 Group: BootLoader  {
 
-	File: Introduction  (boot/intro.txt)
+   File: Introduction  (boot/intro.txt)
 
    Group: BootSector  {
 
@@ -57,15 +62,15 @@ Group: BootLoader  {
       File: loader.asm  (boot/loader/loader.asm)
       }  # Group: Loader
 
-   Group: Common {
+   Group: Common  {
 
       File: bios.inc  (boot/common/bios.inc)
       }  # Group: Common
 
-
    Group: EFI  {
 
       File: bootia32.asm  (boot/efi/bootia32.asm)
+      File: uefi.inc  (boot/efi/uefi.inc)
       }  # Group: EFI
 
    }  # Group: BootLoader
@@ -83,6 +88,16 @@ Group: Lib  {
       }  # Group: LZP
 
    Group: Crypto  {
+
+      Group: chacha20  {
+
+         File: chacha20.asm  (lib/crypto/chacha20/chacha20.asm)
+         }  # Group: chacha20
+
+      Group: Dilithium  {
+
+         File: ntt.asm  (lib/crypto/dilithium/ntt.asm)
+         }  # Group: Dilithium
 
       Group: SHA2  {
 

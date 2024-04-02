@@ -109,8 +109,8 @@ _start:
 	include '../common/bios.inc'
 	include '../common/fat12.inc'
 
-msg_error                  db "ERROR: ", 0
-msg_not_found              db " not found", CR, LF, 0
+msg_error     db "ERROR: ", 0
+msg_not_found db " not found", CR, LF, 0
 
 kernel_file db "VMSTUPIDSYS", 0
 stage1_file db "STPDLDR SYS", 0

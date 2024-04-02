@@ -7,6 +7,7 @@ static char *outfile = "a.out";
 
 typedef struct section
 {
+	
 } Section;
 
 
@@ -45,6 +46,7 @@ main(int argc, char **argv)
 	SCNHDR shdr;
 	uint8_t *buffer;
     SYM entry;
+	RELOC reloc;
 	int idx;
 
 	prg_name = argv[0];
