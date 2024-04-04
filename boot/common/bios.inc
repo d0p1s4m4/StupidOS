@@ -4,7 +4,7 @@
 	;;
 	;; Parameters:
 	;;
-	;;     si - null-terminated string to print
+	;;     SI - null-terminated string to print
 	;;
 bios_print:
 	lodsb

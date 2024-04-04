@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Macros, Variables, Classes
+Don't Index: Variables, Macros, Classes
 
 
 # --------------------------------------------------------------------------
@@ -65,6 +65,7 @@ Group: BootLoader  {
    Group: Common  {
 
       File: bios.inc  (boot/common/bios.inc)
+      File: fat12.inc  (boot/common/fat12.inc)
       }  # Group: Common
 
    Group: EFI  {

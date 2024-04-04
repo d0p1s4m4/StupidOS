@@ -1,4 +1,5 @@
-TARGET = bootsector.bin
+TARGET = boot_floppy1440.bin \
+		boot_floppy2880.bin 
 
 FLOPPY_SRCS	= floppy.asm \
 			../common/const.inc \
@@ -7,8 +8,11 @@ FLOPPY_SRCS	= floppy.asm \
 .PHONY: all
 all: $(TARGET)
 
-bootsector.bin: $(FLOPPY_SRCS)
+boot_floppy1440.bin: $(FLOPPY_SRCS)
 	$(AS) floppy.asm $@
+
+boot_floppy2880.bin: $(FLOPPY_SRCS)
+	$(AS) -DFLOPPY_SIZE=FLOPPY_2880 floppy.asm $@
 
 .PHONY: clean
 clean:

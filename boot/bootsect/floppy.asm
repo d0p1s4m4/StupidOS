@@ -3,30 +3,42 @@
 	use16
 
 	include '../common/const.inc'
+	include '../common/macro.inc'
 
 	org BOOTSECT_BASE
 
 	jmp short _start
 	nop
 
+if FLOPPY_SIZE eq FLOPPY_2880
+	SECTORS_PER_CLUSTER = 2
+	ROOT_DIR_ENTRIES    = 240
+	TOTAL_SECTORS       = 5760
+	SECTORS_PER_TRACK   = 36
+else
+	SECTORS_PER_CLUSTER = 1
+	ROOT_DIR_ENTRIES    = 224
+	TOTAL_SECTORS       = 2880
+	SECTORS_PER_TRACK   = 18
+end if
+
 	; Boot Record
 OEM_identifier      db 'STUPID  '
 bytes_per_sector    dw 512
-sectors_per_cluster db 1
+sectors_per_cluster db SECTORS_PER_CLUSTER
 reserved_sectors    dw 1
 FAT_count           db 2
-root_dir_entries    dw 224
-total_sectors       dw 2880
+root_dir_entries    dw ROOT_DIR_ENTRIES
+total_sectors       dw TOTAL_SECTORS
 media_desc_type     db 0xF0
 sectors_per_FAT     dw 9
-sectors_per_track   dw 18
+sectors_per_track   dw SECTORS_PER_TRACK
 heads_per_cylinder  dw 2
 hidden_sectors      dd 0
 large_sector_count  dd 0
-
 	; Extended Boot Record
-drive_number db 0x0
-reserved     db 0x0
+drive_number db 0
+reserved     db 0
 signature    db 0x29   		; 0x28 or 0x29
 volume_id    dd 0xB00B135 	; hope mine will grow :'(
 volume_label db 'Stupid Boot'

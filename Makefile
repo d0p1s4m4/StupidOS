@@ -17,7 +17,7 @@ MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
 
 SUBDIRS	:= external tools include boot kernel lib bin
 
-TARGET	= stupid.tar.gz floppy_boot.img
+TARGET	= stupid.tar.gz floppy1440.img floppy2880.img
 ifneq ($(OS),Windows_NT)
 EXEXT	=
 TARGET	+= stupid.iso stupid.hdd
@@ -48,13 +48,22 @@ stupid.hdd: $(SUBDIRS)
 stupid.tar.gz: $(SUBDIRS)
 	tar -czvf $@ sysroot
 
-.PHONY: floppy_boot.img
-floppy_boot.img: $(SUBDIRS)
+.PHONY: floppy1440.img
+floppy1440.img: $(SUBDIRS)
 	dd if=/dev/zero of=$@ bs=512 count=1440
 	mformat -C -f 1440 -i $@
-	dd if=boot/bootsect/bootsector.bin of=$@ conv=notrunc
+	dd if=boot/bootsect/boot_floppy1440.bin of=$@ conv=notrunc
 	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
 	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
+
+.PHONY: floppy2880.img
+floppy2880.img: $(SUBDIRS)
+	dd if=/dev/zero of=$@ bs=512 count=2880
+	mformat -C -f 2880 -i $@
+	dd if=boot/bootsect/boot_floppy2880.bin of=$@ conv=notrunc
+	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
+	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
+
 
 OVMF32.fd:
 	wget 'https://retrage.github.io/edk2-nightly/bin/DEBUGIa32_OVMF.fd' -O $@
@@ -63,7 +72,7 @@ OVMF32.fd:
 run: all
 	qemu-system-i386 \
 		-rtc base=localtime \
-		-drive file=floppy_boot.img,if=none,format=raw,id=boot \
+		-drive file=floppy1440.img,if=none,format=raw,id=boot \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device floppy,drive=boot \
 		-device ide-hd,drive=hdd \
