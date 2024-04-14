@@ -2,6 +2,7 @@
 	format binary
 
 	include '../common/const.inc'
+	include '../common/macro.inc'
 	include 'multiboot.inc'
 
 	org LOADER_BASE
@@ -75,9 +76,10 @@ _start:
 	include 'video.inc'
 	include 'gdt.inc'
 
-msg_stage2       db "StupidOS Loader", CR, LF, 0
-msg_error_a20    db "ERROR: can't enable a20 line", CR, LF, 0
-msg_error_memory db "ERROR: can't detect available memory", CR, LF, 0
+msg_stage2        db "StupidOS Loader", CR, LF, 0
+kernel_fat12_file db "VMSTUPIDSYS", 0
+msg_error_a20     db "ERROR: can't enable a20 line", CR, LF, 0
+msg_error_memory  db "ERROR: can't detect available memory", CR, LF, 0
 
 	use32
 	; =========================================================================

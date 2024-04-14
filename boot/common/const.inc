@@ -2,6 +2,7 @@ CR   = 0x0D
 LF   = 0x0A
 
 ; -------- Address ----------
+MBR_BASE       = 0x0600
 BOOTSECT_BASE  = 0x7C00
 LOADER_BASE    = 0x1000
 MULTIBOOT_BASE = 0x100000

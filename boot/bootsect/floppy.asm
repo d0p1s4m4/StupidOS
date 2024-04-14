@@ -70,11 +70,6 @@ _start:
 
 	; search in root directory
 
-	mov si, kernel_file
-	call fat_search_root
-	jc .error_not_found
-	mov [kernel_start], ax
-
 	mov si, stage1_file
 	call fat_search_root
 	jc .error_not_found
@@ -90,13 +85,6 @@ _start:
 	xor bx, bx
 
 	call disk_read_sectors
-
-	; preload kernel
-	mov ax, KERNEL_PRELOAD/0x10
-	mov es, ax
-	mov ax, [kernel_start]
-	xor bx, bx
-	call fat_load_binary
 
 	; load stage 2
 	mov ax, LOADER_BASE/0x10
@@ -124,10 +112,8 @@ _start:
 msg_error     db "ERROR: ", 0
 msg_not_found db " not found", CR, LF, 0
 
-kernel_file db "VMSTUPIDSYS", 0
 stage1_file db "STPDLDR SYS", 0
 
-kernel_start dw 0x0
 stage1_start dw 0x0
 
 
