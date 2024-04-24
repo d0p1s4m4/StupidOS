@@ -1,8 +1,9 @@
-#+TITLE: Common Object File Format (COFF)
+File: Common Object File Format (COFF)
 
-** COFF File Structure
+About: COFF File Structure
 
-#+begin_src
+(start code)
+
          +-----------------------+
          |                       |
          | File Header           |
@@ -54,9 +55,10 @@
          |                       |
          +-----------------------+
 
-#+end_src
+(end)
 
-*** File Header
+
+About: File Header
 
 | Type     | Description                     |
 |----------+---------------------------------|

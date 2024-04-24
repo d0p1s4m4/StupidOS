@@ -47,6 +47,7 @@ File: Introduction  (docs/intro.txt)
 Link: Source Code  (https://git.cute.engineering/d0p1/StupidOS)
 File: Coding Style  (docs/coding-style.txt)
 File: FAQ  (docs/faq.txt)
+Link: StupidFS  (https://stupidfs.d0p1.eu/)
 
 Group: BootLoader  {
 
@@ -60,12 +61,14 @@ Group: BootLoader  {
    Group: Loader  {
 
       File: loader.asm  (boot/loader/loader.asm)
+      File: memory.inc  (boot/loader/memory.inc)
       }  # Group: Loader
 
    Group: Common  {
 
       File: bios.inc  (boot/common/bios.inc)
       File: fat12.inc  (boot/common/fat12.inc)
+      File: mbr.inc  (boot/common/mbr.inc)
       }  # Group: Common
 
    Group: EFI  {
@@ -115,5 +118,6 @@ Group: Index  {
    Constant Index: Constants
    File Index: Files
    Function Index: Functions
+   Property Index: Properties
    }  # Group: Index
 

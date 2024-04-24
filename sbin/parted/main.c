@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <errno.h>
 
 #define MBR_MAGIC0 0x55
 #define MBR_MAGIC1 0xAA
@@ -88,6 +89,8 @@ usage(int retcode)
 		printf("\t-V\toutput version information.\n");
 		printf("\t-d\tdump disk information\n");
 		printf("\t-o out\twrite to file 'out'\n");
+		printf("\t-e\textract parts\n");
+		printf("\t-i img\t\n");
 		printf("\nReport bugs to <%s>\n", MK_BUGREPORT);
 	}
 
