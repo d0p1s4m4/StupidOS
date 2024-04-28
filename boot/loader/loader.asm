@@ -27,12 +27,34 @@ _start:
 	push cs
 	pop ds
 
+	mov [drive_number], dl
+
 	mov si, msg_stage2
-	call bios_print
+	call bios_log
 
 	; enable A20 line
 	call a20_enable
 	jc .error_a20
+
+	; check drive type
+	; dl <= 0x7F == floppy
+	; dl >= 0x80 == hard drive
+	; dl == 0xE0 ~= CD/DVD
+	; dl <= 0xFF == hard drive
+	mov dl, [drive_number]
+	cmp dl, 0x7F
+	; skip disk extension check
+	jle @f 
+
+	; check disk extensions
+	mov ah, 0x41
+	mov bx, 0x55AA
+	int 0x13
+	jc @f
+	mov [drive_lba], 1
+@@:
+	; detect filesystem (FAT12/16 or StpdFS)
+	; load kernel from filesystem
 
     ; fetch memory map from bios
     call memory_get_map
@@ -40,7 +62,6 @@ _start:
 
 	; video information
 	call video_setup
-	xchg bx, bx
 
 	; load GDT and enter Protected-Mode
 	lgdt [gdt_ptr]
@@ -65,21 +86,26 @@ _start:
 .error_a20:
 	mov si, msg_error_a20
 .error:
-	call bios_print
+	call bios_log
 @@:
 	hlt
 	jmp @b
 
 	include 'a20.inc'
 	include '../common/bios.inc'
+	include 'logger.inc'
 	include 'memory.inc'
 	include 'video.inc'
 	include 'gdt.inc'
 
-msg_stage2        db "StupidOS Loader", CR, LF, 0
+drive_number rb 1
+drive_lba    db 0
+
+msg_stage2        db "StupidOS Loader", 0
 kernel_fat12_file db "VMSTUPIDSYS", 0
-msg_error_a20     db "ERROR: can't enable a20 line", CR, LF, 0
-msg_error_memory  db "ERROR: can't detect available memory", CR, LF, 0
+config_fat12_file db "BOOT    INI", 0
+msg_error_a20     db "ERROR: can't enable a20 line", 0
+msg_error_memory  db "ERROR: can't detect available memory", 0
 
 	use32
 	; =========================================================================
@@ -101,6 +127,10 @@ common32:
 	; identity map first 1MB
 	; map kernel to 0xC0000000
 
+	push STPDBOOT_MAGIC
+
+	mov eax, 0xC0000000
+	jmp eax
 hang:
 	hlt
 	jmp $

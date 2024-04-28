@@ -1,4 +1,4 @@
-SUBDIRS = csu crypto lzp
+SUBDIRS = csu crypto lzp c
 
 TOPGOALS = all clean install
 

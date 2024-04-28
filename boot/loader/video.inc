@@ -14,6 +14,7 @@ struc VesaInfo
 	.Reserved              db 222 dup(?)
 	.OEMData               db 256 dup(?)
 }
+defn VesaInfo
 
 struc VesaModeInfo
 {
@@ -59,4 +60,29 @@ struc VesaModeInfo
 defn VesaModeInfo
 
 video_setup:
+	clc
+	mov di, [vesa_block_buffer]
+	mov ax, 0x4F00
+	int 0x10
+	cmp ax, 0x004F
+	jne .err
+
+	push word [vesa_block_buffer + VesaInfo.VideoModesSegment]
+	pop es
+	mov di, vesa_info_block_buffer
+	mov bx, [vesa_block_buffer + VesaInfo.VideoModesOffset]
+	mov cx, [bx]
+	cmp cx, 0xFFFF
+	je .err
+
+	mov ax, 0x4F01
+	int 0x10
+	cmp ax, 0x004F
+	jne .err
 	ret
+.err:
+	stc
+	ret
+
+vesa_block_buffer VesaInfo
+vesa_info_block_buffer VesaModeInfo

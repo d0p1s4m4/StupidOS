@@ -65,6 +65,9 @@ memory_e820_get_map:
 	;;     BX - Extended 2
 	;;     CX - Configured 1
 	;;     DX - Configured 2
+memory_get_for_large_conf:
+	mov ax, 0xE801
+	int 0x15
 
 	;; Function: memory_get_extended_memory_size
 	;;
@@ -75,4 +78,5 @@ memory_e820_get_map:
 	;;    CF - Non-Carry - indicates no error
 	;;    AX - Number of contiguous KB above 1MB
 memory_get_map:
+	clc
 	ret

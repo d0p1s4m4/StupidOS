@@ -10,6 +10,9 @@ DISK_BUFFER    = 0x8000
 KERNEL_PRELOAD = 0xF000
 STACK_TOP      = 0x7000
 
+; ---------- Magic ------------
+STPDBOOT_MAGIC = 0x53545044
+
 ; ---------- Video ------------
 VIDEO_WIDTH  = 1024
 VIDEO_HEIGHT = 768

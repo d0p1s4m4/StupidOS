@@ -93,6 +93,8 @@ _start:
 	xor bx, bx
 	call fat_load_binary
 
+	mov dl, [drive_number]
+
 	jmp 0x0:LOADER_BASE
 
 .error_not_found:

@@ -50,3 +50,4 @@ Section: UEFI (IA32)
 > | BOOTIA32.EFI |----->| vmstupid.sys |
 > +--------------+      +--------------+
 >
+

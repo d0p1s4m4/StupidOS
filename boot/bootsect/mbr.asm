@@ -3,6 +3,8 @@
 
 	include '../common/const.inc'
 	include '../common/macro.inc'
+	include '../common/bios.inc'
+	include '../common/mbr.inc'
 
 	org MBR_BASE
 	cli
@@ -19,9 +21,60 @@
 	rep movsw
 	jmp 0x0:start
 start:
-	; TODO: read partition table and load bootable one.
+	; set LBA 
+	mov ah, 0x41
+	mov bx, 0x55AA
+	mov dl, 0x80
+	int 0x13
+	jc .error_lba
+	lea ecx, [PT1]
+.loop:
+	mov al, byte [ecx]
+	bt ax, 7
+	jc .found
+	lea eax, [PT4]
+	test eax, ecx
+	je .error_no_bootable
+	add cx, 0xF
+	jmp .loop
+.found:
+	mov eax, dword [ecx + Partition.lba]
+	mov [disk_packet_lba], eax
+	mov si, disk_packet
+	mov ah, 0x42
+	mov dl, 0x80
+	int 13
+	jc .error_load
+	jmp 0x0:BOOTSECT_BASE
+.error_lba:
+	mov si, msg_error_lba
+	jmp .error_print
+.error_no_bootable:
+	mov si, msg_error_bootable
+	jmp .error_print
+.error_load:
+	mov si, msg_error_load
+.error_print:
+	call bios_print
+.end:
+	hlt
+	jmp $
 
-	times 436-($-$$) db 0x90
+disk_packet:
+	db 0x10
+	db 0
+	dw 1
+	dw BOOTSECT_BASE
+	dw 0x0
+disk_packet_lba:
+	dd 0x0
+	dw 0x0
+
+msg_error_lba db "We don't support CHS", CR, LF, 0
+msg_error_bootable db "No bootable device found", CR, LF, 0
+msg_error_load db "Can't load partition", CR, LF, 0
+
+	rb MBR_BASE+0x1a8-$
 UID db 'STUPIDDISK'
 	; partition table
 PT1 db 16 dup(0)

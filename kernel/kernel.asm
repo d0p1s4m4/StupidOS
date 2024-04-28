@@ -8,7 +8,15 @@
 
 	include 'mm/mm.inc'
 
+	;; Function: kmain
+	;;
+	;; Parameters:
+	;; 
+	;;     EAX - Boot Magic
+	;;     EBX - Boot structure address
+	;;
 kmain:
+	; TODO: interupt, vmm
 	nop
 
 _edata:
