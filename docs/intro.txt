@@ -2,7 +2,7 @@ File: Introduction
 
 About: StupidOS
 
-(see logo.png)
+(see logo_3d.png)
 
 Donate:
 
