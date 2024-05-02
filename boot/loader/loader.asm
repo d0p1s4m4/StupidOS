@@ -36,6 +36,8 @@ _start:
 	call a20_enable
 	jc .error_a20
 
+	xchg bx, bx
+
 	; check drive type
 	; dl <= 0x7F == floppy
 	; dl >= 0x80 == hard drive
@@ -55,10 +57,15 @@ _start:
 @@:
 	; detect filesystem (FAT12/16 or StpdFS)
 	; load kernel from filesystem
+	; +---------+--------+---------+
+    ; | bootsec | sect 1 | stpd sb |
+	; +---------+--------+---------+
+	; for now fat12 is asumed
+
 
     ; fetch memory map from bios
-    call memory_get_map
-    jc .error_memory
+	call memory_get_map
+	jc .error_memory
 
 	; video information
 	call video_setup
@@ -121,7 +128,8 @@ multiboot:
 	; get kernel from module
 
 common32:
-	mov dword [0xb8000], 0x07690748
+	xchg bx, bx
+	mov dword [0xB8000], 0x07690748
 
 	; paging 
 	; identity map first 1MB

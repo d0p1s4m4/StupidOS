@@ -10,10 +10,19 @@ INCDIR = /usr/include
 ASMDIR = /usr/asm
 
 AS = fasm
+CC ?= gcc
 RM = rm -f
 
 MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
+
+ifneq (,$(findstring cl,$(CC)))
+CFLAGS  = /TC /D MK_COMMIT="$(MK_COMMIT)" /DMK_BUGREPORT="$(MK_BUGREPORT)" /INCLUDE:$(TOPDIR)include
+LDFLAGS = /SUBSYSTEM:CONSOLE
+else
+CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" -DMK_BUGREPORT="$(MK_BUGREPORT)" -I$(TOPDIR)include
+LDFLAGS	= 
+endif
 
 SUBDIRS	:= external tools include boot kernel lib bin
 

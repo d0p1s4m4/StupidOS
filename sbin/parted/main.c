@@ -3,40 +3,19 @@
 #include <stdint.h>
 #include <string.h>
 #include <errno.h>
-
-#define MBR_MAGIC0 0x55
-#define MBR_MAGIC1 0xAA
-
-#define MBR_PART_BOOTABLE (1 << 7)
-
-enum {
-	MBR_PART_TYPE_EMPTY          = 0x00,
-	MBR_PART_TYPE_FAT12          = 0x01,
-	MBR_PART_TYPE_FAT16          = 0x04,
-	MBR_PART_TYPE_GPT_PROTECTIVE = 0xEE,
-	MBR_PART_TYPE_EFI            = 0xEF
-};
-
-typedef struct partition {
-	uint8_t attributes;
-	uint8_t chs_start[3];
-	uint8_t type;
-	uint8_t chs_last_sector[3];
-	uint32_t lba_start;
-	uint32_t sectors_count;
-} __attribute__((packed)) Partition;
-
-typedef struct mbr_header {
-	uint8_t raw[436];
-	uint8_t uid[10];
-	struct partition part[4];
-	uint8_t magic[2];
-} __attribute__((packed)) MBRHeader;
+#include <libgen.h>
+#include "mbr.h"
 
 static char *prg_name = NULL;
 static int dump_info = 0;
 static const char *diskpath = NULL;
-static FILE *diskfd = NULL;
+static FILE *diskfp = NULL;
+static FILE *partfp[4] = {
+	NULL,
+	NULL,
+	NULL,
+	NULL
+};
 static MBRHeader header;
 
 static void
@@ -88,8 +67,9 @@ usage(int retcode)
 		printf("\t-h\tdisplay this help and exit\n");
 		printf("\t-V\toutput version information.\n");
 		printf("\t-d\tdump disk information\n");
+		printf("\t-p0-3\t\n");
 		printf("\t-o out\twrite to file 'out'\n");
-		printf("\t-e\textract parts\n");
+		printf("\t-e\textract\n");
 		printf("\t-i img\t\n");
 		printf("\nReport bugs to <%s>\n", MK_BUGREPORT);
 	}
@@ -107,7 +87,8 @@ version(void)
 int
 main(int argc, char **argv)
 {
-	prg_name = argv[0];
+	char c;
+	prg_name = basename(argv[0]);
 
 	while ((argc > 1) && (argv[1][0] == '-'))
 	{
@@ -122,6 +103,23 @@ main(int argc, char **argv)
 			case 'd':
 				dump_info = 1;
 				break;
+			case 'p':
+				c = argv[1][2] - '0';
+				argv++;
+				argc--;
+				if (c != 0 && c != 1 && c != 2 && c != 3)
+				{
+					usage(EXIT_FAILURE);
+				}
+				partfp[c] = fopen(argv[2], "rb");
+				if (partfp[c] == NULL)
+				{
+					fprintf(stderr, "%s: %s\n", diskpath, strerror(errno));
+					return (EXIT_FAILURE);
+				}
+				break;
+			case 'e':
+				break;
 			default:
 				usage(EXIT_FAILURE);
 		}
@@ -133,14 +131,14 @@ main(int argc, char **argv)
 	if (argc <= 1) usage(EXIT_FAILURE);
 
 	diskpath = argv[1];
-	diskfd = fopen(diskpath, "rb");
-	if (diskfd == NULL)
+	diskfp = fopen(diskpath, "rb");
+	if (diskfp == NULL)
 	{
 		fprintf(stderr, "%s: %s\n", diskpath, strerror(errno));
 		return (EXIT_FAILURE);
 	}
 
-	if (fread(&header, sizeof(uint8_t), sizeof(MBRHeader), diskfd) != sizeof(MBRHeader))
+	if (fread(&header, sizeof(uint8_t), sizeof(MBRHeader), diskfp) != sizeof(MBRHeader))
 	{
 		fprintf(stderr, "%s: can't read mbr header\n", diskpath);
 		return (EXIT_FAILURE);

@@ -20,6 +20,7 @@
 	mov di, MBR_BASE
 	rep movsw
 	jmp 0x0:start
+
 start:
 	; set LBA 
 	mov ah, 0x41

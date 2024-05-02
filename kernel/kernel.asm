@@ -6,6 +6,7 @@
 
 	jmp kmain
 
+	include 'klog.inc'
 	include 'mm/mm.inc'
 
 	;; Function: kmain
@@ -17,7 +18,16 @@
 	;;
 kmain:
 	; TODO: interupt, vmm
-	nop
+	cmp eax, STPDBOOT_MAGIC
+	jne .halt
+
+	KLOG_INIT
+
+	KLOG "kernel alive"
+
+.halt:
+	hlt
+	jmp $
 
 _edata:
 
