@@ -24,6 +24,11 @@ CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" -DMK_BUGREPORT="$(MK_BUGREPORT)" -I$(TOPDIR)
 LDFLAGS	= 
 endif
 
+QEMU_COMMON = \
+		-rtc base=localtime \
+		-vga virtio \
+		-serial mon:stdio
+
 SUBDIRS	:= external tools include boot kernel lib bin
 
 TARGET	= stupid.tar.gz floppy1440.img floppy2880.img
@@ -80,22 +85,26 @@ OVMF32.fd:
 .PHONY: run
 run: all
 	qemu-system-i386 \
-		-rtc base=localtime \
+		$(QEMU_COMMON) \
 		-drive file=floppy1440.img,if=none,format=raw,id=boot \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device floppy,drive=boot \
 		-device ide-hd,drive=hdd \
 		-global isa-fdc.bootindexA=0 \
-		-serial mon:stdio
+
+.PHONY: run-iso
+run-iso: all
+	qemu-system-i386 \
+		$(QEMU_COMMON) \
+		-cdrom stupid.iso
 
 .PHONY: run-efi
 run-efi: all OVMF32.fd
 	qemu-system-i386 \
+		$(QEMU_COMMON) \
 		-bios OVMF32.fd \
-		-rtc base=localtime \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
-		-device ide-hd,drive=hdd \
-		-serial stdio
+		-device ide-hd,drive=hdd
 
 .PHONY: docs
 docs:

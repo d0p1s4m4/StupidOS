@@ -4,21 +4,33 @@ bios_log_time:
 	int 0x1A
 
 	mov al, ch
-	aam
+	mov ah, al
+	shr ah, 4
+	and ah, 0xF
+	and al, 0xF
+	;aam
 	add ah, 0x30
 	add al, 0x30
 	mov [time + 1], ah
 	mov [time + 2], al
 
 	mov al, cl
-	aam
+	mov ah, al
+	shr ah, 4
+	and ah, 0xF
+	and al, 0xF
+	;aam
 	add ah, 0x30
 	add al, 0x30
 	mov [time + 4], ah
 	mov [time + 5], al
 
 	mov al, dh
-	aam
+	mov ah, al
+	shr ah, 4
+	and ah, 0xF
+	and al, 0xF
+	;aam
 	add ah, 0x30
 	add al, 0x30
 	mov [time + 7], ah
@@ -130,7 +142,7 @@ bios_log:
 
 	ret
 
-time db '[00:00.00] ', 0
+time db '[00:00:00] ', 0
 hex_prefix db '0x', 0
 hex_digits db '0123456789ABCDEF'
 endline db CR, LF, 0

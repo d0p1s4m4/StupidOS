@@ -127,10 +127,10 @@ multiboot:
 
 	; get kernel from module
 
-common32:
-	xchg bx, bx
-	mov dword [0xB8000], 0x07690748
 
+common32:
+
+	mov [0xB8000], dword 0x07690748
 	; paging 
 	; identity map first 1MB
 	; map kernel to 0xC0000000

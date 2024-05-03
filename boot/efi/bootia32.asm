@@ -38,6 +38,14 @@ efimain:
 	call [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString]
 	add esp, 8
 
+	; search and load kernel
+
+	; get memory map
+
+	; paging
+
+	; jump to kernel
+
 	jmp $
 
 	xor eax, eax
@@ -47,9 +55,12 @@ efimain:
 
 	section '.data' data readable writeable
 
-hello_msg   du 'StupidOS EFI Bootloader', 13, 10, 0
+hello_msg  du 'StupidOS EFI Bootloader', CR, LF, 0
 
 			; Search path: / /boot /boot/efi
+search_paths du '\\', 0, \
+				'\\boot', 0, \
+				'\\boot\\efi', 0, 0
 kernel_file du 'vmstupid.sys', 0
 
 handle       dd ?
