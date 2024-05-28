@@ -4,7 +4,10 @@
 	org KBASE
 	use32
 
-	jmp kmain
+	jmp short kmain
+
+db 'STPDKRNL'
+db 32 dup(0)
 
 	include 'klog.inc'
 	include 'mm/mm.inc'

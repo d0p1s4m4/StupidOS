@@ -1,8 +1,13 @@
 TARGET = boot_floppy1440.bin \
 		boot_floppy2880.bin \
-		boot_mbr.bin
+		boot_mbr.bin \
+		boot_hdd.bin
 
 FLOPPY_SRCS	= floppy.asm \
+			../common/const.inc \
+			../common/fat12.inc
+
+HDD_SRCS = hdd.asm \
 			../common/const.inc \
 			../common/fat12.inc
 
@@ -21,6 +26,9 @@ boot_floppy2880.bin: $(FLOPPY_SRCS)
 
 boot_mbr.bin: $(MBR_SRCS)
 	$(AS) mbr.asm $@
+
+boot_hdd.bin: $(HDD_SRCS)
+	$(AS) hdd.asm $@
 
 .PHONY: clean
 clean:

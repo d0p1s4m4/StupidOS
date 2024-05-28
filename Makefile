@@ -31,7 +31,7 @@ QEMU_COMMON = \
 
 SUBDIRS	:= external tools include boot kernel lib bin
 
-TARGET	= stupid.tar.gz floppy1440.img floppy2880.img
+TARGET	= stupid.tar.gz floppy1440.img floppy2880.img 
 ifneq ($(OS),Windows_NT)
 EXEXT	=
 TARGET	+= stupid.iso stupid.hdd
@@ -56,7 +56,10 @@ stupid.iso: $(SUBDIRS)
 
 .PHONY: stupid.hdd
 stupid.hdd: $(SUBDIRS)
-	@echo ""
+	dd if=/dev/zero of=$@ bs=1M count=0 seek=64
+	mformat -L 12 -i $@
+# mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
+# mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
 
 .PHONY: stupid.tar.gz
 stupid.tar.gz: $(SUBDIRS)

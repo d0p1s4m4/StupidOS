@@ -1,5 +1,16 @@
 	;; File: bios.inc
 
+struc bios_disk_packet
+{
+	.size      db 0x10
+	.zero      db 0
+	.sectors   dw ?
+	.segment   dw ?
+	.offset    dw ?
+	.lba_lower dd ?
+	.lba_upper dd ?
+}
+
 	;; Function: bios_print
 	;;
 	;; Parameters:

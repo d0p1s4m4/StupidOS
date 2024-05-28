@@ -38,7 +38,17 @@ efimain:
 	call [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString]
 	add esp, 8
 
+
+	; load config
+	
+	; #=======================#
 	; search and load kernel
+	; openVolume()
+	; for path in search_path
+	;   if (open(path + file) == ok)
+	;     break
+	; if not found
+	;    error
 
 	; get memory map
 

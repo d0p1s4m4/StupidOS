@@ -46,7 +46,7 @@ _start:
 	mov dl, [drive_number]
 	cmp dl, 0x7F
 	; skip disk extension check
-	jle @f 
+	jle @f
 
 	; check disk extensions
 	mov ah, 0x41
@@ -60,7 +60,14 @@ _start:
 	; +---------+--------+---------+
     ; | bootsec | sect 1 | stpd sb |
 	; +---------+--------+---------+
+	; 0        512      1024
+	;
 	; for now fat12 is asumed
+	call fat_load_root
+
+	mov si, kernel_fat12_file
+	call fat_search_root
+	jc .error_not_found
 
 
     ; fetch memory map from bios
@@ -87,6 +94,9 @@ _start:
 	mov ss, ax
 	jmp 0x8:common32
 
+.error_not_found:
+	mov si, msg_error_not_found
+	jmp .error
 .error_memory:
 	mov si, msg_error_memory
 	jmp .error
@@ -94,12 +104,15 @@ _start:
 	mov si, msg_error_a20
 .error:
 	call bios_log
+
 @@:
 	hlt
 	jmp @b
 
 	include 'a20.inc'
 	include '../common/bios.inc'
+	include '../common/fat12.inc'
+	include 'disk.inc'
 	include 'logger.inc'
 	include 'memory.inc'
 	include 'video.inc'
@@ -113,6 +126,8 @@ kernel_fat12_file db "VMSTUPIDSYS", 0
 config_fat12_file db "BOOT    INI", 0
 msg_error_a20     db "ERROR: can't enable a20 line", 0
 msg_error_memory  db "ERROR: can't detect available memory", 0
+msg_error_sector db "ERROR: reading sector", CR, LF, 0 
+msg_error_not_found db "ERROR: kernel not found", 0
 
 	use32
 	; =========================================================================

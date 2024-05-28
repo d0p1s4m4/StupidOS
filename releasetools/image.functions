@@ -1,0 +1,18 @@
+create_grub_cfg()
+{
+	grub_config=$(cat <<EOF
+set timeout=15
+set default=0
+
+menuentry "StupidOS" {
+   echo "verify system integrity"
+   hashsum --hash sha256 --check /boot/hashfile --prefix /
+   multiboot /stpdldr.sys
+   module /vmstupid.sys
+   boot
+}
+EOF )
+}
+
+
+

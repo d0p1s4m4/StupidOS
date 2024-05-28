@@ -24,66 +24,6 @@ struc fat_entry
 }
 defn fat_entry
 
-	; CHS to LBA
-	; LBA = (C * HPC + H) * SPT + (S - 1)
-
-	;; Function: disk_read_sectors
-	;; Read sectors from disk to buffer
-	;;
-	;; Parameters:
-	;;
-	;;     AX    - LBA starting sector
-	;;     CX    - sector count
-	;;     ES:BX - buffer
-	;;
-disk_read_sectors:
-	; https://en.wikipedia.org/wiki/Logical_block_addressing
-	; convert LBA to CHS
-	; HPC = Head per Cluster
-	; SPT = Sector per Track
-
-	; S = (LBA % SPT) + 1
-	push ax
-	push bx
-	push cx
-	xor dx, dx
-	div word [sectors_per_track]
-	inc dx
-	mov [S], dx
-
-	; H = (LBA / SPT) % HPC
-	; C =  LBA  / (HPC * SPT)
-	xor dx, dx
-	div word [heads_per_cylinder]
-	mov [C], ax
-	mov [H], dx
-
-	; read sectors
-	mov ah, 0x2
-	mov al, 0x1
-	mov ch, byte [C]
-	mov cl, byte [S]
-	mov dh, byte [H]
-	mov dl, [drive_number]
-
-	int 0x13
-	jc @f
-	pop cx
-	pop bx
-	pop ax
-	add bx, word [bytes_per_sector]
-	inc ax
-	loop disk_read_sectors
-	ret
-@@:
-	mov si, msg_error_sector
-	call bios_print
-	ret
-
-C dw 0x00
-H dw 0x00
-S dw 0x00
-
 	;; Function: fat_load_root
 fat_load_root:
 	mov ax, DISK_BUFFER/0x10
@@ -185,6 +125,4 @@ fat_load_binary:
 	jb fat_load_binary
 	ret
 
-
-msg_error_sector           db "ERROR: reading sector", CR, LF, 0
 data_start dw 0x0
