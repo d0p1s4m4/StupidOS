@@ -16,13 +16,10 @@ RM = rm -f
 MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
 
-ifneq (,$(findstring cl,$(CC)))
-CFLAGS  = /TC /D MK_COMMIT="$(MK_COMMIT)" /DMK_BUGREPORT="$(MK_BUGREPORT)" /INCLUDE:$(TOPDIR)include
-LDFLAGS = /SUBSYSTEM:CONSOLE
-else
+
 CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" -DMK_BUGREPORT="$(MK_BUGREPORT)" -I$(TOPDIR)include
 LDFLAGS	= 
-endif
+
 
 QEMU_COMMON = \
 		-rtc base=localtime \
@@ -93,7 +90,7 @@ run: all
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device floppy,drive=boot \
 		-device ide-hd,drive=hdd \
-		-global isa-fdc.bootindexA=0 \
+		-global isa-fdc.bootindexA=0
 
 .PHONY: run-iso
 run-iso: all

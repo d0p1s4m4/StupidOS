@@ -123,10 +123,9 @@ drive_lba    db 0
 
 msg_stage2        db "StupidOS Loader", 0
 kernel_fat12_file db "VMSTUPIDSYS", 0
-config_fat12_file db "BOOT    INI", 0
 msg_error_a20     db "ERROR: can't enable a20 line", 0
 msg_error_memory  db "ERROR: can't detect available memory", 0
-msg_error_sector db "ERROR: reading sector", CR, LF, 0 
+msg_error_sector  db "ERROR: reading sector", CR, LF, 0 
 msg_error_not_found db "ERROR: kernel not found", 0
 
 	use32

@@ -1,7 +1,3 @@
-struc
-{
-	.boot_jmp db 3 dup(?)
-}
 
 disk_read_sectors:
 	test byte [drive_lba], 1
