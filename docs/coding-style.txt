@@ -2,6 +2,8 @@ File: Coding Style
 
 About: Assembly
 
+The "Hungarian" notation conventions MUST be used.
+
 Comments:
 
 	TO BE ADDED

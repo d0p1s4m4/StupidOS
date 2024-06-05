@@ -70,7 +70,7 @@ _start:
 
 	; search in root directory
 
-	mov si, stage1_file
+	mov si, szLoaderFile
 	call fat_search_root
 	jc .error_not_found
 	mov [stage1_start], ax
@@ -99,11 +99,11 @@ _start:
 
 .error_not_found:
 	push si
-	mov si, msg_error
+	mov si, szError
 	call bios_print
 	pop si
 	call bios_print
-	mov si, msg_not_found
+	mov si, szNotFound
 	call bios_print
 	hlt
 	jmp $
@@ -160,7 +160,7 @@ disk_read_sectors:
 	loop disk_read_sectors
 	ret
 @@:
-	mov si, msg_error_sector
+	mov si, szErrorSector
 	call bios_print
 	ret
 
@@ -171,11 +171,11 @@ S dw 0x00
 	include '../common/bios.inc'
 	include '../common/fat12.inc'
 
-msg_error        db "ERROR: ", 0
-msg_not_found    db " not found", CR, LF, 0
-msg_error_sector db "reading sector", CR, LF, 0
+szError          db "ERROR: ", 0
+szNotFound       db " not found", CR, LF, 0
+szErrorSector    db "reading sector", CR, LF, 0
 
-stage1_file db "STPDLDR SYS", 0
+szLoaderFile     db "STPDLDR SYS", 0
 
 stage1_start dw 0x0
 

@@ -1,3 +1,5 @@
-: ${BUILDDIR=.build}
-: ${OBJ=${BUILDDIR}/obj}
-: ${DESTDIR=${BUILDDIR}/dist}
+#!/usr/bin/env bash
+
+: "${BUILDDIR=.build}"
+: "${OBJ=${BUILDDIR}/obj}"
+: "${DESTDIR=${BUILDDIR}/dist}"

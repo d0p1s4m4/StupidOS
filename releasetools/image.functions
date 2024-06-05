@@ -1,6 +1,11 @@
+#!/usr/bin/env bash
+
 create_grub_cfg()
 {
-	grub_config=$(cat <<EOF
+	local target="$1"
+	local grub_cfg
+	
+	grub_cfg="$(cat <<EOF
 set timeout=15
 set default=0
 
@@ -11,8 +16,19 @@ menuentry "StupidOS" {
    module /vmstupid.sys
    boot
 }
-EOF )
+EOF
+)"
+
+	echo "$grub_cfg" > "$target"
 }
 
+get_grub()
+{
+	echo
+}
 
+create_efi_image()
+{
+	echo
+}
 

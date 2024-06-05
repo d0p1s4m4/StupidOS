@@ -74,10 +74,12 @@ check_tool() {
 	printf "checking for %s " "${tool}"
 
 	tool_path="$(which "${tool}" 2> /dev/null)"
-	if [ "x${tool_path}" = "x" ]; then
+	if [ -z "${tool_path}" ]; then
+		# shellcheck disable=SC2059
 		printf "${BOLD}${RED}NO${ALL_OFF}\n"
 		false;
 	else
+		# shellcheck disable=SC2059
 		printf "${GREEN}${tool_path}${ALL_OFF}\n"
 		true;
 	fi
@@ -157,14 +159,14 @@ unset topdir prgname build_start
 prgname="$(basename $0)"
 topdir="$(realpath "$0")"
 topdir="$(dirname "${topdir}")"
-build_start="$(date)"
-readonly topdir prgname build_start
+#build_start="$(date)"
+readonly topdir prgname
+#build_start
 
 SRC_DIR="${topdir}"
 BUILD_DIR="${topdir}/.build"
 TOOLS_DIR="${topdir}/.tools"
 TOOLS_PREFIX="stpd-"
-
 export PATH="$PATH:$TOOLS_DIR"
 
 if [ ! -f Makefile ] || [ ! -f LICENSE ]; then
@@ -177,7 +179,7 @@ fi
 
 while [ $# -gt 0 ]; do
 	op=$1; shift
-	
+
 	case "${op}" in
 		help | --help | -h)
 			usage 0

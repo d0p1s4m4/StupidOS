@@ -50,7 +50,7 @@ bios_log_number:
 	push ebp
 	mov ebp, esp
 	sub esp, 10
-	
+
 	leave
 	ret
 

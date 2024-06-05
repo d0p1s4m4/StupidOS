@@ -21,23 +21,37 @@
 	;;
 efimain:
 	mov eax, [esp+4]
-	mov [handle], eax
+	mov [hImage], eax
 	mov eax, [esp+8]
-	mov [system_table], eax
+	mov [pSystemTable], eax
+
+	mov ebx, [eax + EFI_SYSTEM_TABLE.RuntimeServices]
+	mov [pRuntimeServices], ebx
+
+	mov ebx, [eax + EFI_SYSTEM_TABLE.BootServices]
+	mov [pBootServices], ebx
+
+	;mov ecx, [ebx + EFI_BOOT_SERVICES.OpenProtocol]
+	;mov [fnOpenProtocol], ecx
 
 	mov ebx, [eax + EFI_SYSTEM_TABLE.ConOut]
+	mov [pConOut], ebx
+
+	mov ecx, [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset]
+	mov [fnOutputReset], ecx
+	mov ecx, [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString]
+	mov [fnOutputStr], ecx
 
 	mov eax, 1
 	push eax
-	push ebx
-	call [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset]
+	push [pConOut]
+	call [fnOutputReset]
 	add esp, 8
 
-	push hello_msg
-	push ebx
-	call [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString]
+	push szHelloMsg
+	push [pConOut]
+	call [fnOutputStr]
 	add esp, 8
-
 
 	; load config
 	
@@ -65,13 +79,37 @@ efimain:
 
 	section '.data' data readable writeable
 
-hello_msg  du 'StupidOS EFI Bootloader', CR, LF, 0
+szHelloMsg  du 'StupidOS EFI Bootloader', CR, LF, 0
 
 			; Search path: / /boot /boot/efi
-search_paths du '\\', 0, \
+aSearchPaths du '\\', 0, \
 				'\\boot', 0, \
 				'\\boot\\efi', 0, 0
-kernel_file du 'vmstupid.sys', 0
+szKernelFile du 'vmstupid.sys', 0
+szConfigFile du 'stpdboot.cfg', 0 
 
-handle       dd ?
-system_table dd ? 
+hImage       dd ?
+pSystemTable dd ?
+
+;; Variable: pBootServices
+pBootServices   dd ?
+fnAllocatePages dd ?
+fnFreePages     dd ?
+fnGetMemoryMap  dd ?
+fnOpenProtocol  dd ?
+fnCloseProtocol dd ?
+
+;; Variable: pRuntimeServices
+pRuntimeServices dd ?
+
+
+;; Variable: pConOut
+;; Pointer to EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
+pConOut       dd ?
+fnOutputReset dd ?
+fnOutputStr   dd ?
+
+;; Variable: pLoadFileProtocol
+;; Pointer to EFI_LOAD_FILE_PROTOCOL
+pLoadFileProtocol dd ?
+fnLoadFile        dd ?

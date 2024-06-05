@@ -142,7 +142,73 @@ EFI_BOOT_SERVICES_REVISION  = EFI_SPECIFICATION_VERSION
 	;; Struct: EFI_BOOT_SERVICES
 struc EFI_BOOT_SERVICES
 {
-	.Hdr EFI_TABLE_HEADER
+	.Hdr           EFI_TABLE_HEADER
+
+	; Task Priority Services
+	.RaiseTPL      UINTPTR
+	.RestoreTPL    UINTPTR
+
+	; Memory Services
+	.AllocatePages UINTPTR
+	.FreePages     UINTPTR
+	.GetMemoryMap  UINTPTR
+	.AllocatePool  UINTPTR
+	.FreePool      UINTPTR
+
+	; Event & Timer Services
+	.CreateEvent   UINTPTR
+	.SetTimer      UINTPTR
+	.WaitForEvent  UINTPTR
+	.SignalEvent   UINTPTR
+	.CloseEvent    UINTPTR
+	.CheckEvent    UINTPTR
+
+	; Protocol Handler Services
+	.InstallProtocolInterface   UINTPTR
+	.ReinstallProtocolInterface UINTPTR
+	.UninstallProtocolInterface UINTPTR
+	.HandleProtocol             UINTPTR
+	.Reserved                   UINTPTR
+	.RegisterProtocolNotify     UINTPTR
+	.LocateHandle               UINTPTR
+	.LocateDevicePath           UINTPTR
+	.InstallConfigurationTable  UINTPTR
+
+	; Image Services
+	.LoadImage        UINTPTR
+	.StartImage       UINTPTR
+	.Exit             UINTPTR
+	.UnloadImage      UINTPTR
+	.ExitBootServices UINTPTR
+
+	; Misc Services
+	.GetNextMonotonicCount UINTPTR
+	.Stall                 UINTPTR
+	.SetWatchdogTimer      UINTPTR
+
+	; DriverSupport Service
+	.ConnectController    UINTPTR
+	.DisconnectController UINTPTR
+
+	; Open and Close Protocol Services
+	.OpenProtocol            UINTPTR
+	.CloseProtocol           UINTPTR
+	.OpenProtocolInformation UINTPTR
+
+	; Library Services
+	.ProtocolsPerHandle                  UINTPTR
+	.LocateHandleBuffer                  UINTPTR
+	.LocateProtocol                      UINTPTR
+	.InstallMultipleProtocolInterfaces   UINTPTR
+	.UninstallMultipleProtocolInterfaces UINTPTR
+
+	; 32bit CRC Services
+	.CalculateCrc32 UINTPTR
+
+	; Misc Services
+	.CopyMem       UINTPTR
+	.SetMem        UINTPTR
+	.CreateEventEx UINTPTR
 }
 
 	;; ========================================================================
@@ -155,6 +221,25 @@ EFI_RUNTIMES_SERVICES_REVISION  = EFI_SPECIFICATION_VERSION
 struc EFI_RUNTIMES_SERVICES
 {
 	.Hdr EFI_TABLE_HEADER
+
+	; Time Services
+	.GetTime       UINTPTR
+	.SetTime       UINTPTR
+	.GetWakeupTime UINTPTR
+	.SetWakeupTime UINTPTR
+
+	; Virtual Memory Services
+	.SetVirtualAddressMap UINTPTR
+	.ConvertPointer       UINTPTR
+
+	; Variable Services
+	.GetVariable         UINTPTR
+	.GetNextVariableName UINTPTR
+	.SetVariable         UINTPTR
+
+	; Misc Services
+
+
 }
 
 	;; ========================================================================
