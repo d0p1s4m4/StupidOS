@@ -1,6 +1,6 @@
 
 disk_read_sectors:
-	test byte [drive_lba], 1
+	test byte [bDriveLBA], TRUE
 	je .lba_read
 	push ax
 	push bx
@@ -18,7 +18,7 @@ disk_read_sectors:
 	mov ch, byte [C]
 	mov cl, byte [S]
 	mov dh, byte [H]
-	mov dl, [drive_number]
+	mov dl, [uDrive]
 	int 0x13
 	jc @f
 	pop cx
@@ -29,7 +29,7 @@ disk_read_sectors:
 	loop disk_read_sectors
 	ret
 @@:
-	mov si, msg_error_sector
+	mov si, szMsgErrorSector
 	call bios_print
 	ret
 .lba_read:
@@ -38,11 +38,10 @@ disk_read_sectors:
 	mov word [disk_packet.offset], bx
 	mov word [disk_packet.lba], ax
 	mov ds, [disk_packet]
-	mov dl, [drive_number]
+	mov dl, [uDrive]
 	mov ah, 0x42
 	int 0x13
 	ret
-
 
 C dw 0x00
 H dw 0x00

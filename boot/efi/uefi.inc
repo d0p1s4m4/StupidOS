@@ -210,6 +210,7 @@ struc EFI_BOOT_SERVICES
 	.SetMem        UINTPTR
 	.CreateEventEx UINTPTR
 }
+defn EFI_BOOT_SERVICES
 
 	;; ========================================================================
 	;; EFI_RUNTIMES_SERVICES

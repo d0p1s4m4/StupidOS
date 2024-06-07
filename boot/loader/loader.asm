@@ -27,9 +27,9 @@ _start:
 	push cs
 	pop ds
 
-	mov [drive_number], dl
+	mov [uDrive], dl
 
-	mov si, msg_stage2
+	mov si, szMsgStage2
 	call bios_log
 
 	; enable A20 line
@@ -43,7 +43,7 @@ _start:
 	; dl >= 0x80 == hard drive
 	; dl == 0xE0 ~= CD/DVD
 	; dl <= 0xFF == hard drive
-	mov dl, [drive_number]
+	mov dl, [uDrive]
 	cmp dl, 0x7F
 	; skip disk extension check
 	jle @f
@@ -53,19 +53,19 @@ _start:
 	mov bx, 0x55AA
 	int 0x13
 	jc @f
-	mov [drive_lba], 1
+	mov [bDriveLBA], TRUE
 @@:
 	; detect filesystem (FAT12/16 or StpdFS)
 	; load kernel from filesystem
 	; +---------+--------+---------+
-    ; | bootsec | sect 1 | stpd sb |
+	; | bootsec | sect 1 | stpd sb |
 	; +---------+--------+---------+
 	; 0        512      1024
 	;
 	; for now fat12 is asumed
 	call fat_load_root
 
-	mov si, kernel_fat12_file
+	mov si, szKernelFile
 	call fat_search_root
 	jc .error_not_found
 
@@ -95,13 +95,13 @@ _start:
 	jmp 0x8:common32
 
 .error_not_found:
-	mov si, msg_error_not_found
+	mov si, szMsgErrorNotFound
 	jmp .error
 .error_memory:
-	mov si, msg_error_memory
+	mov si, szMsgErrorMemory
 	jmp .error
 .error_a20:
-	mov si, msg_error_a20
+	mov si, szMsgErrorA20
 .error:
 	call bios_log
 
@@ -118,15 +118,15 @@ _start:
 	include 'video.inc'
 	include 'gdt.inc'
 
-drive_number rb 1
-drive_lba    db 0
+uDrive rb 1
+bDriveLBA    db FALSE
 
-msg_stage2        db "StupidOS Loader", 0
-kernel_fat12_file db "VMSTUPIDSYS", 0
-msg_error_a20     db "ERROR: can't enable a20 line", 0
-msg_error_memory  db "ERROR: can't detect available memory", 0
-msg_error_sector  db "ERROR: reading sector", CR, LF, 0 
-msg_error_not_found db "ERROR: kernel not found", 0
+szMsgStage2        db "StupidOS Loader", 0
+szKernelFile       db "VMSTUPIDSYS", 0
+szMsgErrorA20      db "ERROR: can't enable a20 line", 0
+szMsgErrorMemory   db "ERROR: can't detect available memory", 0
+szMsgErrorSector   db "ERROR: reading sector", CR, LF, 0 
+szMsgErrorNotFound db "ERROR: kernel not found", 0
 
 	use32
 	; =========================================================================
@@ -143,11 +143,12 @@ multiboot:
 
 
 common32:
-
 	mov [0xB8000], dword 0x07690748
+
 	; paging 
 	; identity map first 1MB
-	; map kernel to 0xC0000000
+	; map kernel to 0xC000000 
+	; -----------------------
 
 	push STPDBOOT_MAGIC
 

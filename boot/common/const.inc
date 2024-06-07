@@ -1,6 +1,9 @@
 CR   = 0x0D
 LF   = 0x0A
 
+TRUE  = 1
+FALSE = 0
+
 ; -------- Address ----------
 MBR_BASE       = 0x0600
 BOOTSECT_BASE  = 0x7C00

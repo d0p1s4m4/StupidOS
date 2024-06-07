@@ -31,8 +31,20 @@ efimain:
 	mov ebx, [eax + EFI_SYSTEM_TABLE.BootServices]
 	mov [pBootServices], ebx
 
-	;mov ecx, [ebx + EFI_BOOT_SERVICES.OpenProtocol]
-	;mov [fnOpenProtocol], ecx
+	mov ecx, [ebx + EFI_BOOT_SERVICES.AllocatePool]
+	mov [fnAllocatePool], ecx
+
+	mov ecx, [ebx + EFI_BOOT_SERVICES.FreePool]
+	mov [fnFreePool], ecx
+
+	mov ecx, [ebx + EFI_BOOT_SERVICES.GetMemoryMap]
+	mov [fnGetMemoryMap], ecx
+
+	mov ecx, [ebx + EFI_BOOT_SERVICES.OpenProtocol]
+	mov [fnOpenProtocol], ecx
+
+	mov ecx, [ebx + EFI_BOOT_SERVICES.Exit]
+	mov [fnExit], ecx
 
 	mov ebx, [eax + EFI_SYSTEM_TABLE.ConOut]
 	mov [pConOut], ebx
@@ -53,8 +65,7 @@ efimain:
 	call [fnOutputStr]
 	add esp, 8
 
-	; load config
-	
+
 	; #=======================#
 	; search and load kernel
 	; openVolume()
@@ -93,11 +104,12 @@ pSystemTable dd ?
 
 ;; Variable: pBootServices
 pBootServices   dd ?
-fnAllocatePages dd ?
-fnFreePages     dd ?
+fnAllocatePool  dd ?
+fnFreePool      dd ?
 fnGetMemoryMap  dd ?
 fnOpenProtocol  dd ?
 fnCloseProtocol dd ?
+fnExit          dd ?
 
 ;; Variable: pRuntimeServices
 pRuntimeServices dd ?
