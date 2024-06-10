@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Variables, Macros, Classes
+Don't Index: Variables, Classes, Macros
 
 
 # --------------------------------------------------------------------------
@@ -48,6 +48,7 @@ Link: Source Code  (https://git.cute.engineering/d0p1/StupidOS)
 File: Coding Style  (docs/coding-style.txt)
 File: FAQ  (docs/faq.txt)
 Link: StupidFS  (https://stupidfs.d0p1.eu/)
+File: Common Object File Format &lparen;COFF&rparen;  (docs/COFF.txt)
 
 Group: BootLoader  {
 
@@ -56,11 +57,13 @@ Group: BootLoader  {
    Group: BootSector  {
 
       File: floppy.asm  (boot/bootsect/floppy.asm)
+      File: hdd.asm  (boot/bootsect/hdd.asm)
       }  # Group: BootSector
 
    Group: Loader  {
 
       File: loader.asm  (boot/loader/loader.asm)
+      File: logger.inc  (boot/loader/logger.inc)
       File: memory.inc  (boot/loader/memory.inc)
       }  # Group: Loader
 
@@ -81,6 +84,7 @@ Group: BootLoader  {
 
 Group: Kernel  {
 
+   File: kernel memory map  (kernel/intro.txt)
    File: kernel.asm  (kernel/kernel.asm)
    }  # Group: Kernel
 
@@ -92,6 +96,8 @@ Group: Lib  {
       }  # Group: LZP
 
    Group: Crypto  {
+
+      File: rc4.asm  (no auto-title, lib/crypto/rc4/rc4.asm)
 
       Group: chacha20  {
 
@@ -110,6 +116,7 @@ Group: Lib  {
 
       }  # Group: Crypto
 
+   File: ctype  (lib/c/ctype.asm)
    }  # Group: Lib
 
 Group: Index  {
@@ -118,6 +125,5 @@ Group: Index  {
    Constant Index: Constants
    File Index: Files
    Function Index: Functions
-   Property Index: Properties
    }  # Group: Index
 

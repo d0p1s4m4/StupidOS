@@ -6,7 +6,6 @@ The "Hungarian" notation conventions MUST be used.
 
 Comments:
 
-	TO BE ADDED
 
 
 About: C

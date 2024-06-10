@@ -1,4 +1,4 @@
-TARGET	= fat$(EXEXT) coff-ld$(EXEXT) parted$(EXEXT) mkfs.stpd$(EXEXT)
+TARGET	= fat$(EXEXT) coff-ld$(EXEXT) parted$(EXEXT) mkfs.stpd$(EXEXT) readcoff$(EXEXT)
 
 .PHONY: all
 all: $(TARGET)
@@ -6,15 +6,14 @@ all: $(TARGET)
 fat$(EXEXT): fat.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-coff-ld$(EXEXT): coff-ld.c
+coff-ld$(EXEXT): ../bin/ld/main.c
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+
+readcoff$(EXEXT): ../bin/readcoff/main.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 parted$(EXEXT): ../sbin/parted/main.c
-ifneq (,$(findstring cl,$(CC)))
-	$(CC) /Fo:$@ $^  $(CFLAGS) $(LDFLAGS)
-else
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
-endif
 
 mkfs.stpd$(EXEXT): ../sbin/mkfs.stpd/main.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)	

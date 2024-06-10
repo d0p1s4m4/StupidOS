@@ -15,9 +15,12 @@ RM = rm -f
 
 MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
+MK_PACKAGE   := \"StupidOS\"
 
-
-CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" -DMK_BUGREPORT="$(MK_BUGREPORT)" -I$(TOPDIR)include
+CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" \
+			-DMK_BUGREPORT="$(MK_BUGREPORT)" \
+			-DMK_PACKAGE="$(MK_PACKAGE)" \
+			-I$(TOPDIR)include
 LDFLAGS	= 
 
 
