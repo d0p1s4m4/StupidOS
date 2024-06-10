@@ -5,11 +5,13 @@
 static char *prg_name;
 static char *outfile = "a.out";
 
-typedef struct section
-{
+typedef struct {
 	
 } Section;
 
+typedef struct {
+
+} Object;
 
 static void
 usage(int retcode)
@@ -45,7 +47,7 @@ main(int argc, char **argv)
 	FILHDR fhdr;
 	SCNHDR shdr;
 	uint8_t *buffer;
-    SYM entry;
+    SYMENT entry;
 	RELOC reloc;
 	int idx;
 
@@ -108,7 +110,7 @@ main(int argc, char **argv)
 
 	for (idx = 0; idx < fhdr.f_nsyms; idx++)
 	{
-		fread(&entry, 1, SYMSZ, fp);
+		fread(&entry, 1, SYMESZ, fp);
 		printf("name: %c%c%c%c%c%c%c%c\n", entry.n_name[0], entry.n_name[1],entry.n_name[2],entry.n_name[3],entry.n_name[4],entry.n_name[5],entry.n_name[6],entry.n_name[7]);
 		printf("\tvalue: %d\n", entry.n_value);
 		printf("\tscnum: %hd\n", entry.n_scnum);

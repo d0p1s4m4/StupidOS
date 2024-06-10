@@ -79,3 +79,4 @@ About: Usefull links
 - <https://wiki.osdev.org/COFF>
 - <http://www.delorie.com/djgpp/doc/coff/filhdr.html>
 - <Official Microsoft COFF Specification (2016) at https://web.archive.org/web/20230703150217/https%3A%2F%2Fdownload.microsoft.com%2Fdownload%2F9%2Fc%2F5%2F9c5b2167-8017-4bae-9fde-d599bac8184a%2Fpecoff_v83.docx>
+- <UNIX System V/386 Release 3.2 Programmer's Guide, Volume II at http://bitsavers.org/pdf/att/unix/System_V_386_Release_3.2/UNIX_System_V_386_Release_3.2_Programmers_Guide_Vol2_1989.pdf>

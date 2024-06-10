@@ -16,7 +16,30 @@ typedef struct filehdr
 
 # define FILHSZ sizeof(FILHDR)
 
-# define F_MACH_I386 0x014c
+# define F_MACH_UNKNOWN   0x0
+# define F_MACH_AM33      0x1d3
+# define F_MACH_AMD64     0x8664
+# define F_MACH_ARM       0x1c0
+# define F_MACH_ARMNT     0x1c4
+# define F_MACH_EBC       0xebc
+# define F_MACH_I386      0x14c
+# define F_MACH_IA64      0x200
+# define F_MACH_M32R      0x9041
+# define F_MACH_MIPS16    0x266
+# define F_MACH_MIPSFPU   0x366
+# define F_MACH_MIPSFPU16 0x466
+# define F_MACH_POWERPC   0x1f0
+# define F_MACH_POWERPCFP 0x1f1
+# define F_MACH_R4000     0x166
+# define F_MACH_RISCV32   0x5032
+# define F_MACH_RISCV64   0x5064
+# define F_MACH_RISCV128  0x5128
+# define F_MACH_SH3       0x1a2
+# define F_MACH_SH3DSP    0x1a3
+# define F_MACH_SH4       0x1a6
+# define F_MACH_SH5       0x1a8
+# define F_MACH_THUMB     0x1c2
+# define F_MACH_WCEMIPSV2 0x169
 
 # define F_RELFLG   0x0001
 # define F_EXEC     0x0002
@@ -82,11 +105,12 @@ typedef struct reloc
 } __attribute__((packed)) RELOC;
 # define RELSZ 10
 
-# define R_ABS     0x000
-# define R_DIR16   0x001
-# define R_REL16   0x002
-# define R_DIR32   0x006
-# define R_PCRLONG 0x024
+# define R_ABS     0
+# define R_DIR16   01
+# define R_REL16   02
+# define R_DIR32   06
+# define R_SEG12   011
+# define R_PCRLONG 024
 
 typedef struct lineno
 {
@@ -99,22 +123,132 @@ typedef struct lineno
 } __attribute__((packed)) LINENO;
 # define LINESZ 6
 
-typedef struct sym
-{
-	uint8_t n_name[8];
-	int32_t n_value;
-	int16_t n_scnum;
-	uint16_t n_type;
-	uint8_t n_sclass;
-	uint8_t n_numaux;
-} __attribute__((packed)) SYM;
-# define SYMSZ 18
-
 # define N_UNDEF (0x0)
 # define N_ABS   (-0x1)
 # define N_DEBUG (-0x2)
 
-# define C_EXT  0x2
-# define C_STAT 0x3
+# define C_EFCN    -1   /* physical end of a function */
+# define C_NULL    0
+# define C_AUTO    1
+# define C_EXT     2  /* external symbol */
+# define C_STAT    3  /* static */
+# define C_REG     4  /* register var */
+# define C_EXTDEF  5  /* external definition */
+# define C_LABEL   6
+# define C_ULABEL  7  /* undefined label */
+# define C_MOS     8  /* member of struct */
+# define C_ARG     9
+# define C_STRTAG  10 /* struct tag */
+# define C_MOU     11 /* member of union */
+# define C_UNTAG   12 /* union tag */
+# define C_TPDEF   13 /* typedef */
+# define C_USTATIC 14
+# define C_ENTAG   15
+# define C_MOE     16
+# define C_REGPARM 17
+# define C_FIELD   18
+# define C_BLOCK   100
+# define C_FCN     101
+# define C_EOS     102
+# define C_FILE    103
+# define C_LINE    104
+# define C_ALIAS   105
+# define C_HIDDEN  106
+
+# define T_NULL   0
+# define T_ARG    1
+# define T_CHAR   2
+# define T_SHORT  3
+# define T_INT    4
+# define T_LONG   5
+# define T_FLOAT  6
+# define T_DOUBLE 7
+# define T_STRUCT 8
+# define T_UNION  9
+# define T_ENUM   10
+# define T_MOE    11
+# define T_UCHAR  12
+# define T_USHORT 13
+# define T_UINT   14
+# define T_ULONG  15
+
+# define DT_NON 0
+# define DT_PTR 1
+# define DT_FCN 2
+# define DT_ARY 3
+
+typedef struct syment
+{
+	union
+	{
+		char _n_name[8]; /* symbol name */
+		struct
+		{
+			int32_t _n_zeroes; /* symbol name */
+			int32_t _n_offset; /* loc in str table */
+		} _n_n;
+		uint32_t _n_nptr[2];
+	} _n;
+	uint32_t n_value;
+	int16_t n_scnum;
+	uint16_t n_type;
+	int8_t n_sclass;
+	int8_t n_numaux;
+} __attribute__((packed)) SYMENT;
+
+# define SYMESZ 18
+
+# define n_name   _n._n_name
+# define n_zeroes _n._n_n._n_zeroes
+# define n_offset _n._n_n._n_offset
+# define n_nptr  _n._n_nptr[1]
+
+typedef union auxent
+{
+	struct 
+	{
+		int32_t x_tagndx;
+		union
+		{
+			struct
+			{
+				uint16_t x_lnno;
+				uint16_t x_size;
+			} x_lnsz;
+			int32_t x_fsize;
+		} x_misc;
+		union
+		{
+			struct
+			{
+				int32_t x_lnnoptr;
+				int32_t x_endndx;
+			} x_fcn;
+			struct 
+			{
+				uint16_t x_dimen[4];
+			} x_ary;
+		} x_fcnary;
+		uint16_t x_tvndx;
+	} x_sym;
+	struct
+	{
+		char x_fname[14];
+	} x_file;
+	struct
+	{
+		int32_t x_scnlen;
+		uint16_t x_nreloc;
+		uint16_t x_nlinno;
+	} x_scn;
+	struct
+	{
+		int32_t x_tvfill;
+		uint16_t x_tvlen;
+		uint16_t x_tvran[2];
+	} x_tv;
+} AUXENT;
+
+# define AUXESZ 18
 
 #endif /* !COFF_H */

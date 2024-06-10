@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <assert.h>
 #ifndef __stupidos__
 # include <libgen.h>
 #endif
@@ -29,9 +30,9 @@ static const char *mach = NULL;
 
 /* */
 static int display_header = 0;
-static int display_program_header = 0;
+static int display_optional_header = 0;
 static int display_sections = 0;
-
+static int display_symbol_table = 0;
 
 static void
 usage(int retval)
@@ -64,6 +65,7 @@ main(int argc, char **argv)
 	FILHDR file_header;
 	AOUTHDR aout_header;
 	SCNHDR section_header;
+	SYMENT sym_entry;
 	char name[9];
 	char *type;
 	FILE *fp;
@@ -82,7 +84,8 @@ main(int argc, char **argv)
 		{
 			case 'a':
 				display_header = 1;
-				display_program_header = 1;
+				display_optional_header = 1;
+				display_symbol_table = 1;
 				display_sections = 1;
 				break;
 			case 'H':
@@ -169,6 +172,23 @@ main(int argc, char **argv)
 			printf("[%2d] %-8s  %-8s  %08X  %08X\n", idx, name, type, section_header.s_vaddr, section_header.s_scnptr);
 			printf("     %08X\n", section_header.s_size);
 		}
+		printf("\n");
+	}
+
+	if (display_symbol_table)
+	{
+		printf("Symbol table contains %d entries:\n", file_header.f_nsyms);
+		printf("  Num:    Value  Type Name\n");
+		assert(sizeof(SYMENT) == SYMESZ);
+		for (idx = 0; idx <= file_header.f_nsyms; idx++)
+		{
+			fseek(fp, file_header.f_symptr + (SYMESZ * idx), SEEK_SET);
+			fread(&sym_entry, 1, SYMESZ, fp);
+			memset(name, 0, 9);
+			memcpy(name, sym_entry.n_name, 8);
+			printf("  %d:    %08x  %hd %s\n", idx, sym_entry.n_value, sym_entry.n_type, name);
+		}
+
 	}
 
 	return (EXIT_SUCCESS);
