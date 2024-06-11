@@ -62,7 +62,6 @@ bios_log_hex:
 	mov si, szHexBuffer
 	xor cl, cl
 .loop:
-	xchg bx, bx
 	cmp cl, 8
 	je .print_number
 	rol edi, 4

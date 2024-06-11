@@ -19,7 +19,7 @@ jobs:
         
       - name: Run shellcheck
         run: |
-          shellcheck ./releasetools/cdimage.sh ./releasetools/floppyimage.sh ./releasetools/hdimages.sh  ./releasetools/image.defaults  ./releasetools/image.functions
+          shellcheck ./releasetools/cdimage.sh ./releasetools/floppyimage.sh ./releasetools/hdimage.sh  ./releasetools/image.defaults  ./releasetools/image.functions
 
       - name: Run CppCheck
         run: |

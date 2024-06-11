@@ -66,8 +66,19 @@ memory_e820_get_map:
 	;;     CX - Configured 1
 	;;     DX - Configured 2
 memory_get_for_large_conf:
+	clc
 	mov ax, 0xE801
 	int 0x15
+	jc @f
+	xor ecx, ecx
+	mov cx, ax
+	push ecx
+	mov cx, bx
+	push ecx
+	mov si, szMsgLarge
+	call bios_log
+@@:
+	ret
 
 	;; Function: memory_get_extended_memory_size
 	;;
@@ -78,5 +89,30 @@ memory_get_for_large_conf:
 	;;    CF - Non-Carry - indicates no error
 	;;    AX - Number of contiguous KB above 1MB
 memory_get_map:
+	call memory_get_for_large_conf
+	jnc .end
 	clc
+	mov ah, 0x88
+	int 0x15
+
+	jc .end
+
+	xor ebx, ebx
+	mov bx, ax
+	push ebx
+	mov si, szMsgMaxMemKB
+	call bios_log
+
+	shr ebx, 2
+
+	push ebx
+	mov si, szMsgMaxPage
+	call bios_log
+
+.end:
 	ret
+
+
+szMsgMaxMemKB db "%x KB above 1MB", 0
+szMsgMaxPage db "%x pages", 0
+szMsgLarge db "%x KB above 1MB - %x * 64 KB above 16MB", 0

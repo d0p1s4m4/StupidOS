@@ -36,8 +36,6 @@ _start:
 	call a20_enable
 	jc .error_a20
 
-	xchg bx, bx
-
 	; check drive type
 	; dl <= 0x7F == floppy
 	; dl >= 0x80 == hard drive
@@ -70,7 +68,27 @@ _start:
 	call fat_search_root
 	jc .error_not_found
 
+	mov [pKernelStartFat], ax
 
+	; load fat
+	xor ax, ax
+	mov al, [FAT_count]
+	mul word [sectors_per_FAT]
+	mov cx, ax
+	mov ax, [reserved_sectors]
+
+	xor bx, bx
+
+	call disk_read_sectors
+	
+	; load stage 2
+	mov ax, KERNEL_PRELOAD/0x10
+	mov es, ax
+	mov ax, [pKernelStartFat]
+	xor bx, bx
+	call fat_load_binary
+
+	xchg bx, bx
     ; fetch memory map from bios
 	call memory_get_map
 	jc .error_memory
@@ -122,11 +140,13 @@ _start:
 uDrive    rb 1
 bDriveLBA db FALSE
 
-szMsgStage2        db "StupidOS Loader %x", 0
+pKernelStartFat    dw 0
+
+szMsgStage2        db "StupidOS Loader", 0
 szKernelFile       db "VMSTUPIDSYS", 0
 szMsgErrorA20      db "ERROR: can't enable a20 line", 0
 szMsgErrorMemory   db "ERROR: can't detect available memory", 0
-szMsgErrorSector   db "ERROR: reading sector", CR, LF, 0 
+szMsgErrorSector   db "ERROR: reading sector", CR, LF, 0
 szMsgErrorNotFound db "ERROR: kernel not found", 0
 
 	use32

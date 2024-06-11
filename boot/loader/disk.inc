@@ -1,7 +1,7 @@
 
 disk_read_sectors:
-	test byte [bDriveLBA], TRUE
-	je .lba_read
+;	test byte [bDriveLBA], TRUE
+;	je .lba_read
 	push ax
 	push bx
 	push cx
@@ -61,11 +61,11 @@ disk_packet:
 	dd 0
 
 
-sectors_per_track  dw 0
-heads_per_cylinder dw 0
-bytes_per_sector   dw 0
-sectors_per_FAT    dw 0
-FAT_count          db 0
-reserved_sectors   dw 0
-root_dir_entries   dw 0
-sectors_per_cluster db 0
+sectors_per_track  dw 18
+heads_per_cylinder dw 2
+bytes_per_sector   dw 512
+sectors_per_FAT    dw 9
+FAT_count          db 2
+reserved_sectors   dw 1
+root_dir_entries   dw 224
+sectors_per_cluster db 1

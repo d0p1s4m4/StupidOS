@@ -65,7 +65,6 @@ efimain:
 	call [fnOutputStr]
 	add esp, 8
 
-
 	; #=======================#
 	; search and load kernel
 	; openVolume()
