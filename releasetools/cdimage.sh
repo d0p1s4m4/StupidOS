@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-if [ ! -f build.sh ]
+if [ ! -f Makefile ]
 then
 	exit 1
 fi
@@ -11,3 +11,4 @@ fi
 
 DESTDIR=${BUILDDIR}/iso
 
+make

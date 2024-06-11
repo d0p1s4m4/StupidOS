@@ -3,7 +3,7 @@ set -e
 
 : "${IMG=disk.img}"
 
-if [ ! -f build.sh ]
+if [ ! -f Makefile ]
 then
 	exit 1
 fi
