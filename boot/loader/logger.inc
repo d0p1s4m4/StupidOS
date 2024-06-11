@@ -3,77 +3,75 @@ bios_log_time:
 	mov ah, 0x02
 	int 0x1A
 
+	; print hours
 	mov al, ch
 	mov ah, al
 	shr ah, 4
 	and ah, 0xF
 	and al, 0xF
-	;aam
+
 	add ah, 0x30
 	add al, 0x30
-	mov [time + 1], ah
-	mov [time + 2], al
+	mov [szTime + 1], ah
+	mov [szTime + 2], al
 
+	; print minutes
 	mov al, cl
 	mov ah, al
 	shr ah, 4
 	and ah, 0xF
 	and al, 0xF
-	;aam
+
 	add ah, 0x30
 	add al, 0x30
-	mov [time + 4], ah
-	mov [time + 5], al
+	mov [szTime + 4], ah
+	mov [szTime + 5], al
 
+	; print seconds
 	mov al, dh
 	mov ah, al
 	shr ah, 4
 	and ah, 0xF
 	and al, 0xF
-	;aam
+
 	add ah, 0x30
 	add al, 0x30
-	mov [time + 7], ah
-	mov [time + 8], al
+	mov [szTime + 7], ah
+	mov [szTime + 8], al
 
-	mov si, time
+	push si
+	mov si, szTime
 	call bios_print
+	pop si
 
-	ret
-
-	;; Function: bios_log_number
-	;;
-	;; Parameters:
-	;;    XX - number
-	;;
-bios_log_number:
-	push ebp
-	mov ebp, esp
-	sub esp, 10
-
-	leave
 	ret
 
 	;; Function: bios_log_hex
 	;;
+	;; Parameters:
+	;;     EDI - number     
 bios_log_hex:
-	push bp
-	mov ebp, esp
-	sub esp, 12
-	mov si, hex_prefix
+	push si
+	mov si, szHexPrefix
 	call bios_print
+	pop si
 
 	or edi, edi
 	jz .print_zero
+	push si
+	mov si, szHexBuffer
+	xor cl, cl
 .loop:
-	or edi, edi
-	jz .print_number
+	xchg bx, bx
+	cmp cl, 8
+	je .print_number
 	rol edi, 4
 	mov eax, edi
 	and eax, 0xF
-	mov al, [hex_digits + eax]
-	mov [esp], al
-	inc esp
+	mov al, byte [sDigits + eax]
+	mov [si], al
+	inc si
+	inc cl
 	jmp .loop
 .print_zero:
 	mov al, '0'
@@ -81,11 +79,11 @@ bios_log_hex:
 	int 0x10
 	jmp .end
 .print_number:
-	mov [esp], byte 0
-	mov si, [ebp - 12]
+	mov [si], byte 0
+	mov si, szHexBuffer
 	call bios_print
+	pop si
 .end:
-	leave
 	ret
 
 	;; Function: bios_log
@@ -95,9 +93,7 @@ bios_log_hex:
 	;;     [STACK] - variadic arguments
 	;;
 bios_log:
-	push si
 	call bios_log_time
-	pop si
 
 .loop:
 	mov al, [si]
@@ -122,11 +118,9 @@ bios_log:
 	cmp al, 'x'
 	jne .unknown_format
 	pop ax
-	pop edi
+	pop dword edi
 	push ax
-	push si
 	call bios_log_hex
-	pop si
 	jmp .next
 .unknown_format:
 	mov al, '?'
@@ -137,12 +131,14 @@ bios_log:
 	inc si
 	jmp .loop
 .end:
-	mov si, endline
+	mov si, szEndLine
 	call bios_print
 
 	ret
 
-time db '[00:00:00] ', 0
-hex_prefix db '0x', 0
-hex_digits db '0123456789ABCDEF'
-endline db CR, LF, 0
+
+szTime      db '[00:00:00] ', 0
+szHexPrefix db '0x', 0
+sDigits     db '0123456789ABCDEF'
+szHexBuffer db '00000000', 0
+szEndLine   db CR, LF, 0

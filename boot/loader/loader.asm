@@ -63,6 +63,7 @@ _start:
 	; 0        512      1024
 	;
 	; for now fat12 is asumed
+
 	call fat_load_root
 
 	mov si, szKernelFile
@@ -118,10 +119,10 @@ _start:
 	include 'video.inc'
 	include 'gdt.inc'
 
-uDrive rb 1
-bDriveLBA    db FALSE
+uDrive    rb 1
+bDriveLBA db FALSE
 
-szMsgStage2        db "StupidOS Loader", 0
+szMsgStage2        db "StupidOS Loader %x", 0
 szKernelFile       db "VMSTUPIDSYS", 0
 szMsgErrorA20      db "ERROR: can't enable a20 line", 0
 szMsgErrorMemory   db "ERROR: can't detect available memory", 0
