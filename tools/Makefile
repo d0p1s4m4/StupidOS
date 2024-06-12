@@ -1,4 +1,4 @@
-TARGET	= fat$(EXEXT) coff-ld$(EXEXT) parted$(EXEXT) mkfs.stpd$(EXEXT) readcoff$(EXEXT)
+TARGET	= fat$(EXEXT) coff-ld$(EXEXT) parted$(EXEXT) readcoff$(EXEXT)
 
 .PHONY: all
 all: $(TARGET)
