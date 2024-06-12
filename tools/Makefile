@@ -15,9 +15,6 @@ readcoff$(EXEXT): ../bin/readcoff/main.c
 parted$(EXEXT): ../sbin/parted/main.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-mkfs.stpd$(EXEXT): ../sbin/mkfs.stpd/main.c
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)	
-
 .PHONY: install
 install: $(TARGET)
 
