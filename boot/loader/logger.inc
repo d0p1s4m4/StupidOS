@@ -46,6 +46,37 @@ bios_log_time:
 
 	ret
 
+	;; Function: bios_log_number
+	;;
+	;; Parameters:
+	;;     DI - number
+bios_log_number:
+	push dx
+	push bx
+	xor cx, cx
+	mov ax, di
+	mov bx, 10
+.loop_calc:
+	xor dx, dx
+	div bx
+	push dx
+	inc cx
+	or ax, ax
+	jnz .loop_calc
+.loop_print:
+	pop ax
+	add al, '0'
+	mov ah, 0x0E
+	int 0x10
+	dec cx
+
+	or cl, cl
+	jnz .loop_print
+	
+	pop bx
+	pop dx
+	ret
+
 	;; Function: bios_log_hex
 	;;
 	;; Parameters:
@@ -59,7 +90,7 @@ bios_log_hex:
 	or edi, edi
 	jz .print_zero
 	push si
-	mov si, szHexBuffer
+	mov si, szBuffer
 	xor cl, cl
 .loop:
 	cmp cl, 8
@@ -79,7 +110,7 @@ bios_log_hex:
 	jmp .end
 .print_number:
 	mov [si], byte 0
-	mov si, szHexBuffer
+	mov si, szBuffer
 	call bios_print
 	pop si
 .end:
@@ -115,11 +146,19 @@ bios_log:
 	jmp .next
 .check_x:
 	cmp al, 'x'
-	jne .unknown_format
+	jne .check_d
 	pop ax
 	pop dword edi
 	push ax
 	call bios_log_hex
+	jmp .next
+.check_d:
+	cmp al, 'd'
+	jne .unknown_format
+	pop ax
+	pop word di
+	push ax 
+	call bios_log_number
 	jmp .next
 .unknown_format:
 	mov al, '?'
@@ -139,5 +178,5 @@ bios_log:
 szTime      db '[00:00:00] ', 0
 szHexPrefix db '0x', 0
 sDigits     db '0123456789ABCDEF'
-szHexBuffer db '00000000', 0
 szEndLine   db CR, LF, 0
+szBuffer    db '00000000', 0
