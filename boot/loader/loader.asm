@@ -55,11 +55,14 @@ _start:
 @@:
 	; detect filesystem (FAT12/16 or StpdFS)
 	; load kernel from filesystem
-	; +---------+--------+---------+
-	; | bootsec | sect 1 | stpd sb |
-	; +---------+--------+---------+
-	; 0        512      1024
+
+	; StupidFS layout
+	; +---------+---------+---------....--+----....---+
+	; | bootsec | stpd sb | i-nodes ...   | data      |
+	; +---------+---------+---------0...--+----....---+
+	; 0        512      1024             XXXX        XXXX
 	;
+	
 	; for now fat12 is asumed
 
 	call fat_load_root
@@ -67,8 +70,12 @@ _start:
 	mov si, szKernelFile
 	call fat_search_root
 	jc .error_not_found
-
 	mov [pKernelStartFat], ax
+	mov [uKernelSize], ebx
+
+	push ebx
+	mov si, szMsgKernelFound
+	call bios_log
 
 	; load fat
 	xor ax, ax
@@ -141,9 +148,11 @@ uDrive    rb 1
 bDriveLBA db FALSE
 
 pKernelStartFat    dw 0
+uKernelSize        dd 0
 
 szMsgStage2        db "StupidOS Loader", 0
 szKernelFile       db "VMSTUPIDSYS", 0
+szMsgKernelFound   db "Kernel found, size: %x", 0
 szMsgErrorA20      db "ERROR: can't enable a20 line", 0
 szMsgErrorMemory   db "ERROR: can't detect available memory", 0
 szMsgErrorSector   db "ERROR: reading sector", CR, LF, 0
@@ -170,6 +179,16 @@ common32:
 	; identity map first 1MB
 	; map kernel to 0xC000000 
 	; -----------------------
+	mov edi, boot_768_page_table
+	mov esi, 0
+	mov ecx, 1023
+.1:
+	cmp esi, MULTIBOOT_BASE
+	jl .2
+.2:
+
+.3:
+
 
 	push STPDBOOT_MAGIC
 

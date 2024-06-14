@@ -71,6 +71,8 @@ main(int argc, char **argv)
 	FILE *fp;
 	int idx;
 	time_t timedat;
+	char *string_table;
+	size_t sz_stable;
 
 #ifndef __stupidos__
 	prg_name = basename(argv[0]);
@@ -139,6 +141,22 @@ main(int argc, char **argv)
 		printf("  Flags:                     0x%hx\n\n", file_header.f_flags);
 	}
 
+	if (display_optional_header)
+	{
+		if (file_header.f_opthdr)
+		{
+			fread(&aout_header, 1, AOUTHSZ, fp);
+			printf("A.out header\n");
+			printf("  Magic: %hx\n", aout_header.magic);
+			printf("  Entry: 0x%08X\n", aout_header.entry);
+			printf("\n");
+		}
+		else
+		{
+			printf("There are no optional header.\n\n");
+		}
+	}
+
 	if (display_sections)
 	{
 		fseek(fp, file_header.f_opthdr + FILHSZ, SEEK_SET);
@@ -177,6 +195,11 @@ main(int argc, char **argv)
 
 	if (display_symbol_table)
 	{
+		fseek(fp, 0L, SEEK_END);
+		sz_stable = ftell(fp) - file_header.f_symptr + (SYMESZ * file_header.f_nsyms);
+		string_table = malloc(sz_stable);
+		fseek(fp, file_header.f_symptr + (SYMESZ * file_header.f_nsyms), SEEK_SET);
+		fread(string_table, 1, sz_stable, fp);
 		printf("Symbol table contains %d entries:\n", file_header.f_nsyms);
 		printf("  Num:    Value  Type Name\n");
 		assert(sizeof(SYMENT) == SYMESZ);
@@ -186,7 +209,18 @@ main(int argc, char **argv)
 			fread(&sym_entry, 1, SYMESZ, fp);
 			memset(name, 0, 9);
 			memcpy(name, sym_entry.n_name, 8);
-			printf("  %d:    %08x  %hd %s\n", idx, sym_entry.n_value, sym_entry.n_type, name);
+			if (sym_entry.n_zeroes == 0)
+			{
+			}
+			printf("  %2d:    %08x  %hd ", idx, sym_entry.n_value, sym_entry.n_type);
+			if (sym_entry.n_zeroes)
+			{
+				printf("%s\n", name);
+			}
+			else
+			{
+				printf("%s\n", string_table + sym_entry.n_offset);
+			}
 		}
 
 	}

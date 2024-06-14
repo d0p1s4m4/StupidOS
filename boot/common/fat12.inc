@@ -81,6 +81,7 @@ fat_search_root:
 	ret
 .file_found:
 	mov ax, [es:di + fat_entry.start]
+	mov ebx, [es:di + fat_entry.size]
 	clc
 	ret
 
