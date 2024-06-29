@@ -48,9 +48,15 @@ defn AddressRange
 	;;    ECX   - Buffer Size
 	;;    EBX   - Continuation
 memory_e820_get_map:
+	clc
+@@:
 	mov eax, 0xE820
 	mov ebx, 0x0
-	mov ecx, 'SMAP'
+	mov edx, 'SMAP'
+	jc @f
+	cmp eax, 'SMAP'
+	jne @f
+@@:
 
 	ret
 
@@ -71,10 +77,8 @@ memory_get_for_large_conf:
 	int 0x15
 	jc @f
 	xor ecx, ecx
-	mov cx, ax
-	push ecx
-	mov cx, bx
-	push ecx
+	push ax
+	push bx
 	mov si, szMsgLarge
 	call bios_log
 @@:
@@ -89,6 +93,9 @@ memory_get_for_large_conf:
 	;;    CF - Non-Carry - indicates no error
 	;;    AX - Number of contiguous KB above 1MB
 memory_get_map:
+	call memory_e820_get_map
+	jnc .end
+
 	call memory_get_for_large_conf
 	jnc .end
 	clc
@@ -115,4 +122,4 @@ memory_get_map:
 
 szMsgMaxMemKB db "%x KB above 1MB", 0
 szMsgMaxPage db "%x pages", 0
-szMsgLarge db "%x KB above 1MB - %x * 64 KB above 16MB", 0
+szMsgLarge db "%d KB above 1MB - %d * 64 KB above 16MB", 0

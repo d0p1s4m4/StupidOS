@@ -59,7 +59,7 @@ _start:
 	; StupidFS layout
 	; +---------+---------+---------....--+----....---+
 	; | bootsec | stpd sb | i-nodes ...   | data      |
-	; +---------+---------+---------0...--+----....---+
+	; +---------+---------+---------....--+----....---+
 	; 0        512      1024             XXXX        XXXX
 	;
 	
@@ -95,8 +95,7 @@ _start:
 	xor bx, bx
 	call fat_load_binary
 
-	xchg bx, bx
-    ; fetch memory map from bios
+	; fetch memory map from bios
 	call memory_get_map
 	jc .error_memory
 
@@ -186,9 +185,9 @@ common32:
 	cmp esi, MULTIBOOT_BASE
 	jl .2
 .2:
+	
 
 .3:
-
 
 	push STPDBOOT_MAGIC
 
