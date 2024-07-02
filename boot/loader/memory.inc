@@ -76,11 +76,15 @@ memory_get_for_large_conf:
 	mov ax, 0xE801
 	int 0x15
 	jc @f
-	xor ecx, ecx
-	push ax
-	push bx
-	mov si, szMsgLarge
-	call bios_log
+
+	movzx edx, ax
+	mov eax, 0x100000 ; 1MB
+	call boot_info_add_memmap
+
+	mov eax, 0x1000000 ; 16MB
+	movzx edx, bx
+	shl edx, 16 ; * 64KB
+	call boot_info_add_memmap
 @@:
 	ret
 
@@ -104,22 +108,10 @@ memory_get_map:
 
 	jc .end
 
-	xor ebx, ebx
-	mov bx, ax
-	push ebx
-	mov si, szMsgMaxMemKB
-	call bios_log
-
-	shr ebx, 2
-
-	push ebx
-	mov si, szMsgMaxPage
-	call bios_log
+	movzx edx, ax
+	mov eax, 0x100000
+	call boot_info_add_memmap
 
 .end:
 	ret
 
-
-szMsgMaxMemKB db "%x KB above 1MB", 0
-szMsgMaxPage db "%x pages", 0
-szMsgLarge db "%d KB above 1MB - %d * 64 KB above 16MB", 0

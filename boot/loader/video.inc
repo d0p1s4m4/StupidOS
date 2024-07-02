@@ -60,7 +60,6 @@ video_setup:
 	mov si, szMsgDetectVideo
 	call bios_log
 	clc
-	xchg bx, bx
 	xor ax, ax
 	mov es, ax
 	mov di, vesa_block_buffer
@@ -109,5 +108,5 @@ vesa_info_block_buffer VesaModeInfo
 
 szMsgVesaInfo db "Version: %x", CR, LF, "OEM Name: %s", CR, LF, "Total Memory: %d", CR, LF, "Vendor name: %s", CR, LF, "Product name: %s", 0
 szMsgDetectVideo db "Fetch video information.", 0
-szMsgFramebuffer db "Fb: 0x%x", 0
+szMsgFramebuffer db "Fb: %x", 0
 szMsgErrorVesa db "Failed to detect VBE mode", 0

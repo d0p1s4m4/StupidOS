@@ -96,7 +96,7 @@ aSearchPaths du '\\', 0, \
 				'\\boot', 0, \
 				'\\boot\\efi', 0, 0
 szKernelFile du 'vmstupid.sys', 0
-szConfigFile du 'stpdboot.cfg', 0 
+szConfigFile du 'stpdboot.ini', 0 
 
 hImage       dd ?
 pSystemTable dd ?

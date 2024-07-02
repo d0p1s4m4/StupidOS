@@ -99,6 +99,10 @@ _start:
 	call memory_get_map
 	jc .error_memory
 
+	xchg bx, bx
+
+	call boot_info_print_mmap
+
 	; video information
 	call video_setup
 
@@ -142,6 +146,7 @@ _start:
 	include 'memory.inc'
 	include 'video.inc'
 	include 'gdt.inc'
+	include '../common/bootinfo.inc'
 
 uDrive    rb 1
 bDriveLBA db FALSE
@@ -199,7 +204,7 @@ hang:
 
 _edata:
 
-boot_structure:
+boot_structure BootInfo
 
 	align 4096
 boot_page_directory:
