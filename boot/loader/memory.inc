@@ -12,7 +12,7 @@ ADDRESS_RANGE_MEMORY   = 1
 ADDRESS_RANGE_RESERVED = 2
 
 	;; Struct: AddressRange
-struc AddressRange
+struc E820AddressRange
 {
 	;; Variable: BaseAddrLow
 	;; Low 32 Bits of Base Address
@@ -28,9 +28,9 @@ struc AddressRange
 	.LengthHigh   dd ?
 	;; Variable: Type
 	;; Address type of this range. <Address type>
-	.Type         db ?
+	.Type         dd ?
+
 }
-defn AddressRange
 
     ;; Function: memory_e820_get_mmap_entry
 	;; 
@@ -48,16 +48,43 @@ defn AddressRange
 	;;    ECX   - Buffer Size
 	;;    EBX   - Continuation
 memory_e820_get_map:
+	xor ebx, ebx
+@@:	
 	clc
-@@:
+	xchg bx, bx
+	xor eax, eax
+	mov es, ax
+	mov di, pE280AddrRange
+	mov ecx, 20
 	mov eax, 0xE820
-	mov ebx, 0x0
-	mov edx, 'SMAP'
-	jc @f
-	cmp eax, 'SMAP'
-	jne @f
-@@:
+	mov edx, 0x534D4150
+	int 0x15
+	xchg bx, bx
+	jc .error
+	cmp eax, 0x534D4150
+	jne .error
+	or ebx, ebx
+	jz .end
 
+	cmp [pE280AddrRange.Type], 0x1
+	jne @b
+
+	mov ecx, [pE280AddrRange.BaseAddrHigh]
+	or ecx, ecx
+	jnz @b
+
+	mov ecx, [pE280AddrRange.LengthHigh]
+	or ecx, ecx
+	jnz @b
+
+	mov edx, [pE280AddrRange.LengthLow]
+	mov eax, [pE280AddrRange.BaseAddrLow]
+	call boot_info_add_memmap
+
+	jmp @b
+.error:
+	stc
+.end:
 	ret
 
 	;; Function: memory_get_for_large_conf
@@ -115,3 +142,5 @@ memory_get_map:
 .end:
 	ret
 
+
+pE280AddrRange E820AddressRange

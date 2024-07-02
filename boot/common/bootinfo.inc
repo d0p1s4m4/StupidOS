@@ -46,10 +46,8 @@ boot_info_add_memmap:
 	pop ebx
 	ret
 
-
 	;; Function: boot_info_print_mmap
 boot_info_print_mmap:
-	xchg bx, bx
 	xor ecx, ecx
 .loop:
 	mov eax, [boot_structure.mmap + ecx * 8 + 4]
@@ -61,7 +59,6 @@ boot_info_print_mmap:
 	mov si, szMsgMemMap
 	call bios_log
 	pop ecx
-	xchg bx, bx
 @@:
 	inc ecx
 	cmp ecx, 40
