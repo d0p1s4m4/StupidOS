@@ -1,3 +1,4 @@
+	;; File: bootinfo.inc
 
 struc BootInfoRange {
 	.base dd ?
@@ -5,7 +6,9 @@ struc BootInfoRange {
 }
 
 struc BootInfo {
-	.mmap dd 4*2*40 dup(0)
+	.mmap         dd 4*2*40 dup(0)
+	.kernel_start dd ?
+	.kernel_size  dd ?
 }
 
 BOOTINFO_MEMORY_LIMIT = 0xFFFFF000
@@ -46,6 +49,9 @@ boot_info_add_memmap:
 	pop ebx
 	ret
 
+boot_sanitize_memory_map:
+	ret
+
 	;; Function: boot_info_print_mmap
 boot_info_print_mmap:
 	xor ecx, ecx
@@ -65,4 +71,4 @@ boot_info_print_mmap:
 	jbe .loop
 	ret
 
-szMsgMemMap db 'Address: %x - Length: %x'
+szMsgMemMap db 'Address: %x - Length: %x', 0

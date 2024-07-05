@@ -99,12 +99,10 @@ _start:
 	call memory_get_map
 	jc .error_memory
 
-	xchg bx, bx
-
 	call boot_info_print_mmap
 
 	; video information
-	call video_setup
+	;call video_setup
 
 	; load GDT and enter Protected-Mode
 	lgdt [gdt_ptr]
@@ -211,6 +209,9 @@ boot_page_directory:
 	rb 4096
 
 boot_768_page_table:
+	rb 4096
+
+boot_0_page_table:
 	rb 4096
 
 _end:

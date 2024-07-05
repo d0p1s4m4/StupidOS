@@ -51,7 +51,6 @@ memory_e820_get_map:
 	xor ebx, ebx
 @@:	
 	clc
-	xchg bx, bx
 	xor eax, eax
 	mov es, ax
 	mov di, pE280AddrRange
@@ -59,7 +58,6 @@ memory_e820_get_map:
 	mov eax, 0xE820
 	mov edx, 0x534D4150
 	int 0x15
-	xchg bx, bx
 	jc .error
 	cmp eax, 0x534D4150
 	jne .error
