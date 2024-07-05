@@ -1,4 +1,6 @@
 	;; File: kernel.asm
+	format binary
+
 	include 'const.inc'
 
 	org KBASE
@@ -9,9 +11,6 @@
 db 'STPDKRNL'
 db 32 dup(0)
 
-	include 'klog.inc'
-	include 'mm/mm.inc'
-
 	;; Function: kmain
 	;;
 	;; Parameters:
@@ -20,24 +19,42 @@ db 32 dup(0)
 	;;     EBX - Boot structure address
 	;;
 kmain:
-	xchg bx, bx
-	mov [0xC03B0000], dword 0x08690948
-	mov [0xC03B0004], dword 0x05690648
-	; TODO: interupt, vmm
+	mov esp, stack_top
+	
 	cmp eax, STPDBOOT_MAGIC
 	jne .halt
 
+	; init memory manager
+	; init idt, gdt
+	; copy boot structure 
+	xchg bx, bx
+	call vga_console_clear
+
+	mov [0xC03B0000], dword 0x08740953
+	mov [0xC03B0004], dword 0x05700675
+	mov [0xC03B0008], dword 0x03640469
+	mov [0xC03B000C], dword 0x0153024F
+
+
 	;KLOG_INIT
 
-	;KLOG "kernel alive"
+	mov esi, szMsgKernelAlive
+	call klog
 
 .halt:
 	hlt
 	jmp $
 
-_edata:
+	include 'klog.inc'
+	include 'dev/vga_console.inc'
+	include 'mm/mm.inc'
 
-	; BSS
+szMsgKernelAlive db "Kernel is alive", 0
+
+	align 4
+stack_bottom:
 	rb 0x4000
+stack_top:
 
 _end:
+	dd 0x0

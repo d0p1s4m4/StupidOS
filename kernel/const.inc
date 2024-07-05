@@ -46,3 +46,5 @@ CR4_PKE        = 0x0400000
 CR4_CET        = 0x0800000
 CR4_PKS        = 0x1000000
 
+CR   = 0x0D
+LF   = 0x0A

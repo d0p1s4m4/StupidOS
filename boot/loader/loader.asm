@@ -225,8 +225,9 @@ common32:
 	mov eax, STPDBOOT_MAGIC
 	mov ebx, boot_structure
 
-	mov eax, 0xC0000000
-	jmp eax
+	mov ecx, 0xC0000000
+	jmp ecx
+
 hang:
 	hlt
 	jmp $

@@ -5,6 +5,8 @@ INSTALL = install
 KERNEL	= vmstupid.sys
 SRCS	= kernel.asm \
 			const.inc \
+			klog.inc \
+			dev/vga_console.inc \
 			mm/mm.inc
 
 .PHONY: all

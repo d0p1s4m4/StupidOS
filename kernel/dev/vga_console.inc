@@ -1,6 +1,16 @@
-struc console
-{
-	.buffer db 80*25 dup (?)
-	.lineno db ?
-	.colno db ?
-}
+VGA_COLUMNS = 80
+VGA_LINES = 25
+VGA_BASE = 0xC03B0000
+
+vga_lineno db 0
+vga_colno db 0
+
+
+	;; Function: vga_console_clear
+vga_console_clear:
+	mov ecx, VGA_COLUMNS*VGA_LINES
+	xor al, al
+	mov edi, VGA_BASE
+	rep stosb
+	ret
+
