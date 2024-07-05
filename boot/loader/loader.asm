@@ -179,21 +179,49 @@ multiboot:
 common32:
 	mov [0xB8000], dword 0x07690748
 
-	; paging 
 	; identity map first 1MB
-	; map kernel to 0xC000000 
-	; -----------------------
-	mov edi, boot_768_page_table
-	mov esi, 0
-	mov ecx, 1023
-.1:
-	cmp esi, MULTIBOOT_BASE
-	jl .2
-.2:
+	xor esi, esi
+	xor ecx, ecx
+	mov edi, boot_0_page_table
+@@:
+	mov edx, esi
+	or edx, 0x3
+	mov [edi], edx
+	add edi, 4
+	add esi, 4096
+	inc ecx
+	cmp ecx, 1024
+	jb @b
 	
+	mov dword [boot_page_directory], boot_0_page_table + 0x3 ; preset and writable
 
-.3:
+	; map kernel at 0xC0000000
+	mov esi, KERNEL_PRELOAD
+	mov edi, boot_768_page_table
+	xor ecx, ecx
+@@:
+	mov edx, esi
+	or edx, 0x3
+	mov [edi], edx
+	add edi, 4
+	add esi, 4096
+	add ecx, 4096
+	cmp ecx, [uKernelSize]
+	jbe @b
 
+	; map 0xB8000 (vga) to 0xC03B0000
+	; 0xC03B0000 >> 12 & 0x3FF == 944
+	mov dword [boot_768_page_table + 944 * 16], 0xB8000 + 0x3
+	mov dword [boot_page_directory + (768 * 4)], boot_768_page_table + 0x3
+
+	mov eax, boot_page_directory
+	mov cr3, eax
+
+	mov eax, cr0
+	or eax, 0x80010000
+	mov cr0, eax
+
+	push boot_structure
 	push STPDBOOT_MAGIC
 
 	mov eax, 0xC0000000

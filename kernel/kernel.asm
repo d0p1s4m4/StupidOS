@@ -20,6 +20,7 @@ db 32 dup(0)
 	;;     EBX - Boot structure address
 	;;
 kmain:
+	xchg bx, bx
 	; TODO: interupt, vmm
 	cmp eax, STPDBOOT_MAGIC
 	jne .halt
