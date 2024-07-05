@@ -30,7 +30,7 @@ get_grub()
 	wget "${url}"
 	tar -xvf "grub-${version}.tar.gz"
 
-	(cd "grub-${version}"; ./configure --prefix="${TOOLSDIR}" && make install)
+	(cd "grub-${version}" || exit; ./configure --prefix="${TOOLSDIR}" && make install)
 }
 
 create_efi_image()
@@ -41,7 +41,9 @@ create_efi_image()
 create_stpdboot_ini()
 {
 	local target="$1"
-	local stupid_ini="$(cat <<EOF
+	local stupid_ini
+	
+	stupid_ini="$(cat <<EOF
 CMDLINE=consdev=com0
 MODULE=dummy.mod
 MODULE=dummy2.mod
