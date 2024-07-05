@@ -56,6 +56,7 @@ struc VesaModeInfo
 	.Reserved2             db 206 dup(?)
 }
 
+	;; Function: video_setup
 video_setup:
 	mov si, szMsgDetectVideo
 	call bios_log

@@ -1,12 +1,6 @@
 	;; File: fat12.inc
 
-	ATTR_READ_ONLY = 0x01
-	ATTR_HIDDEN    = 0x02
-	ATTR_SYSTEM    = 0x04
-	ATTR_VOLUME_ID = 0x08
-	ATTR_DIRECTORY = 0x10
-	ATTR_ARCHIVE   = 0x20
-
+	;; Struct: fat_entry
 struc fat_entry
 {
 	.name          db 8 dup ?
@@ -23,6 +17,22 @@ struc fat_entry
 	.size          dd ?
 }
 defn fat_entry
+
+	;; Constants: Attributes
+	;;  ATTR_READ_ONLY - Read-only
+	;;  ATTR_HIDDEN    - Hidden
+	;;  ATTR_SYSTEM    - System
+	;;  ATTR_VOLUME_ID - Volume label
+	;;  ATTR_DIRECTORY - Subdirectory
+	;;  ATTR_ARCHIVE   - Archive
+	ATTR_READ_ONLY = 0x01
+	ATTR_HIDDEN    = 0x02
+	ATTR_SYSTEM    = 0x04
+	ATTR_VOLUME_ID = 0x08
+	ATTR_DIRECTORY = 0x10
+	ATTR_ARCHIVE   = 0x20
+
+	;; Section: Globals
 
 	;; Function: fat_load_root
 fat_load_root:

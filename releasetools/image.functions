@@ -19,12 +19,18 @@ menuentry "StupidOS" {
 EOF
 )"
 
-	echo "$grub_cfg" > "$target"
+	echo "$grub_cfg" > "${target}/grub.cfg"
 }
 
 get_grub()
 {
-	echo
+	local version="2.12"
+	local url="https://ftp.gnu.org/gnu/grub/grub-${version}.tar.gz"
+
+	wget "${url}"
+	tar -xvf "grub-${version}.tar.gz"
+
+	(cd "grub-${version}"; ./configure --prefix="${TOOLSDIR}" && make install)
 }
 
 create_efi_image()
@@ -32,3 +38,15 @@ create_efi_image()
 	echo
 }
 
+create_stpdboot_ini()
+{
+	local target="$1"
+	local stupid_ini="$(cat <<EOF
+CMDLINE=consdev=com0
+MODULE=dummy.mod
+MODULE=dummy2.mod
+EOF
+)"
+
+	echo "$stupid_ini" > "${target}/stupid.ini"
+}

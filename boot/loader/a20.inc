@@ -1,6 +1,8 @@
-        ; copy/pasted from https://wiki.osdev.org/A20_Line
-        ; .... sorry I was lazy :x
+	;; File: a20.inc
+	;; copy/pasted from https://wiki.osdev.org/A20_Line
+    ;; .... sorry I was lazy :x
 
+	;; Function: a20_get_state
 a20_get_state:
         pushf
         push si
@@ -47,7 +49,7 @@ a20_get_state:
 .BufferBelowMB: db 0
 .BufferOverMB   db 0
 
-
+	;; Function: a20_query_support
 a20_query_support:
         push bx
         clc
@@ -67,6 +69,7 @@ a20_query_support:
         pop bx
         ret
  
+	;; Function: a20_enable_keyboard_controller
 a20_enable_keyboard_controller:
         cli
  
@@ -109,8 +112,11 @@ a20_enable_keyboard_controller:
         jz .wait_io2
         ret
  
-;       out:
-;               cf - set on error
+	;; Function: a20_enable
+	;; 
+    ;; Out:
+    ;;     CF - set on error
+	;;
 a20_enable:
         clc                                                                     ;       clear cf
         pusha

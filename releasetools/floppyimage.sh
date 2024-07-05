@@ -10,5 +10,15 @@ fi
 . ./releasetools/image.functions
 
 DESTDIR=${BUILDDIR}/floppy
-
 export DESTDIR
+
+mkdir -p "${BUILDDIR}" "${OBJ}"
+
+mkdir -p "${DESTDIR}/boot"
+
+create_stpdboot_ini "${DESTDIR}/boot"
+
+make
+
+echo ""
+echo "floppy image at $(pwd)/${IMG}"

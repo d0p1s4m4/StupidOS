@@ -1,16 +1,23 @@
 	;; File: bootinfo.inc
 
+	;; Struct: BootInfoRange
 struc BootInfoRange {
 	.base dd ?
 	.legth dd ?
 }
 
+	;; Struct: BootInfo
+	;;
+	;; StupidOS boot protocol structure
 struc BootInfo {
 	.mmap         dd 4*2*40 dup(0)
 	.kernel_start dd ?
 	.kernel_size  dd ?
 }
 
+	;; Section: Globals
+
+	;; Constant: BOOTINFO_MEMORY_LIMIT
 BOOTINFO_MEMORY_LIMIT = 0xFFFFF000
 
 

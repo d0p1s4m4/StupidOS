@@ -14,6 +14,8 @@
 multiboot_header:
 	mb_header MultibootHeader multiboot_header
 
+	;; Function: _start
+	;; Loader entry point.
 _start:
 	cmp eax, MULTIBOOT_MAGIC
 	je multiboot

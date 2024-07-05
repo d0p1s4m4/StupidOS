@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-: "${BUILDDIR=.build}"
+: "${BUILDDIR=$(pwd)/.build}"
 : "${OBJ=${BUILDDIR}/obj}"
 : "${DESTDIR=${BUILDDIR}/dist}"
+: "${TOOLSDIR=$(pwd)/.tools}"

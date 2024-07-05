@@ -11,4 +11,9 @@ fi
 
 DESTDIR=${BUILDDIR}/iso
 
+mkdir -p "${OBJ}"
+
+(cd "${OBJ}"; get_grub)
+
+
 make
