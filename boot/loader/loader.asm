@@ -211,7 +211,8 @@ common32:
 
 	; map 0xB8000 (vga) to 0xC03B0000
 	; 0xC03B0000 >> 12 & 0x3FF == 944
-	mov dword [boot_768_page_table + 944 * 16], 0xB8000 + 0x3
+	mov dword [boot_768_page_table + 944 * 4], 0xB8000 + 0x3
+
 	mov dword [boot_page_directory + (768 * 4)], boot_768_page_table + 0x3
 
 	mov eax, boot_page_directory
@@ -221,8 +222,8 @@ common32:
 	or eax, 0x80010000
 	mov cr0, eax
 
-	push boot_structure
-	push STPDBOOT_MAGIC
+	mov eax, STPDBOOT_MAGIC
+	mov ebx, boot_structure
 
 	mov eax, 0xC0000000
 	jmp eax
