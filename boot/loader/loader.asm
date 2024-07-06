@@ -179,6 +179,12 @@ multiboot:
 common32:
 	mov [0xB8000], dword 0x07690748
 
+	; move kernel to 0x100000
+	mov ecx, [uKernelSize]
+	mov esi, KERNEL_PRELOAD
+	mov edi, KERNEL_BASE
+	rep movsb
+
 	; identity map first 1MB
 	xor esi, esi
 	xor ecx, ecx
@@ -196,7 +202,7 @@ common32:
 	mov dword [boot_page_directory], boot_0_page_table + 0x3 ; preset and writable
 
 	; map kernel at 0xC0000000
-	mov esi, KERNEL_PRELOAD
+	mov esi, KERNEL_BASE
 	mov edi, boot_768_page_table
 	xor ecx, ecx
 @@:
@@ -224,6 +230,8 @@ common32:
 
 	mov eax, STPDBOOT_MAGIC
 	mov ebx, boot_structure
+
+	xchg bx, bx
 
 	mov ecx, 0xC0000000
 	jmp ecx

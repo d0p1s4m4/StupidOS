@@ -1,4 +1,5 @@
-free_block_head dd 0x0
+
+include "pmm.inc"
 
 mm_init:
 	ret

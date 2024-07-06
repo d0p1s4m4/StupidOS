@@ -3,7 +3,7 @@ File: Introduction
 About: kernel memory map
 
 >
-> Physical map 
+> Physical map                            virtual map
 >            +---------------+
 >            |               |
 >            +---------------+

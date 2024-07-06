@@ -7,7 +7,8 @@ SRCS	= kernel.asm \
 			const.inc \
 			klog.inc \
 			dev/vga_console.inc \
-			mm/mm.inc
+			mm/mm.inc \
+			mm/pmm.inc
 
 .PHONY: all
 all: $(KERNEL)

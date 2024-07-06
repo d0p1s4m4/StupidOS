@@ -10,7 +10,7 @@ struc BootInfoRange {
 	;;
 	;; StupidOS boot protocol structure
 struc BootInfo {
-	.mmap         dd 4*2*40 dup(0)
+	.mmap         dd 4*2*20 dup(0)
 	.kernel_start dd ?
 	.kernel_size  dd ?
 }

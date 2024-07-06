@@ -56,10 +56,10 @@ memory_e820_get_map:
 	mov di, pE280AddrRange
 	mov ecx, 20
 	mov eax, 0xE820
-	mov edx, 0x534D4150
+	mov edx, 'PAMS'
 	int 0x15
 	jc .error
-	cmp eax, 0x534D4150
+	cmp eax, 'PAMS'
 	jne .error
 	or ebx, ebx
 	jz .end
