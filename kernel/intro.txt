@@ -2,6 +2,14 @@ File: Introduction
 
 About: kernel memory map
 
+Kernel Source Overview:
+
+> kernel
+> ├── dev
+> ├── fs
+> └── mm
+
+
 >
 > Physical map                            virtual map
 >            +---------------+

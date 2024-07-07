@@ -1,5 +1,6 @@
-
 	;; File: mm.inc
+	;; StupidOS Memory Manager
+
 include "pmm.inc"
 
 mm_init:
@@ -13,11 +14,23 @@ mm_init:
 	mov esi, szMsgMmKernelPgDir
 	call klog
 
-	;; Map kernel
-	
+	; clear page dir
+	mov ecx, 4096
+	xor al, al
+	mov edi, [pKernelPgDir]
+	rep stosb
+
+	;; Map kernel and kmemory
+	call pmm_alloc_page
+	push eax
+	mov ecx, 4096
+	mov edi, eax
+	xor al, al
+	rep stosb
+	pop eax
+
 	;; Map video
 
-	;; Map low memory at ????
 
 	;; Map free memory
 

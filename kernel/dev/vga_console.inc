@@ -1,3 +1,5 @@
+	;; File: vga_console.inc
+
 VGA_COLUMNS = 80
 VGA_LINES = 25
 VGA_BASE = 0xC03B0000
