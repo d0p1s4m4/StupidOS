@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Classes, Macros, Variables
+Don't Index: Macros, Classes, Variables
 
 
 # --------------------------------------------------------------------------
@@ -66,7 +66,7 @@ Group: BootLoader  {
       File: loader.asm  (boot/loader/loader.asm)
       File: logger.inc  (boot/loader/logger.inc)
       File: memory.inc  (boot/loader/memory.inc)
-      File: video_setup  (boot/loader/video.inc)
+      File: video.inc  (boot/loader/video.inc)
       }  # Group: Loader
 
    Group: Common  {
@@ -88,11 +88,22 @@ Group: BootLoader  {
 
 Group: Kernel  {
 
-   File: bootinfo.inc  (kernel/bootinfo.inc)
    File: Introduction  (kernel/intro.txt)
    File: kernel.asm  (kernel/kernel.asm)
-   File: klog  (kernel/klog.inc)
-   File: vga_console_clear  (kernel/dev/vga_console.inc)
+   File: klog.inc  (kernel/klog.inc)
+
+   Group: Devices  {
+
+      File: IBM PC/AT  (kernel/dev/at/intro.txt)
+      File: vga_console.inc  (kernel/dev/vga_console.inc)
+      }  # Group: Devices
+
+   Group: System Includes  {
+
+      File: bootinfo.inc  (kernel/sys/bootinfo.inc)
+      File: mmu.inc  (kernel/sys/mmu.inc)
+      File: registers.inc  (kernel/sys/register.inc)
+      }  # Group: System Includes
 
    Group: Memory Manager  {
 

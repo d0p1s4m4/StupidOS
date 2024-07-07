@@ -1,3 +1,6 @@
+	;; File: klog.inc
+	;; Kernel logging utilities
+
 CMOS_ADDRESS = 0x70
 CMOS_DATA    = 0x71
 
@@ -7,6 +10,10 @@ CMOS_REG_HOUR   = 0x04
 
 COM1 = 0x3F8
 
+	;; Function: klog_print
+	;;
+	;; In:
+	;;    ESI - Null-terminated string to print
 klog_print:
 	mov dx, COM1
 @@:
@@ -18,7 +25,9 @@ klog_print:
 @@:
 	ret
 
-klog_print_date:
+	;; Function: klog_print_time
+	;;
+klog_print_time:
 @@:
 	mov al, 0x0A
 	out CMOS_ADDRESS, al
@@ -114,7 +123,7 @@ klog_print_hex:
 	;; Function: klog
 	;; Output kernel log
 klog:
-	call klog_print_date
+	call klog_print_time
 
 .loop:
 	mov al, [esi]

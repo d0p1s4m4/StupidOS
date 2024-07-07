@@ -17,23 +17,23 @@
 	;; CR0_NW - Not-write through
 	;; CR0_CD - Cache disable
 	;; CR0_PG - Paging
-CR0_PE equ 1 << 0
-CR0_MP equ 1 << 1
-CR0_EM equ 1 << 2
-CR0_TS equ 1 << 3
-CR0_ET equ 1 << 4
-CR0_NE equ 1 << 5
-CR0_WP equ 1 << 16
-CR0_AM equ 1 << 18
-CR0_NW equ 1 << 29
-CR0_CD equ 1 << 30
-CR0_PG equ 1 << 31
+CR0_PE = 0x00000001
+CR0_MP = 0x00000002
+CR0_EM = 0x00000004
+CR0_TS = 0x00000008
+CR0_ET = 0x00000010
+CR0_NE = 0x00000020
+CR0_WP = 0x00010000
+CR0_AM = 0x00040000
+CR0_NW = 0x20000000
+CR0_CD = 0x40000000
+CR0_PG = 0x80000000
 
 	;; Defines: CR3
 	;; CR3_PWT - Page-level Write-Through
 	;; CR3_PCD - Page-level Cache Disable
-CR3_PWT equ 1 << 3
-CR3_PCD equ 1 << 4
+CR3_PWT = 0x08
+CR3_PCD = 0x10
 
 	;; Defines: CR4
 	;; CR4_VME        - Virtual 8086 Mode Extensions
@@ -60,67 +60,26 @@ CR3_PCD equ 1 << 4
 	;; CR4_PKE        - Protection Key Enable
 	;; CR4_CET        - Control-flow Enforcement Technology
 	;; CR4_PKS        - Enable Protection Keys for Supervisor-Mode Pages
-CR4_VME        equ 1 << 0
-CR4_PVI        equ 1 << 1
-CR4_TSD        equ 1 << 2
-CR4_DE         equ 1 << 3
-CR4_PSE        equ 1 << 4
-CR4_PAE        equ 1 << 5
-CR4_MCE        equ 1 << 6
-CR4_PGE        equ 1 << 7
-CR4_PCE        equ 1 << 8
-CR4_OSDXSR     equ 1 << 9
-CR4_OSXMMEXCPT equ 1 << 10
-CR4_UMIP       equ 1 << 11
-CR4_VMXE       equ 1 << 13
-CR4_SMXE       equ 1 << 14
-CR4_FSGSBASE   equ 1 << 16
-CR4_PCIDE      equ 1 << 17
-CR4_OSXSAVE    equ 1 << 18
-CR4_SMEP       equ 1 << 20
-CR4_SMAP       equ 1 << 21
-CR4_PKE        equ 1 << 22
-CR4_CET        equ 1 << 23
-CR4_PKS        equ 1 << 24
+CR4_VME        = 0x0000001
+CR4_PVI        = 0x0000002
+CR4_TSD        = 0x0000004
+CR4_DE         = 0x0000008
+CR4_PSE        = 0x0000010
+CR4_PAE        = 0x0000020
+CR4_MCE        = 0x0000040
+CR4_PGE        = 0x0000080
+CR4_PCE        = 0x0000100
+CR4_OSDXSR     = 0x0000200
+CR4_OSXMMEXCPT = 0x0000400
+CR4_UMIP       = 0x0000800
+CR4_VMXE       = 0x0002000
+CR4_SMXE       = 0x0004000
+CR4_FSGSBASE   = 0x0010000
+CR4_PCIDE      = 0x0020000
+CR4_OSXSAVE    = 0x0040000
+CR4_SMEP       = 0x0100000
+CR4_SMAP       = 0x0200000
+CR4_PKE        = 0x0400000
+CR4_CET        = 0x0800000
+CR4_PKS        = 0x1000000
 
-	;; =========================================================================
-	;; eflags
-	;; =========================================================================
-
-	;; Defines: EFLAGS
-	;; EFLAGS_CF    - Carry flag
-	;; EFLAGS_PF    - Parity flag
-	;; EFLAGS_AF    - Auxiliary flag
-	;; EFLAGS_ZF    - Zero flag
-	;; EFLAGS_SF    - Sign flag
-	;; EFLAGS_TF    - Trap flag
-	;; EFLAGS_IF    - Interrupt enable flag
-	;; EFLAGS_DF    - Direction flag
-	;; EFLAGS_OF    - Overflow flag
-	;; EFLAGS_IOPL1 - I/O privilege flag
-	;; EFLAGS_IOPL2 - I/O privilege flag
-	;; EFLAGS_NT    - Nested task flag
-	;; EFLAGS_RF    - Resume flag
-	;; EFLAGS_VM    - Virtual 8086 mode flag
-	;; EFLAGS_AC    - Alignment check
-	;; EFLAGS_VIF   - Virtual Interrupt flag
-	;; EFLAGS_VIP   - Virtual Interrupt pending
-	;; EFLAGS_ID    - CPUID instruction available
-EFLAGS_CF    equ 1 << 0
-EFLAGS_PF    equ 1 << 2
-EFLAGS_AF    equ 1 << 4
-EFLAGS_ZF    equ 1 << 6
-EFLAGS_SF    equ 1 << 7
-EFLAGS_TF    equ 1 << 8
-EFLAGS_IF    equ 1 << 9
-EFLAGS_DF    equ 1 << 10
-EFLAGS_OF    equ 1 << 11
-EFLAGS_IOPL1 equ 1 << 12
-EFLAGS_IOPL2 equ 1 << 13
-EFLAGS_NT    equ 1 << 14
-EFLAGS_RF    equ 1 << 16
-EFLAGS_VM    equ 1 << 17
-EFLAGS_AC    equ 1 << 18
-EFLAGS_VIF   equ 1 << 19
-EFLAGS_VIP   equ 1 << 20
-EFLAGS_ID    equ 1 << 21

@@ -1,3 +1,5 @@
+	;; File: video.inc
+
 struc VesaInfo
 {
 	.Signature             dd 'VBE2'

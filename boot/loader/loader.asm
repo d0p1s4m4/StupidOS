@@ -111,7 +111,7 @@ _start:
 
 	; enable protected mode
 	mov eax, cr0
-	or al, 1
+	or al, CR0_PE
 	mov cr0, eax
 
 	; reload ds, es, fs, gs, ss
@@ -147,6 +147,7 @@ _start:
 	include 'video.inc'
 	include 'gdt.inc'
 	include '../common/bootinfo.inc'
+	include '../../kernel/sys/register.inc'
 
 uDrive    rb 1
 bDriveLBA db FALSE
@@ -237,7 +238,7 @@ common32:
 	mov cr3, eax
 
 	mov eax, cr0
-	or eax, 0x80010000
+	or eax, CR0_PG or CR0_WP
 	mov cr0, eax
 
 	mov eax, STPDBOOT_MAGIC

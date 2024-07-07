@@ -60,7 +60,7 @@ kmain:
 	call klog
 	jmp .halt
 
-	include 'bootinfo.inc'
+	include 'sys/bootinfo.inc'
 	include 'klog.inc'
 	include 'dev/vga_console.inc'
 	include 'mm/mm.inc'

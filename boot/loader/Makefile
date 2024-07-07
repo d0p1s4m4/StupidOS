@@ -3,6 +3,8 @@ TARGET = stpdldr.sys
 LOADER_SRCS	= loader.asm \
 				../common/const.inc \
 				../common/bootinfo.inc \
+				../../kernel/sys/bootinfo.inc \
+				../../kernel/sys/register.inc \
 				video.inc \
 				memory.inc \
 				logger.inc \
