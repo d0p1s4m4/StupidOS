@@ -19,28 +19,37 @@ db 32 dup(0)
 	;;     EBX - Boot structure address
 	;;
 kmain:
-	xchg bx, bx
-
 	mov esp, stack_top
-	
+
 	cmp eax, STPDBOOT_MAGIC
 	jne .error_magic
 
-	; init memory manager
-	; init idt, gdt
-	; copy boot structure 
-	;call vga_console_clear
+	; Copy boot structure
+	mov ecx, sizeof.BootInfo
+	mov esi, ebx
+	mov edi, boot_structure
 
+	; print hello world 
 	mov [0xC03B0000], dword 0x08740953
 	mov [0xC03B0004], dword 0x05700675
 	mov [0xC03B0008], dword 0x03640469
 	mov [0xC03B000C], dword 0x0153024F
 
-
-	;KLOG_INIT
-
 	mov esi, szMsgKernelAlive
 	call klog
+
+	; init pmm (kend, 0x3B0000)
+	mov eax, kend
+	mov ebx, 0xC03B0000
+	call pmm_init
+
+	; init vmm
+	call mm_init
+
+	; map whole memory
+
+	;  idt, gdt
+
 
 .halt:
 	hlt
@@ -51,6 +60,7 @@ kmain:
 	call klog
 	jmp .halt
 
+	include 'bootinfo.inc'
 	include 'klog.inc'
 	include 'dev/vga_console.inc'
 	include 'mm/mm.inc'
@@ -58,10 +68,11 @@ kmain:
 szMsgKernelAlive db "Kernel is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
 
-	align 4
+boot_structure BootInfo
+
+	align 4096
 stack_bottom:
 	rb 0x4000
 stack_top:
 
-_end:
-	dd 0x0
+kend:

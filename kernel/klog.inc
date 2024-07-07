@@ -77,16 +77,86 @@ klog_print_date:
 
 	ret
 
+klog_print_hex:
+	push esi
+	mov esi, szHexPrefix
+	call klog_print
+	pop esi
+
+	or edi, edi
+	jz .print_zero
+	push esi
+	mov esi, szKlogBuffer
+	xor cl, cl
+.loop:
+	cmp cl, 8
+	je .print_number
+	rol edi, 4
+	mov eax, edi
+	and eax, 0xF
+	mov al, byte [sDigit + eax]
+	mov [esi], al
+	inc esi
+	inc cl
+	jmp .loop
+.print_zero:
+	mov al, '0'
+	out dx, al
+	jmp .end
+.print_number:
+	mov [esi], byte 0
+	mov esi, szKlogBuffer
+	call klog_print
+	pop esi
+.end:
+	ret
+
 	;; Function: klog
 	;; Output kernel log
 klog:
 	call klog_print_date
 
+.loop:
+	mov al, [esi]
+	or al, al
+	jz .end
+	cmp al, '%'
+	jne .putchar
+	inc esi
+	mov al, [esi]
+	cmp al, '%'
+	je .putchar
+	cmp al, 's'
+	jne .check_x
+	mov edi, esi
+	pop eax
+	pop esi
+	push eax
 	call klog_print
-
+	mov esi, edi
+	jmp .next
+.check_x:
+	cmp al, 'x'
+	jne .unknown_format
+	pop eax
+	pop edi
+	push eax
+	call klog_print_hex
+	jmp .next
+.unknown_format:
+	mov al, '?'
+.putchar:
+	out dx, al
+.next:
+	inc esi
+	jmp .loop
+.end:
 	mov esi, szCRLF
 	call klog_print
 	ret
 
-szTime db '[00:00:00] ', 0
-szCRLF db CR, LF, 0
+szTime       db '[00:00:00] ', 0
+szCRLF       db CR, LF, 0
+sDigit       db '0123456789ABCDEF'
+szHexPrefix  db '0x', 0
+szKlogBuffer db '00000000', 0

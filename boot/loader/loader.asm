@@ -215,6 +215,18 @@ common32:
 	cmp ecx, [uKernelSize]
 	jbe @b
 
+	; map some memory untils 0xC03B0000 for memory allocator
+@@:
+	mov edx, esi
+	or edx, 0x3
+	mov [edi], edx
+	add edi, 4
+	add ecx, 4096
+	add esi, 4096
+	cmp ecx, 0x3B0000
+	jb @b
+
+
 	; map 0xB8000 (vga) to 0xC03B0000
 	; 0xC03B0000 >> 12 & 0x3FF == 944
 	mov dword [boot_768_page_table + 944 * 4], 0xB8000 + 0x3
@@ -230,8 +242,6 @@ common32:
 
 	mov eax, STPDBOOT_MAGIC
 	mov ebx, boot_structure
-
-	xchg bx, bx
 
 	mov ecx, 0xC0000000
 	jmp ecx

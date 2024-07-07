@@ -14,3 +14,7 @@ struc BootInfo {
 	.kernel_start dd ?
 	.kernel_size  dd ?
 }
+virtual at 0
+  BootInfo BootInfo
+  sizeof.BootInfo:
+end virtual
