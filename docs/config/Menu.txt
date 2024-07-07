@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Variables, Classes, Macros
+Don't Index: Classes, Macros, Variables
 
 
 # --------------------------------------------------------------------------
@@ -62,15 +62,19 @@ Group: BootLoader  {
 
    Group: Loader  {
 
+      File: a20.inc  (boot/loader/a20.inc)
       File: loader.asm  (boot/loader/loader.asm)
       File: logger.inc  (boot/loader/logger.inc)
       File: memory.inc  (boot/loader/memory.inc)
+      File: video_setup  (boot/loader/video.inc)
       }  # Group: Loader
 
    Group: Common  {
 
       File: bios.inc  (boot/common/bios.inc)
+      File: bootinfo.inc  (boot/common/bootinfo.inc)
       File: fat12.inc  (boot/common/fat12.inc)
+      File: macro.inc  (boot/common/macro.inc)
       File: mbr.inc  (boot/common/mbr.inc)
       }  # Group: Common
 
@@ -84,8 +88,18 @@ Group: BootLoader  {
 
 Group: Kernel  {
 
-   File: kernel memory map  (kernel/intro.txt)
+   File: bootinfo.inc  (kernel/bootinfo.inc)
+   File: Introduction  (kernel/intro.txt)
    File: kernel.asm  (kernel/kernel.asm)
+   File: klog  (kernel/klog.inc)
+   File: vga_console_clear  (kernel/dev/vga_console.inc)
+
+   Group: Memory Manager  {
+
+      File: mm.inc  (kernel/mm/mm.inc)
+      File: pmm.inc  (kernel/mm/pmm.inc)
+      }  # Group: Memory Manager
+
    }  # Group: Kernel
 
 Group: Lib  {
@@ -116,7 +130,7 @@ Group: Lib  {
 
       }  # Group: Crypto
 
-   File: ctype  (lib/c/ctype.asm)
+   File: ctype  (no auto-title, lib/c/ctype.asm)
    }  # Group: Lib
 
 Group: Index  {

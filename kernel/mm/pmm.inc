@@ -1,9 +1,5 @@
 	;; File: pmm.inc
 
-struc FreeItem {
-	.next dd ?
-}
-
 	;; Function: pmm_init
 	;; 
 	;; In:
@@ -18,6 +14,10 @@ pmm_init:
 	call pmm_free_range
 	ret
 
+	;; Function: pmm_alloc_page
+	;; 
+	;; Out:
+	;;    EAX - page address (return zero on error)
 pmm_alloc_page:
 	cmp [pFreeList], 0
 	je .error
@@ -31,6 +31,11 @@ pmm_alloc_page:
 	xor eax, eax
 	ret
 
+	;; Function: pmm_free_page
+	;; push page back to free list
+	;;
+	;; In:
+	;;    EAX - page to be freed
 pmm_free_page:
 	or eax, eax
 	jz @f
@@ -42,6 +47,7 @@ pmm_free_page:
 
 	;; Function: pmm_free_range
 	;; TODO: allignment 
+	;;
 	;; In:
 	;;    EAX - Start
 	;;    EBX - End

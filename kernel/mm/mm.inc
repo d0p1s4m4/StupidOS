@@ -1,4 +1,5 @@
 
+	;; File: mm.inc
 include "pmm.inc"
 
 mm_init:
@@ -12,6 +13,20 @@ mm_init:
 	mov esi, szMsgMmKernelPgDir
 	call klog
 
+	;; Map kernel
+	
+	;; Map video
+
+	;; Map low memory at ????
+
+	;; Map free memory
+
+	; mov eax, [pKernelPgDir]
+	; mov cr3, eax
+
+	ret
+
+mm_wallk_pagedir:
 	ret
 
 szMsgMmInit db "MM: initialize", 0
