@@ -3,16 +3,16 @@
 
 include "pmm.inc"
 
+macro KV2P reg {
+	sub reg, KERNEL_VIRT_BASE
+}
+
 mm_init:
 	mov esi, szMsgMmInit
 	call klog
 
 	call pmm_alloc_page
 	mov [pKernelPgDir], eax
-
-	push eax
-	mov esi, szMsgMmKernelPgDir
-	call klog
 
 	; clear page dir
 	mov ecx, 4096
@@ -22,20 +22,34 @@ mm_init:
 
 	;; Map kernel and kmemory
 	call pmm_alloc_page
-	push eax
-	mov ecx, 4096
+	xor esi, esi
+	xor ecx, ecx
 	mov edi, eax
-	xor al, al
-	rep stosb
-	pop eax
+@@:
+	mov edx, esi
+	or edx, 0x3
+	mov [edi], edx
+	add edi, 4
+	add esi, 4096
+	inc ecx
+	cmp ecx, 1024
+	jb @b
 
-	;; Map video
-
+	or eax, 0x03
+	mov edx, [pKernelPgDir]
+	add edx, (768 * 4)
+	KV2P eax
+	mov [edx], eax
 
 	;; Map free memory
 
-	; mov eax, [pKernelPgDir]
-	; mov cr3, eax
+	mov eax, [pKernelPgDir]
+	KV2P eax
+	mov cr3, eax
+
+	push eax
+	mov esi, szMsgMmKernelPgDir
+	call klog
 
 	ret
 
@@ -43,5 +57,5 @@ mm_wallk_pagedir:
 	ret
 
 szMsgMmInit db "MM: initialize", 0
-szMsgMmKernelPgDir db "MM: Kernel page dir at %x", 0
-pKernelPgDir dd ?
+szMsgMmKernelPgDir db "MM: Kernel page dir at %x phys", 0
+pKernelPgDir dd 0

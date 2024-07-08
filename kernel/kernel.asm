@@ -30,17 +30,17 @@ kmain:
 	mov edi, boot_structure
 
 	; print hello world 
-	mov [0xC03B0000], dword 0x08740953
-	mov [0xC03B0004], dword 0x05700675
-	mov [0xC03B0008], dword 0x03640469
-	mov [0xC03B000C], dword 0x0153024F
+	mov [0xC00B8000], dword 0x08740953
+	mov [0xC00B8004], dword 0x05700675
+	mov [0xC00B8008], dword 0x03640469
+	mov [0xC00B800C], dword 0x0153024F
 
 	mov esi, szMsgKernelAlive
 	call klog
 
-	; init pmm (kend, 0x3B0000)
+	; init pmm (kend, 0x400000)
 	mov eax, kend
-	mov ebx, 0xC03B0000
+	mov ebx, 0xC0400000
 	call pmm_init
 
 	; init vmm

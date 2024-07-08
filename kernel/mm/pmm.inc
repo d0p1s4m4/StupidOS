@@ -63,8 +63,6 @@ pmm_free_range:
 	mov esi, szMsgPmmFreeRange
 	call klog
 
-	xchg bx, bx
-
 	mov esi, [ebp-4]
 .loop:
 	mov eax, [pFreeList]

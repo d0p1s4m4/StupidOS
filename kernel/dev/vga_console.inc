@@ -2,7 +2,7 @@
 
 VGA_COLUMNS = 80
 VGA_LINES = 25
-VGA_BASE = 0xC03B0000
+VGA_BASE = 0xC00B8000
 
 vga_lineno db 0
 vga_colno db 0

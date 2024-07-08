@@ -202,37 +202,7 @@ common32:
 	
 	mov dword [boot_page_directory], boot_0_page_table + 0x3 ; preset and writable
 
-	; map kernel at 0xC0000000
-	mov esi, KERNEL_BASE
-	mov edi, boot_768_page_table
-	xor ecx, ecx
-@@:
-	mov edx, esi
-	or edx, 0x3
-	mov [edi], edx
-	add edi, 4
-	add esi, 4096
-	add ecx, 4096
-	cmp ecx, [uKernelSize]
-	jbe @b
-
-	; map some memory untils 0xC03B0000 for memory allocator
-@@:
-	mov edx, esi
-	or edx, 0x3
-	mov [edi], edx
-	add edi, 4
-	add ecx, 4096
-	add esi, 4096
-	cmp ecx, 0x3B0000
-	jb @b
-
-
-	; map 0xB8000 (vga) to 0xC03B0000
-	; 0xC03B0000 >> 12 & 0x3FF == 944
-	mov dword [boot_768_page_table + 944 * 4], 0xB8000 + 0x3
-
-	mov dword [boot_page_directory + (768 * 4)], boot_768_page_table + 0x3
+	mov dword [boot_page_directory + (768 * 4)], boot_0_page_table + 0x3
 
 	mov eax, boot_page_directory
 	mov cr3, eax
@@ -244,7 +214,7 @@ common32:
 	mov eax, STPDBOOT_MAGIC
 	mov ebx, boot_structure
 
-	mov ecx, 0xC0000000
+	mov ecx, 0xC0000000 + KERNEL_BASE
 	jmp ecx
 
 hang:
@@ -257,9 +227,6 @@ boot_structure BootInfo
 
 	align 4096
 boot_page_directory:
-	rb 4096
-
-boot_768_page_table:
 	rb 4096
 
 boot_0_page_table:
