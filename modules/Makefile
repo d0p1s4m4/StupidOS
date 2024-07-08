@@ -1,0 +1,11 @@
+TOPGOALS = all clean install
+
+SUBDIRS = dummy
+
+.PHONY: $(SUBDIRS)
+$(SUBDIRS):
+	@echo "📁 boot/$@"
+	@DESTDIR=$(DESTDIR) $(MAKE) -C $@ $(MAKECMDGOALS)
+
+.PHONY: $(TOPGOALS)
+$(TOPGOALS): $(SUBDIRS)

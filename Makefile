@@ -26,10 +26,10 @@ LDFLAGS	=
 
 QEMU_COMMON = \
 		-rtc base=localtime \
-		-vga virtio \
-		-serial mon:stdio
+		-vga cirrus \
+		-serial mon:stdio 
 
-SUBDIRS	:= external tools include boot kernel lib bin
+SUBDIRS	:= external tools include boot kernel modules lib bin
 
 TARGET	= stupid.tar.gz floppy1440.img floppy2880.img 
 ifneq ($(OS),Windows_NT)
