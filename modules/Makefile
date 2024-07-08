@@ -4,7 +4,7 @@ SUBDIRS = dummy
 
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
-	@echo "📁 boot/$@"
+	@echo "📁 modules/$@"
 	@DESTDIR=$(DESTDIR) $(MAKE) -C $@ $(MAKECMDGOALS)
 
 .PHONY: $(TOPGOALS)
