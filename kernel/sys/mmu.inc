@@ -39,15 +39,15 @@
 	;; PDE_U   - User
 	;; PDE_PWT - Write-Through
 	;; PDE_PS  - 4MiB page
-PDE_P   equ 1 << 0
-PDE_W   equ 1 << 1
-PDE_U   equ 1 << 2
-PDE_PWT equ 1 << 3
-PDE_PCD equ 1 << 4
-PDE_A   equ 1 << 5
-PDE_D   equ 1 << 6
-PDE_PS  equ 1 << 7
-PDE_G   equ 1 << 8
+PDE_P   = 0x001
+PDE_W   = 0x002
+PDE_U   = 0x004
+PDE_PWT = 0x008
+PDE_PCD = 0x010
+PDE_A   = 0x020
+PDE_D   = 0x040
+PDE_PS  = 0x080
+PDE_G   = 0x100
 
 	;; Defines: Page Table Flags
 	;; PTE_P   - Present
@@ -59,12 +59,12 @@ PDE_G   equ 1 << 8
 	;; PTE_D   - Dirty
 	;; PTE_PAT - TODO
 	;; PTE_G   - TODO
-PTE_P   equ 1 << 0
-PTE_W   equ 1 << 1
-PTE_U   equ 1 << 2
-PTE_PWT equ 1 << 3
-PTE_PCD equ 1 << 4
-PTE_A   equ 1 << 5
-PTE_D   equ 1 << 6
-PTE_PAT equ 1 << 7
-PTE_G   equ 1 << 8
+PTE_P   = 0x001
+PTE_W   = 0x002
+PTE_U   = 0x004
+PTE_PWT = 0x008
+PTE_PCD = 0x010
+PTE_A   = 0x020
+PTE_D   = 0x040
+PTE_PAT = 0x080
+PTE_G   = 0x100

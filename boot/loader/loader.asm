@@ -148,6 +148,7 @@ _start:
 	include 'gdt.inc'
 	include '../common/bootinfo.inc'
 	include '../../kernel/sys/register.inc'
+	include '../../kernel/sys/mmu.inc'
 
 uDrive    rb 1
 bDriveLBA db FALSE
@@ -192,7 +193,7 @@ common32:
 	mov edi, boot_0_page_table
 @@:
 	mov edx, esi
-	or edx, 0x3
+	or edx, (PTE_P or PTE_W)
 	mov [edi], edx
 	add edi, 4
 	add esi, 4096
@@ -200,15 +201,15 @@ common32:
 	cmp ecx, 1024
 	jb @b
 	
-	mov dword [boot_page_directory], boot_0_page_table + 0x3 ; preset and writable
+	mov dword [boot_page_directory], boot_0_page_table + (PDE_P or PDE_W) ; preset and writable
 
-	mov dword [boot_page_directory + (768 * 4)], boot_0_page_table + 0x3
+	mov dword [boot_page_directory + (768 * 4)], boot_0_page_table + (PDE_P or PDE_W)
 
 	mov eax, boot_page_directory
 	mov cr3, eax
 
 	mov eax, cr0
-	or eax, CR0_PG or CR0_WP
+	or eax, (CR0_PG or CR0_WP)
 	mov cr0, eax
 
 	mov eax, STPDBOOT_MAGIC

@@ -1,12 +1,50 @@
 	;; File: mm.inc
 	;; StupidOS Memory Manager
+	;;
+	;; About: Memory Layout
+	;;
+	;; >                 Virtual
+	;; > 0xFFFFFFFF +---------------+
+	;; >            |               |
+	;; >            | Device Memory |
+	;; >            |               |
+	;; >            +---------------+
+	;; >            |               |
+	;; >            | Kernel Heap   |
+	;; >            |               |
+	;; >   KERN_END +---------------+
+	;; >            |               |
+	;; >            | Stupid Kernel |
+	;; >            |               |
+	;; > 0xC0100000 +---------------+
+	;; >            | I/O Space and |
+	;; >            | phys memory   |
+	;; >            | Lower than 1M | kernel mode only
+	;; > 0xC0000000 +---------------+
+	;; >            |               | user mode
+	;; >            |  userspace    |
+	;; >            |               |
+	;; > 0x00000000 +---------------+
+	;;
 
 include "pmm.inc"
+include "../sys/mmu.inc"
 
+	;; Macro: KV2P
+	;; Convert virtual address to physical
 macro KV2P reg {
 	sub reg, KERNEL_VIRT_BASE
 }
 
+	;; Macro: KP2V
+macro KP2V reg {
+	add reg, KERNEL_VIRT_BASE
+}
+
+mm_kmap:
+	ret
+
+	;; Function: mm_init
 mm_init:
 	mov esi, szMsgMmInit
 	call klog
@@ -27,7 +65,7 @@ mm_init:
 	mov edi, eax
 @@:
 	mov edx, esi
-	or edx, 0x3
+	or edx, (PTE_P or PTE_W)
 	mov [edi], edx
 	add edi, 4
 	add esi, 4096
@@ -35,7 +73,7 @@ mm_init:
 	cmp ecx, 1024
 	jb @b
 
-	or eax, 0x03
+	or eax, (PDE_P or PDE_W)
 	mov edx, [pKernelPgDir]
 	add edx, (768 * 4)
 	KV2P eax
