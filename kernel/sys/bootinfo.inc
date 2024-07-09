@@ -13,6 +13,7 @@ struc BootInfo {
 	.mmap         dd 4*2*20 dup(0)
 	.kernel_start dd ?
 	.kernel_size  dd ?
+	.high_mem     dd ?
 }
 virtual at 0
   BootInfo BootInfo

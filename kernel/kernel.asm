@@ -28,6 +28,7 @@ kmain:
 	mov ecx, sizeof.BootInfo
 	mov esi, ebx
 	mov edi, boot_structure
+	rep movsb
 
 	; print hello world 
 	mov [0xC00B8000], dword 0x08740953
@@ -45,6 +46,11 @@ kmain:
 
 	; init vmm
 	call mm_init
+
+	mov eax, 0xC0400000
+	mov ebx, [boot_structure.high_mem]
+	add ebx, KERNEL_VIRT_BASE
+	call pmm_free_range
 
 	; map whole memory
 

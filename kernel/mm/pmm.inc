@@ -1,5 +1,18 @@
 	;; File: pmm.inc
 
+macro ALIGN reg {
+	local end
+
+	push reg
+	and reg, 0xFFF
+	pop reg
+	jz end
+	and reg, 0xFFFFF000
+	add reg, 0x1000
+end:
+
+}
+
 	;; Function: pmm_init
 	;; 
 	;; In:
@@ -55,6 +68,8 @@ pmm_free_range:
 	push ebp
 	mov ebp, esp
 	sub esp, 0x10
+	ALIGN eax
+	ALIGN ebx
 	mov [ebp-4], eax
 	mov [ebp-8], ebx
 

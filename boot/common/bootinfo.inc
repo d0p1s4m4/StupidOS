@@ -23,6 +23,16 @@ boot_info_add_memmap:
 	jbe @f
 	ret
 @@:
+
+	; ----------------------------------------------------------------------
+	; dirty hack - TODO: clean this mess
+	cmp eax, 0x100000
+	jne @f
+	mov [boot_structure.high_mem], edx
+@@:
+	; end hack
+	; ----------------------------------------------------------------------
+
 	push ebx
 	xor ecx, ecx
 .loop:

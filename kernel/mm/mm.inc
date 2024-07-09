@@ -37,28 +37,26 @@ macro KV2P reg {
 }
 
 	;; Macro: KP2V
+	;; Convert physical address to virtual
 macro KP2V reg {
 	add reg, KERNEL_VIRT_BASE
 }
 
+	;; Function: mm_kmap
 mm_kmap:
-	ret
-
-	;; Function: mm_init
-mm_init:
-	mov esi, szMsgMmInit
-	call klog
+	push esp
+	mov ebp, esp
+	sub esp, 0x10
 
 	call pmm_alloc_page
-	mov [pKernelPgDir], eax
+	mov [ebp-4], eax
 
 	; clear page dir
+	mov edi, eax
 	mov ecx, 4096
 	xor al, al
-	mov edi, [pKernelPgDir]
 	rep stosb
 
-	;; Map kernel and kmemory
 	call pmm_alloc_page
 	xor esi, esi
 	xor ecx, ecx
@@ -74,13 +72,52 @@ mm_init:
 	jb @b
 
 	or eax, (PDE_P or PDE_W)
-	mov edx, [pKernelPgDir]
+	mov edx, [ebp-4]
 	add edx, (768 * 4)
 	KV2P eax
 	mov [edx], eax
 
-	;; Map free memory
+	mov eax, [ebp-4]
 
+	leave
+	ret
+
+	;; Function: mm_init
+mm_init:
+	mov esi, szMsgMmInit
+	call klog
+
+	call mm_kmap
+	mov [pKernelPgDir], eax
+
+	; map whole memory 
+	mov esi, 0x400000
+	mov ebx, (769 * 4)
+.loop:
+	call pmm_alloc_page
+	xor ecx, ecx
+	mov edi, eax
+@@:
+	mov edx, esi
+	or edx, (PTE_P or PTE_W)
+	mov [edi], edx
+	add edi, 4
+	add esi, 4096
+	inc ecx
+	cmp ecx, 1024
+	jb @b
+
+	or eax, (PDE_P or PDE_W)
+	mov edx, [pKernelPgDir]
+	add edx, ebx
+	add ebx, 4
+	KV2P eax
+	mov [edx], eax
+
+	cmp esi, [boot_structure.high_mem]
+	jb .loop
+
+	; reload cr3
 	mov eax, [pKernelPgDir]
 	KV2P eax
 	mov cr3, eax
@@ -89,6 +126,12 @@ mm_init:
 	mov esi, szMsgMmKernelPgDir
 	call klog
 
+	ret
+
+mm_alloc:
+	ret
+
+mm_dealloc:
 	ret
 
 mm_wallk_pagedir:
