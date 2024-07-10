@@ -1,10 +1,29 @@
 struc TSS {
-	.link   dw ?
-	.link_h dw ?
-	.esp0   dd ?
-	.ss0    dw ?
-	.ss0_h  dw ?
-	.esp1   dd ?
-	.ss1    dw ?
-		
+	.prev_tss dd ?
+	.esp0     dd ?
+	.ss0      dd ?
+	.esp1     dd ?
+	.ss1      dd ?
+	.esp2     dd ?
+	.ss2      dd ?
+	.cr3      dd ?
+	.eip      dd ?
+	.eflags   dd ?
+	.eax      dd ?
+	.ecx      dd ?
+	.edx      dd ?
+	.ebx      dd ?
+	.esp      dd ?
+	.ebp      dd ?
+	.esi      dd ?
+	.edi      dd ?
+	.es       dd ?
+	.cs       dd ?
+	.ss       dd ?
+	.ds       dd ?
+	.fs       dd ?
+	.gs       dd ?
+	.ldt      dd ?
+	.trap     dw ?
+	.iomap    dw ?
 }

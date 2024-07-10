@@ -96,14 +96,18 @@ pmm_free_range:
 	cmp esi, [ebp-8]
 	jb .loop
 
+	call pmm_stats
 
+	leave
+	ret
+
+	;; Function: pmm_stats
+pmm_stats:
 	push dword [cFreePage]
 	push dword [cUsedPage]
 	push dword [cTotalPage]
 	mov esi, szMsgPmmStats
 	call klog
-
-	leave
 	ret
 
 pFreeList dd 0

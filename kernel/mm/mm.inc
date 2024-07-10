@@ -82,6 +82,67 @@ mm_kmap:
 	leave
 	ret
 
+	;; Function: mm_clone_pte
+	;;
+	;; In:
+	;;    EAX - source page table
+	;;
+	;; Out:
+	;;    EAX - cloned page table
+	;;
+mm_clone_pte:
+	push esp
+	mov ebp, esp
+	sub esp, 0x10
+
+	leave
+	ret
+
+	;; Function: mm_clone_pgdir
+	;;
+	;; In:
+	;;    EAX - source page dir
+	;;
+	;; Out:
+	;;    EAX - cloned page dir
+mm_clone_pgdir:
+	push esp
+	mov ebp, esp
+	sub esp, 0x10
+
+	mov [ebp-4], eax
+	call pmm_alloc_page
+
+	mov [ebp-8], eax
+	mov ecx, 4096
+	mov edi, eax
+	xor al, al
+	rep stosb
+
+	xor ecx, ecx
+.loop:
+	mov eax, [ebp-4]
+	add eax, ecx
+	mov eax, [eax]
+	cmp eax, 0
+	je .next
+	cmp ecx, (768*4)
+	jb @f
+	mov edx, [ebp-8]
+	add edx, ecx
+	mov [edx], eax
+	jmp .next
+@@:
+	mov edx, eax
+	call pmm_alloc_page
+.next:
+	add ecx, 4
+	cmp ecx, 4096
+	jb .loop
+
+	leave
+	ret
+
 	;; Function: mm_init
 mm_init:
 	mov esi, szMsgMmInit
