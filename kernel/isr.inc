@@ -1,13 +1,16 @@
-macro ISR_ERROR num {
-	cli
-
-	jmp isr_common
-}
-
-macro ISR_NOERROR num {
-	cli
-
-	jmp isr_common
+macro ISR [name,error] {
+isr_table:
+forward
+	dd isr_#name
+forward
+	isr_#name#:
+		cli
+		if error eq 0
+		push 0
+		end if
+		push error
+		jmp isr_common
+				 
 }
 
 isr_common:
@@ -32,3 +35,37 @@ isr_common:
 	add esp, 8
 	sti
 	iret
+
+ISR \
+	division_by_zero, 0, \
+	debug, 0, \
+	nmi, 0, \
+	breakpoint, 0, \
+	overflow, 0, \
+	bound_range_exceeded, 0, \
+	invalid_opcode, 0, \
+	device_not_available, 0, \
+	double_fault, 1, \
+	coproc_seg_overrun, 0, \
+	invalid_tss, 1, \
+	seg_not_present, 1, \
+	stack_seg_fault, 1, \
+	general_protection_fault, 1, \
+	page_fault, 1, \
+	reserved15, 0, \
+	x87_exception, 0, \
+	alignment_check, 0, \
+	machine_check, 0, \
+	simd_exception, 0, \
+	virt_exception, 0, \
+	reserved21, 0, \
+	reserved22, 0, \
+	reserved23, 0, \
+	reserved24, 0, \
+	reserved25, 0, \
+	reserved26, 0, \
+	reserved27, 0, \
+	reserved28, 0, \
+	reserved29, 0, \
+	security_exception, 0, \
+	reserved31, 0

@@ -31,6 +31,10 @@ pmm_init:
 	;; Out:
 	;;    EAX - page address (return zero on error)
 pmm_alloc_page:
+	xchg bx, bx
+	mov eax, uPmmLock
+	call lock_acquire
+
 	cmp [pFreeList], 0
 	je .error
 	mov eax, [pFreeList]
@@ -40,11 +44,21 @@ pmm_alloc_page:
 	inc [cUsedPage]
 	dec [cFreePage]
 
+
+	push eax
+	mov eax, uPmmLock
+	call lock_release
+	pop eax
+
 	ret
 .error:
 	mov esi, szErrorNoMemLeft
 	call klog
+
+	mov eax, uPmmLock
+	call lock_release
 	xor eax, eax
+
 	ret
 
 	;; Function: pmm_free_page
@@ -53,6 +67,8 @@ pmm_alloc_page:
 	;; In:
 	;;    EAX - page to be freed
 pmm_free_page:
+	mov eax, uPmmLock
+	call lock_acquire
 	or eax, eax
 	jz @f
 	mov edx, [pFreeList]
@@ -62,6 +78,8 @@ pmm_free_page:
 	inc [cFreePage]
 	dec [cUsedPage]
 @@:
+	mov eax, uPmmLock
+	call lock_release
 	ret
 
 	;; Function: pmm_free_range
@@ -115,6 +133,7 @@ szMsgPmmInit      db "PMM: initialize", 0
 szMsgPmmFreeRange db "PMM: add free memory range %x - %x", 0
 szErrorNoMemLeft  db "Error: no free memory left", 0
 szMsgPmmStats     db "PMM: Total page: %x | Used page: %x | Free page: %x", 0
+uPmmLock          dd 0
 
 ; Some stats
 cFreePage  dd 0

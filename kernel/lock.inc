@@ -1,17 +1,13 @@
 
 	;; 
 lock_acquire:
-	lock bts [eax], 0
-	jnc .end
-@@:
-	pause
-	test [eax], 1
-	jne @b
-
-	lock bts [eax], 0
-	jc @b
-.end:
+	mov edx, 1	
+	xchg edx, [eax]
+	or edx, edx
+	jnz lock_acquire
 	ret
 
-release:
-	mov [eax], 0
+lock_release:
+	xor edx, edx
+	xchg [eax], edx
+	ret

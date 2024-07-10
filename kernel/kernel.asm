@@ -68,6 +68,7 @@ kmain:
 	include 'klog.inc'
 	include 'dev/vga_console.inc'
 	include 'mm/mm.inc'
+	include 'lock.inc'
 
 szMsgKernelAlive db "Kernel is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
