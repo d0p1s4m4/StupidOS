@@ -112,6 +112,8 @@ run-efi: all OVMF32.fd
 .PHONY: docs
 docs:
 	@mkdir -p docs/html
+	wget -O docs/webring.json https://webring.devse.wiki/webring.json
+	python3 docs/devsewebring.py docs/webring.json docs/webring.txt
 	naturaldocs -p docs/config -img docs/img -xi sysroot -i . -ro -o HTML docs/html
 	cp docs/img/favicon.ico docs/html/
 

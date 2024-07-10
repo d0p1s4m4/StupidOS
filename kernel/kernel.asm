@@ -52,8 +52,6 @@ kmain:
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
 
-	; map whole memory
-
 	;  idt, gdt
 
 

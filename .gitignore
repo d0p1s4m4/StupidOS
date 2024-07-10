@@ -33,3 +33,5 @@ bochsrc.bxrc
 *.EFI
 *.fd
 *.mod
+webring.json
+webring.txt
