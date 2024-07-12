@@ -52,7 +52,10 @@ kmain:
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
 
-	;  idt, gdt
+	; load kernel gdt 
+	lgdt [pGDT]
+	; I don't think i need to reload segment cuz their value are already correct
+
 
 
 .halt:
@@ -69,6 +72,7 @@ kmain:
 	include 'dev/vga_console.inc'
 	include 'mm/mm.inc'
 	include 'lock.inc'
+	include 'gdt.inc'
 
 szMsgKernelAlive db "Kernel is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
