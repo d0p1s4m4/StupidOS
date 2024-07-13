@@ -1,5 +1,4 @@
 macro ISR [name,error] {
-isr_table:
 forward
 	dd isr_#name
 forward
@@ -13,6 +12,34 @@ forward
 				 
 }
 
+idt_setup:
+	xor ecx, ecx
+@@:
+	mov eax, [aISRTable + (ecx * 4)]
+	mov [aInterruptGate + (ecx * 8)], ax
+	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
+
+	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
+	shr eax, 16
+	mov [aInterruptGate + (ecx * 8) + 6], ax
+	inc ecx
+	cmp ecx, 32
+	jb @b
+
+	lidt [pIDT]
+	sti
+	ret
+
+pIDT:
+	dw aInterruptGate.end-aInterruptGate-1
+	dd aInterruptGate
+
+; variable: idt_entries
+aInterruptGate:
+	dd 256*2 dup(0)
+.end:
+
+
 isr_common:
 	pusha
 
@@ -25,6 +52,9 @@ isr_common:
 	mov fs, ax
 	mov gs, ax
 
+	mov esi, szMsgInterrupt
+	call klog 
+
 	pop eax
 	mov ds, ax
 	mov es, ax
@@ -36,6 +66,7 @@ isr_common:
 	sti
 	iret
 
+aISRTable:
 ISR \
 	division_by_zero, 0, \
 	debug, 0, \
@@ -69,3 +100,5 @@ ISR \
 	reserved29, 0, \
 	security_exception, 0, \
 	reserved31, 0
+
+szMsgInterrupt db "Interrupt", 0

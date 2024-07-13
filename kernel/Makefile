@@ -9,7 +9,9 @@ SRCS	= kernel.asm \
 			dev/vga_console.inc \
 			mm/mm.inc \
 			mm/pmm.inc \
-			lock.inc 
+			lock.inc \
+			gdt.inc \
+			isr.inc
 
 .PHONY: all
 all: $(KERNEL)

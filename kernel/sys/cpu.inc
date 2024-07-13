@@ -102,6 +102,7 @@ struc idt_gate
 	.attributes:  resb 1
 	.offset_high: resw 1
 endstruc
+defn idt_gate
 
 	;; About: Gates
 	;; - Task Gate
