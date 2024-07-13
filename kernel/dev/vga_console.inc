@@ -16,3 +16,7 @@ vga_console_clear:
 	rep stosb
 	ret
 
+vga_console_putc:
+	
+	ret
+

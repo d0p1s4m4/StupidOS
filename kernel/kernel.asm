@@ -2,6 +2,8 @@
 	format binary
 
 	include 'const.inc'
+	include 'sys/bootinfo.inc'
+	include 'sys/cpu.inc'
 
 	org KBASE
 	use32
@@ -52,15 +54,16 @@ kmain:
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
 
+	call pic_init
+
 	; load kernel gdt 
 	lgdt [pGDT]
 	; I don't think i need to reload segment cuz their value are already correct
 
-	xchg bx, bx
-	call pic_disable
 
 	call idt_setup
 
+	int 0x42
 
 .halt:
 	hlt
@@ -71,19 +74,22 @@ kmain:
 	call klog
 	jmp .halt
 
-	include 'sys/bootinfo.inc'
 	include 'klog.inc'
 	include 'dev/vga_console.inc'
 	include 'mm/mm.inc'
 	include 'lock.inc'
 	include 'gdt.inc'
+	include 'syscall.inc'
 	include 'isr.inc'
 	include 'pic.inc'
+
 
 szMsgKernelAlive db "Kernel is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
 
 boot_structure BootInfo
+
+kTSS TSS
 
 	align 4096
 stack_bottom:

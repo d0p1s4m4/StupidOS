@@ -26,6 +26,15 @@ idt_setup:
 	cmp ecx, 32
 	jb @b
 
+	mov ecx, 0x42
+	mov eax, isr_syscall
+	mov [aInterruptGate + (ecx * 8)], ax
+	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
+
+	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
+	shr eax, 16
+	mov [aInterruptGate + (ecx * 8) + 6], ax
+
 	lidt [pIDT]
 	sti
 	ret

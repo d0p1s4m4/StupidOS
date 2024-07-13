@@ -1,0 +1,3 @@
+irq_timer:
+	iret 
+

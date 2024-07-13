@@ -21,9 +21,9 @@ gdt:
 	db 0x00, 0xF2, 0xCF, 0x00
 
 	; Tss
-;.tss:
-;	dw ?
-;	dd ?
+.tss:
+	dw ?
+	dd ?
 
 .end:
 	

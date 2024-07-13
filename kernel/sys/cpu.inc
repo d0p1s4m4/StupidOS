@@ -88,21 +88,24 @@ struc TSS {
 	.iomap    dw ?
 }
 
-	;; Structure: idt_gate
+struc GDTGate {
+	
+}
+
+	;; Structure: IDTGate
 	;; .offset_low  - TODO
 	;; .selector    - TODO
 	;; .zero        - TODO
 	;; .attributes  - TODO
 	;; .offset_high - TODO
 	;;
-struc idt_gate
-	.offset_low:  resw 1
-	.selector:    resw 1
-	.zero:        resb 1
-	.attributes:  resb 1
-	.offset_high: resw 1
-endstruc
-defn idt_gate
+struc IDTGate {
+	.offset_low  dw ?
+	.selector    dw ?
+	.zero        db 0
+	.attributes  db ?
+	.offset_high dw ?
+}
 
 	;; About: Gates
 	;; - Task Gate
@@ -130,31 +133,31 @@ defn idt_gate
 	;; > +--------------- |----------------+-----------------|-----------------+
 
 
-struc intframe
+struc intframe {
 	;; registers
-	.edi: resd 1
-	.esi: resd 1
-	.ebp: resd 1
-	.esp: resd 1
-	.ebx: resd 1
-	.edx: resd 1
-	.ecx: resd 1
-	.eax: resd 1
+	.edi dd ?
+	.esi dd ?
+	.ebp dd ?
+	.esp dd ?
+	.ebx dd ?
+	.edx dd ?
+	.ecx dd ?
+	.eax dd ?
 
 	;;
-	.gs:    resd 1
-	.fs:    resd 1
-	.es:    resd 1
-	.ds:    resd 1
-	.intno: resd 1
+	.gs    dd ?
+	.fs    dd ?
+	.es    dd ?
+	.ds    dd ?
+	.intno dd ?
 
 	;; by x86 hardware
-	.err:    resd 1
-	.eip:    resd 1
-	.cs:     resd 1
-	.eflags: resd 1
+	.err     dd ?
+	.eip     dd ?
+	.cs      dd ?
+	.eflags  dd ?
 
 	;; crossring
-	.useresp: resd 1
-	.ss:      resd 1
-endstruc
+	.useresp  dd ?
+	.ss       dd ?
+}
