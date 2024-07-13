@@ -8,6 +8,13 @@ PIC2_DATA    = 0xA1
 
 PIC_EOI = 0x20
 
+
 pic_init:
+
 	ret
 
+pic_disable:
+	mov al, 0xFF
+	out PIC1_DATA, al
+	out PIC2_DATA, al
+	ret

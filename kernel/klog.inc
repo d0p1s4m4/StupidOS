@@ -10,17 +10,18 @@ CMOS_REG_HOUR   = 0x04
 
 COM1 = 0x3F8
 
-;klog_kputc:
-;	mov dx, COM1 + 5
-;	push eax
-;@@:
-;	in al, dx
-;	and al, 0x20
-;	jnz @b
-;	pop eax
-;	mov dx, COM1
-;	out dx, al
-;	ret
+klog_kputc:
+	mov dx, COM1 + 5
+	push eax
+@@:
+	in al, dx
+	and al, 0x20
+	jnz @b
+	pop eax
+	mov dx, COM1
+	out dx, al
+	ret
+
 
 	;; Function: klog_print
 	;;
@@ -33,6 +34,7 @@ klog_print:
 	or al, al
 	jz @f
 	out dx, al
+	;call klog_kputc
 	jmp @b
 @@:
 	ret

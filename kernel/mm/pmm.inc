@@ -31,7 +31,6 @@ pmm_init:
 	;; Out:
 	;;    EAX - page address (return zero on error)
 pmm_alloc_page:
-	xchg bx, bx
 	mov eax, uPmmLock
 	call lock_acquire
 

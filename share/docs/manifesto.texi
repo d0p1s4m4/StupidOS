@@ -142,7 +142,7 @@ reduced the family relation to a mere money relation.
 The bourgeoisie has disclosed how it came to pass that the brutal display of 
 vigour in the Middle Ages, which reactionaries so much admire, found its 
 fitting complement in the most slothful indolence. It has been the first to 
-show what man’s activity can bring about. It has accomplished wonders far 
+show what man's activity can bring about. It has accomplished wonders far 
 surpassing Egyptian pyramids, Roman aqueducts, and Gothic cathedrals; it has 
 conducted expeditions that put in the shade all former Exoduses of nations and 
 crusades.
@@ -186,7 +186,7 @@ The bourgeoisie, by the rapid improvement of all instruments of production, by
 the immensely facilitated means of communication, draws all, even the most 
 barbarian, nations into civilisation. The cheap prices of commodities are the 
 heavy artillery with which it batters down all Chinese walls, with which it 
-forces the barbarians’ intensely obstinate hatred of foreigners to capitulate. 
+forces the barbarians' intensely obstinate hatred of foreigners to capitulate. 
 It compels all nations, on pain of extinction, to adopt the bourgeois mode of 
 production; it compels them to introduce what it calls civilisation into their 
 midst, i.e., to become bourgeois themselves. In one word, it creates a world 
@@ -211,7 +211,7 @@ one frontier, and one customs-tariff.
 
 The bourgeoisie, during its rule of scarce one hundred years, has created more 
 massive and more colossal productive forces than have all preceding 
-generations together. Subjection of Nature’s forces to man, machinery, 
+generations together. Subjection of Nature's forces to man, machinery, 
 application of chemistry to industry and agriculture, steam-navigation, 
 railways, electric telegraphs, clearing of whole continents for cultivation, 
 canalisation of rivers, whole populations conjured out of the ground — what 
@@ -352,7 +352,7 @@ ever more fluctuating. The increasing improvement of machinery, ever more
 rapidly developing, makes their livelihood more and more precarious; the 
 collisions between individual workmen and individual bourgeois take more and 
 more the character of collisions between two classes. Thereupon, the workers 
-begin to form combinations (Trades’ Unions) against the bourgeois; they club 
+begin to form combinations (Trades' Unions) against the bourgeois; they club 
 together in order to keep up the rate of wages; they found permanent 
 associations in order to make provision beforehand for these occasional 
 revolts. Here and there, the contest breaks out into riots.
@@ -373,7 +373,7 @@ political party, is continually being upset again by the competition between
 the workers themselves. But it ever rises up again, stronger, firmer, 
 mightier. It compels legislative recognition of particular interests of the 
 workers, by taking advantage of the divisions among the bourgeoisie itself. 
-Thus, the ten-hours’ bill in England was carried.
+Thus, the ten-hours' bill in England was carried.
 
 Altogether collisions between the classes of the old society further, in many 
 ways, the course of development of the proletariat. The bourgeoisie finds 
@@ -543,7 +543,7 @@ In this sense, the theory of the Communists may be summed up in the single
 sentence: Abolition of private property.
 
 We Communists have been reproached with the desire of abolishing the right of 
-personally acquiring property as the fruit of a man’s own labour, which 
+personally acquiring property as the fruit of a man's own labour, which 
 property is alleged to be the groundwork of all personal freedom, activity and 
 independence.
 
@@ -655,7 +655,7 @@ identical with the disappearance of all culture.
 That culture, the loss of which he laments, is, for the enormous majority, a 
 mere training to act as a machine.
 
-But don’t wrangle with us so long as you apply, to our intended abolition of 
+But don't wrangle with us so long as you apply, to our intended abolition of 
 bourgeois property, the standard of your bourgeois notions of freedom, 
 culture, law, &c. Your very ideas are but the outgrowth of the conditions of 
 your bourgeois production and bourgeois property, just as your jurisprudence 
@@ -720,7 +720,7 @@ introduce community of women; it has existed almost from time immemorial.
 
 Our bourgeois, not content with having wives and daughters of their 
 proletarians at their disposal, not to speak of common prostitutes, take the 
-greatest pleasure in seducing each other’s wives.
+greatest pleasure in seducing each other's wives.
 
 Bourgeois marriage is, in reality, a system of wives in common and thus, at 
 the most, what the Communists might possibly be reproached with is that they 
@@ -756,8 +756,8 @@ The charges against Communism made from a religious, a philosophical and,
 generally, from an ideological standpoint, are not deserving of serious 
 examination.
 
-Does it require deep intuition to comprehend that man’s ideas, views, and 
-conception, in one word, man’s consciousness, changes with every change in the 
+Does it require deep intuition to comprehend that man's ideas, views, and 
+conception, in one word, man's consciousness, changes with every change in the 
 conditions of his material existence, in his social relations and in his 
 social life?
 
@@ -854,7 +854,7 @@ abolition of all the distinction between town and country by a more equable
 distribution of the populace over the country.
 
 @item Free education for all children in public schools. Abolition of 
-children’s factory labour in its present form. Combination of education with 
+children's factory labour in its present form. Combination of education with 
 industrial production, &c, &c.
 
 @end enumerate
@@ -900,7 +900,7 @@ and whispering in his ears sinister prophesies of coming catastrophe.
 
 In this way arose feudal Socialism: half lamentation, half lampoon; half an 
 echo of the past, half menace of the future; at times, by its bitter, witty 
-and incisive criticism, striking the bourgeoisie to the very heart’s core; but 
+and incisive criticism, striking the bourgeoisie to the very heart's core; but 
 always ludicrous in its effect, through total incapacity to comprehend the 
 march of modern history.
 
@@ -1116,7 +1116,7 @@ societies for the prevention of cruelty to animals, temperance fanatics,
 hole-and-corner reformers of every imaginable kind. This form of socialism 
 has, moreover, been worked out into complete systems.
 
-We may cite Proudhon’s Philosophie de la Misère as an example of this form.
+We may cite Proudhon's Philosophie de la Misère as an example of this form.
 
 The Socialistic bourgeois want all the advantages of modern social conditions 
 without the struggles and dangers necessarily resulting therefrom. They desire 

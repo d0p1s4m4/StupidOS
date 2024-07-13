@@ -56,6 +56,9 @@ kmain:
 	lgdt [pGDT]
 	; I don't think i need to reload segment cuz their value are already correct
 
+	xchg bx, bx
+	call pic_disable
+
 	call idt_setup
 
 
@@ -75,6 +78,7 @@ kmain:
 	include 'lock.inc'
 	include 'gdt.inc'
 	include 'isr.inc'
+	include 'pic.inc'
 
 szMsgKernelAlive db "Kernel is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
