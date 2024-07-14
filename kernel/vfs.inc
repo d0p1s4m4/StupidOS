@@ -76,3 +76,4 @@ vfs_init:
 	ret
 
 	
+pRootFS dd 0

@@ -7,3 +7,6 @@ NE2K_IOBASE = 0x300
 
 ne2k_probe:
 	ret
+
+ne2k_irq:
+	iret

@@ -1,4 +1,8 @@
 	;; File: floppy.inc
+	;;
+	;; Usefull links:
+	;; - <https://wiki.osdev.org/Floppy_Disk_Controller>
+	;; - <datasheet at http://www.osdever.net/documents/82077AA_FloppyControllerDatasheet.pdf>
 
 CMOS_FLOPPY_TYPE = 0x10
 
@@ -30,6 +34,8 @@ floppy_probe:
 @@:
 	ret
 
+floppy_irq:
+	iret
 
 szMsgFloppy0Found db "floppy0: Found", 0
 szMsgFloppy1Found db "floppy1: Found", 0
