@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Macros, Classes, Variables
+Don't Index: Variables, Classes, Macros
 
 
 # --------------------------------------------------------------------------
@@ -89,6 +89,7 @@ Group: BootLoader  {
 Group: Kernel  {
 
    File: Introduction  (kernel/intro.txt)
+   File: isr.inc  (kernel/isr.inc)
    File: kernel.asm  (kernel/kernel.asm)
    File: klog.inc  (kernel/klog.inc)
 
@@ -98,9 +99,16 @@ Group: Kernel  {
       File: vga_console.inc  (kernel/dev/vga_console.inc)
       }  # Group: Devices
 
+   Group: File Systems  {
+
+      File: fat.inc  (kernel/fs/fat.inc)
+      File: stpdfs.inc  (kernel/fs/stpdfs.inc)
+      }  # Group: File Systems
+
    Group: System Includes  {
 
       File: bootinfo.inc  (kernel/sys/bootinfo.inc)
+      File: cpu.inc  (kernel/sys/cpu.inc)
       File: mmu.inc  (kernel/sys/mmu.inc)
       File: registers.inc  (kernel/sys/register.inc)
       }  # Group: System Includes
@@ -111,6 +119,8 @@ Group: Kernel  {
       File: pmm.inc  (kernel/mm/pmm.inc)
       }  # Group: Memory Manager
 
+   File: lock.inc  (kernel/lock.inc)
+   File: pic.inc  (kernel/pic.inc)
    }  # Group: Kernel
 
 Group: Lib  {
@@ -143,6 +153,9 @@ Group: Lib  {
 
    File: ctype  (no auto-title, lib/c/ctype.asm)
    }  # Group: Lib
+
+File: Propaganda  (docs/propaganda.txt)
+File: Webring  (docs/webring.txt)
 
 Group: Index  {
 
