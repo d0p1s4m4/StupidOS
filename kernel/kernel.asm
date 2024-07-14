@@ -60,10 +60,15 @@ kmain:
 	lgdt [pGDT]
 	; I don't think i need to reload segment cuz their value are already correct
 
-
 	call idt_setup
 
-	;int 0x42
+	call pit_init
+
+	mov eax, SYSCALL_EXIT
+	int 0x42
+
+	mov al, 'X'
+	call cga_putc
 
 .halt:
 	hlt
@@ -81,7 +86,11 @@ kmain:
 	include 'gdt.inc'
 	include 'syscall.inc'
 	include 'isr.inc'
+	include 'idt.inc'
 	include 'pic.inc'
+	include 'dev/at/pit.inc'
+	include 'dev/at/kbd.inc'
+	include 'dev/at/cga.inc'
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0

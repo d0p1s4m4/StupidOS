@@ -12,7 +12,11 @@ SRCS	= kernel.asm \
 			lock.inc \
 			gdt.inc \
 			isr.inc \
-			pic.inc
+			pic.inc \
+			idt.inc \
+			dev/at/pit.inc \
+			dev/at/cga.inc \
+			dev/at/kbd.inc
 
 .PHONY: all
 all: $(KERNEL)

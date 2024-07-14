@@ -16,10 +16,21 @@ rc4_init:
 	mov ebp, esp
 
 	mov eax, [ebp+8]
-	xor ecx, ecx
+	xor cx, cx
 
-.loop:
+@@:
+	mov byte [eax], byte cx
+	inc cx
+	inc eax
+	cmp cx, 255
+	jne @b
+
+	xor cx, cx
+	mov eax, [ebp+8]
+@@:
 	
+
+
 .end:
 	leave
 	ret

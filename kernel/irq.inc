@@ -1,0 +1,2 @@
+irq_dummy:
+	iret

@@ -1,3 +1,4 @@
+	;; File: gdt.inc
 
 gdt:
 	; null descriptor
@@ -30,3 +31,7 @@ gdt:
 pGDT:
 	dw gdt.end - gdt - 1
 	dd gdt
+
+gdt_set_tss:
+	
+	ret

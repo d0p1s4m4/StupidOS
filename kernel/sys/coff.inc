@@ -1,3 +1,6 @@
+	;; File: coff.inc
+
+	;; Struc: COFFFileHdr
 struc COFFFileHdr {
 	.f_magic  dw ?
 	.f_nscns  dw ?

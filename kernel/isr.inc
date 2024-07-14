@@ -18,54 +18,6 @@ forward
 				 
 }
 
-idt_setup:
-	xor ecx, ecx
-@@:
-	mov eax, [aISRTable + (ecx * 4)]
-	mov [aInterruptGate + (ecx * 8)], ax
-	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
-
-	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
-	shr eax, 16
-	mov [aInterruptGate + (ecx * 8) + 6], ax
-	inc ecx
-	cmp ecx, 32
-	jb @b
-@@:
-	mov eax, irq_dummy
-	mov [aInterruptGate + (ecx * 8)], ax
-	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
-
-	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
-	shr eax, 16
-	mov [aInterruptGate + (ecx * 8) + 6], ax
-	inc ecx
-	cmp ecx, 0x30
-	jb @b
-
-	mov ecx, 0x42
-	mov eax, isr_syscall
-	mov [aInterruptGate + (ecx * 8)], ax
-	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
-
-	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
-	shr eax, 16
-	mov [aInterruptGate + (ecx * 8) + 6], ax
-
-	lidt [pIDT]
-	sti
-	ret
-
-pIDT:
-	dw aInterruptGate.end-aInterruptGate-1
-	dd aInterruptGate
-
-; variable: idt_entries
-aInterruptGate:
-	dd 256*2 dup(0)
-.end:
-
-
 irq_dummy:
 	iret
 

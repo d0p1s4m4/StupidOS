@@ -34,7 +34,7 @@ klog_print:
 	or al, al
 	jz @f
 	out dx, al
-	;call klog_kputc
+	;call klog_kput
 	jmp @b
 @@:
 	ret
