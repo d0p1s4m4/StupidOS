@@ -1,9 +1,15 @@
+	;; File: isr.inc
 macro ISR [name,error] {
 forward
 	dd isr_#name
 forward
+	local szIntName
+ szIntName db  `name#, 0
+forward
 	isr_#name#:
 		cli
+		mov esi, szIntName
+		call klog
 		if error eq 0
 		push 0
 		end if
@@ -24,6 +30,17 @@ idt_setup:
 	mov [aInterruptGate + (ecx * 8) + 6], ax
 	inc ecx
 	cmp ecx, 32
+	jb @b
+@@:
+	mov eax, irq_dummy
+	mov [aInterruptGate + (ecx * 8)], ax
+	mov [aInterruptGate + (ecx * 8) + 2], word 0x08
+
+	mov [aInterruptGate + (ecx * 8) + 5], word 0x8E
+	shr eax, 16
+	mov [aInterruptGate + (ecx * 8) + 6], ax
+	inc ecx
+	cmp ecx, 0x30
 	jb @b
 
 	mov ecx, 0x42
@@ -49,6 +66,9 @@ aInterruptGate:
 .end:
 
 
+irq_dummy:
+	iret
+
 isr_common:
 	pusha
 
@@ -60,6 +80,9 @@ isr_common:
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
+
+	mov eax, [esp+IntFrame.intno]
+	push eax
 
 	mov esi, szMsgInterrupt
 	call klog 
@@ -110,4 +133,4 @@ ISR \
 	security_exception, 0, \
 	reserved31, 0
 
-szMsgInterrupt db "Interrupt", 0
+szMsgInterrupt db "Interrupt (int: %x)", 0

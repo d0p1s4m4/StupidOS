@@ -50,6 +50,20 @@ pic_init:
 
 	ret
 
+	;; Function: pic_eoi
+	;;
+	;; In:
+	;;    EAX - irq
+pic_eoi:
+	cmp eax, 8
+	jb @f
+	mov al, PIC_EOI
+	out PIC2_COMMAND, al
+@@:
+	mov al, PIC_EOI
+	out PIC1_COMMAND, al
+	ret
+
 pic_disable:
 	mov al, 0xFF
 	out PIC1_DATA, al

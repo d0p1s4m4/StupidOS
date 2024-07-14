@@ -63,7 +63,7 @@ kmain:
 
 	call idt_setup
 
-	int 0x42
+	;int 0x42
 
 .halt:
 	hlt
@@ -84,7 +84,7 @@ kmain:
 	include 'pic.inc'
 
 
-szMsgKernelAlive db "Kernel is alive", 0
+szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
 szErrorBootProtocol db "Error: wrong magic number", 0
 
 boot_structure BootInfo

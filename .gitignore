@@ -35,3 +35,4 @@ bochsrc.bxrc
 *.mod
 webring.json
 webring.txt
+kernel/const.inc

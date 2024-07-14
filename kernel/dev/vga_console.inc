@@ -16,7 +16,10 @@ vga_console_clear:
 	rep stosb
 	ret
 
+	;; Function: vga_console_putc
+	;;
+	;; In:
+	;;    AL - charactere to print
 vga_console_putc:
-	
-	ret
 
+	ret

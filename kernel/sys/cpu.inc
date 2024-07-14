@@ -133,7 +133,7 @@ struc IDTGate {
 	;; > +--------------- |----------------+-----------------|-----------------+
 
 
-struc intframe {
+struc IntFrame {
 	;; registers
 	.edi dd ?
 	.esi dd ?
@@ -161,3 +161,7 @@ struc intframe {
 	.useresp  dd ?
 	.ss       dd ?
 }
+virtual at 0
+  IntFrame IntFrame
+  sizeof.IntFrame:
+end virtual
