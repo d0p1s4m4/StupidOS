@@ -6,7 +6,6 @@ KERNEL	= vmstupid.sys
 SRCS	= kernel.asm \
 			const.inc \
 			klog.inc \
-			dev/vga_console.inc \
 			mm/mm.inc \
 			mm/pmm.inc \
 			lock.inc \
@@ -14,9 +13,11 @@ SRCS	= kernel.asm \
 			isr.inc \
 			pic.inc \
 			idt.inc \
+			dev/console.inc \
 			dev/at/pit.inc \
 			dev/at/cga.inc \
-			dev/at/kbd.inc
+			dev/at/kbd.inc \
+			dev/at/floppy.inc
 
 .PHONY: all
 all: $(KERNEL)

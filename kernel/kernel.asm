@@ -70,6 +70,8 @@ kmain:
 	mov al, 'X'
 	call cga_putc
 
+	call floppy_probe
+
 .halt:
 	hlt
 	jmp $
@@ -80,7 +82,7 @@ kmain:
 	jmp .halt
 
 	include 'klog.inc'
-	include 'dev/vga_console.inc'
+	include 'dev/console.inc'
 	include 'mm/mm.inc'
 	include 'lock.inc'
 	include 'gdt.inc'
@@ -91,6 +93,7 @@ kmain:
 	include 'dev/at/pit.inc'
 	include 'dev/at/kbd.inc'
 	include 'dev/at/cga.inc'
+	include 'dev/at/floppy.inc'
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0

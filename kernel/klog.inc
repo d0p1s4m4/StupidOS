@@ -1,7 +1,7 @@
 	;; File: klog.inc
 	;; Kernel logging utilities
 
-CMOS_ADDRESS = 0x70
+CMOS_COMMAND = 0x70
 CMOS_DATA    = 0x71
 
 CMOS_REG_SECOND = 0x00
@@ -44,13 +44,13 @@ klog_print:
 klog_print_time:
 @@:
 	mov al, 0x0A
-	out CMOS_ADDRESS, al
+	out CMOS_COMMAND, al
 	in al, CMOS_DATA
 	and al, 0x80
 	jnz @b
 
 	mov al, CMOS_REG_HOUR
-	out CMOS_ADDRESS, al
+	out CMOS_COMMAND, al
 	in al, CMOS_DATA
 
 	mov ah, al
@@ -64,7 +64,7 @@ klog_print_time:
 	mov [szTime + 2], al
 
 	mov al, CMOS_REG_MINUTE
-	out CMOS_ADDRESS, al
+	out CMOS_COMMAND, al
 	in al, CMOS_DATA
 
 	mov ah, al
@@ -78,7 +78,7 @@ klog_print_time:
 	mov [szTime + 5], al
 
 	mov al, CMOS_REG_SECOND
-	out CMOS_ADDRESS, al
+	out CMOS_COMMAND, al
 	in al, CMOS_DATA
 
 	mov ah, al
