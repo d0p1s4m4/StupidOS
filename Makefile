@@ -27,7 +27,10 @@ LDFLAGS	=
 QEMU_COMMON = \
 		-rtc base=localtime \
 		-vga cirrus \
-		-serial mon:stdio 
+		-serial stdio \
+		-monitor telnet::4545,server,nowait \
+		-net nic,model=ne2k_isa \
+		-machine isapc
 
 SUBDIRS	:= external tools include boot kernel modules lib bin
 
@@ -92,7 +95,6 @@ run: all
 		-drive file=floppy1440.img,if=none,format=raw,id=boot \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device floppy,drive=boot \
-		-device ide-hd,drive=hdd \
 		-global isa-fdc.bootindexA=0
 
 .PHONY: run-iso
