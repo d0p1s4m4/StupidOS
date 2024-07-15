@@ -34,7 +34,9 @@ klog_print:
 	or al, al
 	jz @f
 	out dx, al
-	;call klog_kput
+	pusha
+	call cga_putc
+	popa
 	jmp @b
 @@:
 	ret
@@ -125,6 +127,9 @@ klog_print_hex:
 .print_zero:
 	mov al, '0'
 	out dx, al
+	pusha
+	call cga_putc
+	popa
 	jmp .end
 .print_number:
 	mov [esi], byte 0
@@ -170,6 +175,9 @@ klog:
 	mov al, '?'
 .putchar:
 	out dx, al
+	pusha
+	call cga_putc
+	popa
 .next:
 	inc esi
 	jmp .loop

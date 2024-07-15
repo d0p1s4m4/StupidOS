@@ -67,8 +67,8 @@ kmain:
 	mov eax, SYSCALL_EXIT
 	int 0x42
 
-	mov al, 'X'
-	call cga_putc
+	;mov al, 'X'
+	;call cga_putc
 
 	call floppy_probe
 

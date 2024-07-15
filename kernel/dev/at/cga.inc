@@ -75,7 +75,11 @@ cga_putc:
 	call cga_getpos
 	mov [ebp-0x2], ax
 	pop eax
-
+	cmp al, CR
+	jne @f
+	leave
+	ret
+@@:
 	cmp al, LF
 	jne @f
 	mov ax, [ebp-0x2]
