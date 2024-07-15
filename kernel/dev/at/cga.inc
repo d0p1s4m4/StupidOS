@@ -18,8 +18,6 @@ CGA_LINES = 24
 cga_getpos:
 	; read cursor position
 	xor ax, ax
-
-	xchg bx, bx
 	
 	; get high
 	mov dx, CGA_COMMAND
@@ -43,7 +41,6 @@ cga_getpos:
 	;; In:
 	;;    AX - cursor position
 cga_setpos:
-	xchg bx, bx
 	mov dx, CGA_COMMAND
 	push ax
 	mov al, CGA_CURSOR_HIGH
