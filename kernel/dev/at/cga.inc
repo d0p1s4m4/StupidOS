@@ -87,7 +87,7 @@ cga_putc:
 	xor ah, ah
 	mov cx, [ebp-0x2]
 	add cx, ax
-	jmp .end
+	jmp .next
 @@:
 	mov edx, CGA_MEMORY
 	xor ecx, ecx
@@ -99,6 +99,7 @@ cga_putc:
 	mov cx, [ebp-0x2]
 	inc cx
 
+.next:
 	mov ax, cx
 	mov dl, CGA_COLUMNS
 	div dl
@@ -110,20 +111,20 @@ cga_putc:
 	; scroll up
 	push esi
 	push edi
-	mov ecx, CGA_COLUMNS*(CGA_LINES-1)
+	mov ecx, CGA_COLUMNS*(CGA_LINES)*2
 	mov edi, CGA_MEMORY
 	mov esi, CGA_MEMORY+80*2
 	rep movsw
 
 	mov ecx, CGA_COLUMNS
 	xor ax, ax
-	mov edi, CGA_MEMORY+(CGA_COLUMNS*(CGA_LINES-1)*2)
+	mov edi, CGA_MEMORY+(CGA_COLUMNS*(CGA_LINES)*2)
 	rep stosw
 
 	pop esi
 	pop edi
 
-	mov cx, CGA_COLUMNS*(CGA_LINES-1)
+	mov cx, CGA_COLUMNS*(CGA_LINES)
 .end:
 	mov ax, cx
 	call cga_setpos

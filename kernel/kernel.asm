@@ -65,6 +65,8 @@ kmain:
 
 	call pit_init
 
+	call dev_init
+
 	call vfs_init
 
 	mov eax, SYSCALL_EXIT
@@ -72,8 +74,6 @@ kmain:
 
 	;mov al, 'X'
 	;call cga_putc
-
-	call floppy_probe
 
 .halt:
 	hlt
@@ -91,6 +91,7 @@ kmain:
 	include 'dev/at/floppy.inc'
 	include 'klog.inc'
 	include 'dev/console.inc'
+	include 'dev/dev.inc'
 	include 'mm/mm.inc'
 	include 'lock.inc'
 	include 'gdt.inc'

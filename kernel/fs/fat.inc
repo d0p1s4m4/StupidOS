@@ -71,3 +71,27 @@ fatfs_init:
 	mov eax, vfs_fatfs
 	call vfs_register
 	ret
+
+fatfs_mount:
+	ret
+
+fatfs_start:
+	ret
+
+fatfs_unmount:
+	ret
+
+fatfs_root:
+	ret
+
+fatfs_statvfs:
+	ret
+
+fatfs_loadvnode:
+	ret
+
+fatfs_newvnode:
+	ret
+
+fatfs_mountroot:
+	ret

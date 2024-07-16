@@ -21,4 +21,9 @@ console_read:
 console_init:
 	ret
 
+console_device:
+	dd console_probe
+	dd console_write
+	dd console_write
+
 uConsoleLock dd 0

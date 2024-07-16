@@ -37,5 +37,10 @@ floppy_probe:
 floppy_irq:
 	iret
 
+floppy_device:
+	dd floppy_probe
+	dd 0
+	dd 0
+
 szMsgFloppy0Found db "floppy0: Found", 0
 szMsgFloppy1Found db "floppy1: Found", 0

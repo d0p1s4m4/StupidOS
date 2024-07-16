@@ -1,13 +1,6 @@
 	;; File: klog.inc
 	;; Kernel logging utilities
 
-CMOS_COMMAND = 0x70
-CMOS_DATA    = 0x71
-
-CMOS_REG_SECOND = 0x00
-CMOS_REG_MINUTE = 0x02
-CMOS_REG_HOUR   = 0x04
-
 COM1 = 0x3F8
 
 klog_kputc:
