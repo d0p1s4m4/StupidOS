@@ -6,3 +6,5 @@ struc Device {
 	.probe dd ?
 }
 
+dev_init:
+	ret

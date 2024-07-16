@@ -18,4 +18,7 @@ console_read:
 	call lock_release
 	ret
 
+console_init:
+	ret
+
 uConsoleLock dd 0

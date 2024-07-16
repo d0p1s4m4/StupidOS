@@ -5,6 +5,13 @@
 	;;
 
 struc VFS {
+	.name   dd ?
+	.next   dd ?
+	.op     dd ?
+}
+DEFN VFS
+
+struc Mount {
 	.next   dd ?
 	.op     dd ?
 	.vnodes dd ?
@@ -23,6 +30,7 @@ struc VFSOps {
 	.vget   dd ?
 }
 
+	;; 
 VNODE_TYPE_NON  = 0x0
 VNODE_TYPE_REG  = 0x1
 VNODE_TYPE_DIR  = 0x2
@@ -32,6 +40,7 @@ VNODE_TYPE_LNK  = 0x5
 VNODE_TYPE_SOCK = 0x6
 VNODE_TYPE_BAD  = 0x7
 
+	;; Struc: VNode
 struc VNode {
 	.flag     dw ?
 	.refcount dw ?
@@ -72,8 +81,29 @@ struc VNodeOps {
 	.brelse   dd ?
 }
 
-vfs_init:
+	;; Function: vfs_register
+	;;
+	;; In:
+	;;    EAX - Pointer to VFS struct
+	;;
+vfs_register:
+	mov edx, [pVFS]
+	mov [eax + VFS.next], edx
+	mov [pVFS], eax
+
+	mov eax, [eax + VFS.name]
+	push eax
+	mov esi, szMsgVFSRegister
+	call klog
 	ret
 
-	
+vfs_init:
+	call fatfs_init
+	call stpdfs_init
+	call xv6fs_init
+	ret
+
+pVFS    dd 0
 pRootFS dd 0
+
+szMsgVFSRegister db 'VFS: register %s', 0

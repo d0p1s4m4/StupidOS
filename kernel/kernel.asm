@@ -2,6 +2,7 @@
 	format binary
 
 	include 'const.inc'
+	include 'sys/macro.inc'
 	include 'sys/bootinfo.inc'
 	include 'sys/cpu.inc'
 
@@ -64,6 +65,8 @@ kmain:
 
 	call pit_init
 
+	call vfs_init
+
 	mov eax, SYSCALL_EXIT
 	int 0x42
 
@@ -81,6 +84,11 @@ kmain:
 	call klog
 	jmp .halt
 
+	include 'dev/at/cmos.inc'
+	include 'dev/at/pit.inc'
+	include 'dev/at/kbd.inc'
+	include 'dev/at/cga.inc'
+	include 'dev/at/floppy.inc'
 	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'mm/mm.inc'
@@ -90,10 +98,10 @@ kmain:
 	include 'isr.inc'
 	include 'idt.inc'
 	include 'pic.inc'
-	include 'dev/at/pit.inc'
-	include 'dev/at/kbd.inc'
-	include 'dev/at/cga.inc'
-	include 'dev/at/floppy.inc'
+	include 'vfs.inc'
+	include 'fs/fat.inc'
+	include 'fs/stpdfs.inc'
+	include 'fs/xv6fs.inc'
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
