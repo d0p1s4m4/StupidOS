@@ -111,7 +111,7 @@ cga_putc:
 	; scroll up
 	push esi
 	push edi
-	mov ecx, CGA_COLUMNS*(CGA_LINES)*2
+	mov ecx, CGA_COLUMNS*(CGA_LINES)
 	mov edi, CGA_MEMORY
 	mov esi, CGA_MEMORY+80*2
 	rep movsw

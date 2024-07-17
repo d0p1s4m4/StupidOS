@@ -23,8 +23,12 @@ gdt:
 
 	; Tss
 .tss:
-	dw ?
-	dd ?
+	.limit  dw ?
+	.base   dw ?
+	.baseh0 db ? 
+	.access db ?
+	.flags  db ?
+	.baseh1 db ?
 
 .end:
 	
@@ -33,5 +37,32 @@ pGDT:
 	dd gdt
 
 gdt_set_tss:
-	
+	mov ecx, sizeof.TSS
+	mov [gdt.limit], cx
+	mov [gdt.base], ax
+
+	shr ecx, 16
+	shr eax, 16
+
+	mov [gdt.baseh0], al
+	mov [gdt.baseh1], ah
+	mov al, 0x89
+	mov [gdt.access], al
+
+	and cl, 0xF
+	or cl, 0x40
+	mov [gdt.flags], cl
+	ret
+
+gdt_flush:
+	; load kernel gdt 
+	lgdt [pGDT]
+	jmp 0x08:@f
+@@:
+	mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	mov ss, ax
 	ret

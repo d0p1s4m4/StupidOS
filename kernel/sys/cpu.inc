@@ -87,6 +87,7 @@ struc TSS {
 	.trap     dw ?
 	.iomap    dw ?
 }
+DEFN TSS
 
 struc GDTGate {
 	

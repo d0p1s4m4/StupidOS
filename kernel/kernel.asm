@@ -58,9 +58,18 @@ kmain:
 
 	call pic_init
 
-	; load kernel gdt 
-	lgdt [pGDT]
-	; I don't think i need to reload segment cuz their value are already correct
+	; clear tss
+	mov ecx, sizeof.TSS
+	xor ax, ax
+	mov edi, kTSS
+	rep movsb
+
+	mov cx, 0xdfff
+	mov eax, kTSS
+	mov [eax + TSS.iomap], cx
+
+	call gdt_set_tss
+	call gdt_flush
 
 	call idt_setup
 
