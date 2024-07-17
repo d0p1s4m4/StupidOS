@@ -22,7 +22,8 @@ console_init:
 	ret
 
 console_device:
-	dd console_probe
+	db 'console', 0
+	dd console_init
 	dd console_write
 	dd console_write
 

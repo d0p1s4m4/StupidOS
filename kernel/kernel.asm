@@ -5,6 +5,7 @@
 	include 'sys/macro.inc'
 	include 'sys/bootinfo.inc'
 	include 'sys/cpu.inc'
+	include 'sys/errno.inc'
 
 	org KBASE
 	use32

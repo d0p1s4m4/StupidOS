@@ -1,4 +1,4 @@
-INCS = coff.h
+INCS = coff.h elf.h
 
 .PHONY: all
 all:

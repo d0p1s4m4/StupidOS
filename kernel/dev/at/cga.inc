@@ -131,3 +131,6 @@ cga_putc:
 
 	leave
 	ret
+
+cga_device:
+	db 'video', 0, 0, 0

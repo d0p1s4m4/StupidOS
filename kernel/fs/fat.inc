@@ -36,6 +36,7 @@ struc FATFS_BootSector16 {
 	.code         db 448 dup(?)
 	.signature    dw ?
 }
+DEFN FATFS_BootSector16
 
 struc FATFS_BootSector32 {
 	.base FATFS_BootSectorBase
@@ -56,6 +57,7 @@ struc FATFS_BootSector32 {
 	.code         db 420 dup(?)
 	.signature    dw ?
 }
+DEFN FATFS_BootSector32
 
 szVfsFatName db 'FATFS', 0
 
@@ -94,4 +96,35 @@ fatfs_newvnode:
 	ret
 
 fatfs_mountroot:
+	ret
+
+;; vnode ops
+fatfs_open:
+	ret
+
+fatfs_close:
+	ret
+
+fatfs_rdwr:
+	ret
+
+fatfs_ioctl:
+	ret
+
+fatfs_select:
+	ret
+
+fatfs_getattr:
+	ret
+
+fatfs_setattr:
+	ret
+
+fatfs_access:
+	ret
+
+fatfs_lookup:
+	ret
+
+fatfs_create:
 	ret
