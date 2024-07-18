@@ -107,7 +107,7 @@ main(int argc, char **argv)
 				c = argv[1][2] - '0';
 				argv++;
 				argc--;
-				if (c != 0 && c != 1 && c != 2 && c != 3)
+				if (c < 0 && c > 3)
 				{
 					usage(EXIT_FAILURE);
 				}

@@ -1,7 +1,8 @@
 	;; File: fat.inc
 	;;
+	;;
 	;; Usefull links:
-	;; - <Spec at https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf>
+	;; - <Microsoft FAT Specification at https://academy.cba.mit.edu/classes/networking_communications/SD/FAT.pdf>
 
 FAT_SECTOR_SIZE = 512
 FAT_MDIR_SIZE   = 32
@@ -58,6 +59,27 @@ struc FATFS_BootSector32 {
 	.signature    dw ?
 }
 DEFN FATFS_BootSector32
+
+struc FATFS_Dirent {
+	.name           db 8 dup(?)
+	.ext            db 3 dup(?)
+	.attr           db ?
+	.reserved       db 0
+	.crt_time_tenth db ?
+	.crt_time       dw ?
+	.crt_date       dw ?
+	.lst_acc_date   dw ?
+	.fst_clus_hi    dw ?
+	.wrt_time       dw ?
+	.wrt_date       dw ?
+	.fst_clus_lo    dw ?
+	.file_size      dd ?
+}
+DEFN FATFS_Dirent
+
+	; ------------------------------------------------------------------------
+
+	;; Section: Implementation
 
 szVfsFatName db 'FATFS', 0
 

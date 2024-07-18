@@ -6,14 +6,12 @@
 	include 'sys/bootinfo.inc'
 	include 'sys/cpu.inc'
 	include 'sys/errno.inc'
+	include 'sys/process.inc'
 
 	org KBASE
 	use32
 
 	jmp short kmain
-
-db 'STPDKRNL'
-db 32 dup(0)
 
 	;; Function: kmain
 	;;
@@ -55,6 +53,9 @@ kmain:
 	mov ebx, [boot_structure.high_mem]
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
+
+	mov eax, [boot_structure.low_mem]
+	call heap_init
 
 	call pic_init
 
@@ -109,6 +110,7 @@ kmain:
 	include 'isr.inc'
 	include 'idt.inc'
 	include 'pic.inc'
+	include 'heap.inc'
 	include 'vfs.inc'
 	include 'fs/fat.inc'
 	include 'fs/stpdfs.inc'

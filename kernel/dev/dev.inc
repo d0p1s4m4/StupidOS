@@ -7,7 +7,6 @@ DEFN Device
 
 struc BlkDev {
 	.open     dd ?
-	.close    dd ?
 	.strategy dd ?
 	.ioctl    dd ?
 	.close    dd ?

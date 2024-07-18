@@ -14,6 +14,7 @@ struc BootInfo {
 	.kernel_start dd ?
 	.kernel_size  dd ?
 	.high_mem     dd ?
+	.low_mem      dd ?
 }
 virtual at 0
   BootInfo BootInfo

@@ -28,6 +28,12 @@ kbd_init:
 @@:
 	ret
 
+kbd_open:
+	ret
+
+kbd_close:
+	ret
+
 kbd_getc:
 	in al, KBD_STATP
 	and al, KBS_DIB

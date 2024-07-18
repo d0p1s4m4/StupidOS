@@ -1,2 +1,2 @@
-
+ENXIO  = 6 
 ENODEV = 19

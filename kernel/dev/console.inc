@@ -1,6 +1,4 @@
 	;; File: console.inc
-console_probe:
-	ret
 
 console_write:
 	mov eax, uConsoleLock

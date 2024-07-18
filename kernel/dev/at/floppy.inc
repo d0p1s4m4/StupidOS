@@ -49,15 +49,32 @@ floppy_strategy:
 	ret
 
 floppy_open:
+	push ebp
+	mov ebp, esp
 
+	mov eax, [ebp+4]
+	cmp al, FLOPPY_MAX
+	jb @f
+	mov eax, ENXIO
+	jmp .end
+@@:
 	xor eax, eax
+.end:
+	pop ebp
 	ret
 
 floppy_close:
+	xor eax, eax
 	ret
 
 floppy_ioctl:
 	mov eax, ENODEV
+	ret
+
+floppy_dump:
+	ret
+
+floppy_psize:
 	ret
 
 floppy_irq:
@@ -66,8 +83,16 @@ floppy_irq:
 floppy_device:
 	db 'floppy', 0, 0
 	dd floppy_init
-	db 0
-	db 0
+	db FLOPPY_BDEV_MAJOR
+	db FLOPPY_CDEV_MAJOR
 
-szMsgFloppy0Found db "floppy0: Found", 0
-szMsgFloppy1Found db "floppy1: Found", 0
+floppy_blockdev:
+	dd floppy_open
+	dd floppy_strategy
+	dd floppy_ioctl
+	dd floppy_close
+	dd floppy_dump
+	dd floppy_psize
+
+szMsgFloppy0Found db "floppy: fd0 found", 0
+szMsgFloppy1Found db "floppy: fd1 found", 0
