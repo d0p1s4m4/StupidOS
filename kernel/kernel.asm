@@ -71,6 +71,7 @@ kmain:
 
 	call gdt_set_tss
 	call gdt_flush
+	call tss_flush
 
 	call idt_setup
 
@@ -86,6 +87,8 @@ kmain:
 	;mov al, 'X'
 	;call cga_putc
 
+
+
 .halt:
 	hlt
 	jmp $
@@ -96,6 +99,8 @@ kmain:
 	jmp .halt
 
 	include 'dev/at/cmos.inc'
+	include 'dev/at/com.inc'
+	include 'dev/at/ne2k.inc'
 	include 'dev/at/pit.inc'
 	include 'dev/at/kbd.inc'
 	include 'dev/at/cga.inc'

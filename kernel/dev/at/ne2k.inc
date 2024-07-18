@@ -74,7 +74,6 @@ ne2k_init:
 
 
 ne2k_probe:
-
 	ret
 
 ne2k_irq:
