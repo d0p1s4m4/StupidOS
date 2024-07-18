@@ -33,6 +33,14 @@ idt_setup:
 	cmp ecx, 0x30
 	jb @b
 
+	mov ecx, 36
+	mov eax, com_irq
+	call idt_set_gate
+
+	mov ecx, 38
+	mov eax, floppy_irq
+	call idt_set_gate
+
 	mov ecx, 0x42
 	mov eax, isr_syscall
 	call idt_set_gate

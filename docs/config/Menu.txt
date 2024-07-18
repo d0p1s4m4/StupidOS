@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Variables, Classes, Macros
+Don't Index: Classes, Macros, Variables
 
 
 # --------------------------------------------------------------------------
@@ -89,25 +89,43 @@ Group: BootLoader  {
 Group: Kernel  {
 
    File: Introduction  (kernel/intro.txt)
+   File: gdt.inc  (kernel/gdt.inc)
+   File: heap.inc  (kernel/heap.inc)
+   File: idt.inc  (kernel/idt.inc)
    File: isr.inc  (kernel/isr.inc)
    File: kernel.asm  (kernel/kernel.asm)
    File: klog.inc  (kernel/klog.inc)
 
    Group: Devices  {
 
-      File: IBM PC/AT  (kernel/dev/at/intro.txt)
-      File: vga_console.inc  (kernel/dev/vga_console.inc)
+      Group: At  {
+
+         File: IBM PC/AT  (kernel/dev/at/intro.txt)
+         File: cga.inc  (kernel/dev/at/cga.inc)
+         File: cmos.inc  (kernel/dev/at/cmos.inc)
+         File: com.inc  (kernel/dev/at/com.inc)
+         File: floppy.inc  (kernel/dev/at/floppy.inc)
+         File: ide.inc  (kernel/dev/at/ide.inc)
+         File: kbd.inc  (kernel/dev/at/kbd.inc)
+         File: ne2k.inc  (kernel/dev/at/ne2k.inc)
+         File: pit.inc  (kernel/dev/at/pit.inc)
+         }  # Group: At
+
+      File: console.inc  (kernel/dev/console.inc)
+      File: dev.inc  (kernel/dev/dev.inc)
       }  # Group: Devices
 
    Group: File Systems  {
 
       File: fat.inc  (kernel/fs/fat.inc)
       File: stpdfs.inc  (kernel/fs/stpdfs.inc)
+      File: xv6fs.inc  (kernel/fs/xv6fs.inc)
       }  # Group: File Systems
 
    Group: System Includes  {
 
       File: bootinfo.inc  (kernel/sys/bootinfo.inc)
+      File: coff.inc  (kernel/sys/coff.inc)
       File: cpu.inc  (kernel/sys/cpu.inc)
       File: mmu.inc  (kernel/sys/mmu.inc)
       File: registers.inc  (kernel/sys/register.inc)
@@ -121,6 +139,7 @@ Group: Kernel  {
 
    File: lock.inc  (kernel/lock.inc)
    File: pic.inc  (kernel/pic.inc)
+   File: vfs.inc  (kernel/vfs.inc)
    }  # Group: Kernel
 
 Group: Lib  {
@@ -163,5 +182,7 @@ Group: Index  {
    Constant Index: Constants
    File Index: Files
    Function Index: Functions
+   Struct Index: Structs
+   Type Index: Types
    }  # Group: Index
 

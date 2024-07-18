@@ -78,7 +78,12 @@ floppy_psize:
 	ret
 
 floppy_irq:
+	pusha
+	mov esi, szMsgFloppyIRQ
+	popa
 	iret
+
+szMsgFloppyIRQ db 'Floppy: IRQ', 0
 
 floppy_device:
 	db 'floppy', 0, 0

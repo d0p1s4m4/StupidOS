@@ -29,6 +29,11 @@ boot_info_add_memmap:
 	cmp eax, 0x100000
 	jne @f
 	mov [boot_structure.high_mem], edx
+	add [boot_structure.high_mem], eax
+@@:
+	or eax, eax
+	jnz @f
+	mov [boot_structure.low_mem], edx
 @@:
 	; end hack
 	; ----------------------------------------------------------------------

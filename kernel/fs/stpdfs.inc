@@ -22,6 +22,7 @@ STPDFS_ROOTINO  = 1
 	;; Constant: STPDFS_NDIRECT
 STPDFS_NDIRECT  = 7
 	;; Constant: STPDFS_NAME_MAX
+	;; Max file name length (28)
 STPDFS_NAME_MAX = 28
 
 	;; Enum: StupidFS State
@@ -81,6 +82,17 @@ struc StpdFS_Sb {
 DEFN StpdFS_Sb
 
 	;; Struc: StpdFS_Inode
+	;; StupidFS on disk i-node
+	;;
+	;; .mode    - TODO
+	;; .nlink   - TODO
+	;; .uid     - TODO
+	;; .gid     - TODO
+	;; .flags   - TODO
+	;; .size    - Date size in byte
+	;; .zone    - TODO
+	;; .actime  - TODO
+	;; .modtime - TODO
 struc StpdFS_Inode {
 	.mode    dw ?
 	.nlink   dw ?
