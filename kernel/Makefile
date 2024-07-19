@@ -2,6 +2,15 @@ AS	= fasm
 RM	= rm -f
 INSTALL = install
 
+ASMINCS = sys/bootinfo.inc \
+			sys/coff.inc \
+			sys/cpu.inc \
+			sys/errno.inc \
+			sys/macro.inc \
+			sys/mmu.inc \
+			sys/process.inc \
+			sys/register.inc
+
 KERNEL	= vmstupid.sys
 SRCS	= kernel.asm \
 			const.inc \
@@ -23,7 +32,9 @@ SRCS	= kernel.asm \
 			fs/fat.inc \
 			fs/stpdfs.inc \
 			fs/xv6fs.inc \
-			vfs.inc
+			vfs.inc \
+			proc.inc \
+			$(ASMINCS)
 
 .PHONY: all
 all: $(KERNEL)
@@ -42,6 +53,8 @@ clean:
 .PHONY: install
 install: $(KERNEL)
 	@ mkdir -p $(DESTDIR)
-	install $< $(DESTDIR)
+	install $(KERNEL) $(DESTDIR)
+	@ mkdir -p $(DESTDIR)$(ASMDIR)/sys
+	install $(ASMINCS) $(DESTDIR)$(ASMDIR)/sys
 
 .PHONY: all clean install

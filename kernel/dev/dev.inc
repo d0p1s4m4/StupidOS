@@ -38,6 +38,8 @@ aDevices:
 	dd floppy_device
 	dd kbd_device
 	dd console_device
+	dd com_device
+	dd ne2k_device
 .end:
 
 dev_init:

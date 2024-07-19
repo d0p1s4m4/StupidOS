@@ -1,18 +1,21 @@
-
-struc ProcessGroup {
-}
-
 struc Context {
-	.flags dd ?
-	.regs  dd ?
+	.edi dd ?
+	.esi dd ?
+	.ebx dd ?
+	.ebp dd ?
+	.eip dd ?
 }
+DEFN Context
 
 struc Process {
-	.pagedir dd ?
-	.parent  dd ?
-	.context Context
-	.next    dd ?
+	.pagedir   dd ?
+	.kstack    dd ?
+	.parent    dd ?
+	.trapframe dd ?
+	.context   dd ?
+	.next      dd ?
 }
+DEFN Process
 
 PROCESS_STATE_IDL    = 0
 PROCESS_STATE_RUN    = 1

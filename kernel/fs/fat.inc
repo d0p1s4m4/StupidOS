@@ -60,6 +60,12 @@ struc FATFS_BootSector32 {
 }
 DEFN FATFS_BootSector32
 
+	;; Struc: FATFS_Dirent
+	;; FAT Filesystem directory entry
+	;;
+	;; .name - Filename
+	;; .ext  - File extension
+	;; .attr - See <FATFS file attributes>
 struc FATFS_Dirent {
 	.name           db 8 dup(?)
 	.ext            db 3 dup(?)
@@ -76,6 +82,21 @@ struc FATFS_Dirent {
 	.file_size      dd ?
 }
 DEFN FATFS_Dirent
+
+	;; Enum: FATFS file attributes
+	;;
+	;; FATFS_ATTR_READ_ONLY - Mark file as read-only
+	;; FATFS_ATTR_HIDDEN    - TODO
+	;; FATFS_ATTR_SYSTEM    - TODO
+	;; FATFS_ATTR_VOLUME_ID - The corresponding entry contains the volume label.
+	;; FATFS_ATTR_DIRECTORY - The corresponding entry represents a directory
+	;; FATFS_ATTR_ARCHIVE   - TODO
+FATFS_ATTR_READ_ONLY = 0x01
+FATFS_ATTR_HIDDEN    = 0x02
+FATFS_ATTR_SYSTEM    = 0x04
+FATFS_ATTR_VOLUME_ID = 0x08
+FATFS_ATTR_DIRECTORY = 0x10
+FATFS_ATTR_ARCHIVE   = 0x20
 
 	; ------------------------------------------------------------------------
 

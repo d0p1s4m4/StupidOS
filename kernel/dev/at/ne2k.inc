@@ -78,3 +78,7 @@ ne2k_probe:
 
 ne2k_irq:
 	iret
+
+ne2k_device:
+	db 'ne2k', 0, 0, 0, 0
+	dd ne2k_init

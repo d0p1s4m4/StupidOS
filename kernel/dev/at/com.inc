@@ -40,3 +40,7 @@ com_irq2:
 	pusha
 	popa
 	iret
+
+com_device:
+	db 'com', 0, 0, 0, 0, 0
+	dd com_init

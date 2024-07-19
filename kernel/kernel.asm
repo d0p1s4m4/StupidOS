@@ -54,8 +54,8 @@ kmain:
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
 
-	mov eax, [boot_structure.low_mem]
-	call heap_init
+	;mov eax, [boot_structure.low_mem]
+	;call heap_init
 
 	call pic_init
 
@@ -87,8 +87,6 @@ kmain:
 	;mov al, 'X'
 	;call cga_putc
 
-
-
 .halt:
 	hlt
 	jmp $
@@ -115,11 +113,12 @@ kmain:
 	include 'isr.inc'
 	include 'idt.inc'
 	include 'pic.inc'
-	include 'heap.inc'
+	;include 'heap.inc'
 	include 'vfs.inc'
 	include 'fs/fat.inc'
 	include 'fs/stpdfs.inc'
 	include 'fs/xv6fs.inc'
+	include 'proc.inc'
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
@@ -128,6 +127,8 @@ szErrorBootProtocol db "Error: wrong magic number", 0
 boot_structure BootInfo
 
 kTSS TSS
+
+aProcs rb 64*sizeof.Process
 
 	align 4096
 stack_bottom:
