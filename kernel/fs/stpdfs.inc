@@ -93,6 +93,34 @@ DEFN StpdFS_Sb
 	;; .zone    - TODO
 	;; .actime  - TODO
 	;; .modtime - TODO
+	;;
+	;;
+	;; Zone 0-6 are direct, zone 7 indirect, zone 8 double indirect, zone 9 triple indirect
+	;; >                         ┌────────┐                                                
+	;; >                         │        │                                                
+	;; >                ┌───────►│Data    │                                                
+	;; >                │        │        │                                                
+	;; > ┌──────┐ Direct│        └────────┘                                                
+	;; > │zone 0├───────┘                                                                  
+	;; > ├──────┤                                                                          
+	;; > │...   │                                                                          
+	;; > ├──────┤          ┌────────┐      ┌────────┐                                      
+	;; > │zone 6│          │        ├─────►│        │                                      
+	;; > ├──────┤ Indirect │        │      │ Data   │                                      
+	;; > │zone 7├─────────►│        │      │        │                                      
+	;; > ├──────┤          └────────┘      └────────┘                                      
+	;; > │zone 8├───────┐                                                                  
+	;; > ├──────┤       │Double indirect┌─────────┐    ┌────────┐    ┌─────────┐           
+	;; > │zone 9│       └──────────────►│         ├───►│        ├───►│         │           
+	;; > └──┬───┘                       │         │    │        │    │ Data    │           
+	;; >    │                           │         │    │        │    │         │           
+	;; >    │                           └─────────┘    └────────┘    └─────────┘           
+	;; >    │ Triple indirect ┌────────┐                                                   
+	;; >    └────────────────►│        │    ┌──────────┐      ┌─────────┐      ┌──────────┐
+	;; >                      │        ├───►│          │      │         │      │          │
+	;; >                      │        │    │          ├─────►│         ├─────►│ Data     │
+	;; >                      └────────┘    │          │      │         │      │          │
+	;; >                                    └──────────┘      └─────────┘      └──────────┘
 struc StpdFS_Inode {
 	.mode    dw ?
 	.nlink   dw ?
@@ -116,6 +144,8 @@ struc StpdFS_Dirent {
 	.name db STPDFS_NAME_MAX dup(?)
 }
 DEFN StpdFS_Dirent
+
+STPDFS_DIRENT_PER_BLOCK = sizeof.StpdFS_Dirent / STPDFS_BSIZE
 
 	; ------------------------------------------------------------------------
 

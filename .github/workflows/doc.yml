@@ -14,6 +14,8 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  LANG: "en_US.UTF-8"
 jobs:
   docs-deploy:
     runs-on: ubuntu-latest
@@ -25,12 +27,18 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential naturaldocs
+          sudo apt-get install build-essential wget unzip
+          sudo locale-gen en_US.UTF-8
+          sudo update-locale LANG=en_US.UTF-8
+          wget https://sourceforge.net/projects/naturaldocs/files/Stable%20Releases/1.52/NaturalDocs-1.52.zip/download -O /tmp/NaturalDocs-1.52.zip
+          (cd /tmp; unzip NaturalDocs-1.52.zip; mv NaturalDocs naturaldocs; chmod +x naturaldocs)
+
       - name: generate-docs
         run: |
+          export PATH="$PATH:/tmp"
           make docs
       - name: setup-pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: upload-artifact
         uses: actions/upload-pages-artifact@v3
         with:

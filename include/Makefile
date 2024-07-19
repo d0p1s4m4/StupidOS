@@ -9,7 +9,7 @@ all:
 clean:
 
 .PHONY: install
-install: $(INCS) $(INCSYSDIR)
+install: $(INCS) $(SYSINCS)
 	@ mkdir -p $(DESTDIR)$(INCDIR)
 	install $(INCS) $(DESTDIR)$(INCDIR)
 	@ mkdir -p $(DESTDIR)$(INCSYSDIR)
