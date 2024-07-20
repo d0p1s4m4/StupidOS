@@ -1,4 +1,6 @@
 	;; File: stpdfs.inc
+	
+	;; Section: Stupid Filesystem
 	;;
 	;; > ┌──────────┬───────────┬──────┬───┬──────┬────┬───┬────┐
 	;; > │Boot block│Super block│Inodes│...│Inodes│Data│...│Data│
@@ -15,12 +17,16 @@ STPDFS_SB_REV   = 1
 STPDFS_BSIZE    = 512
 	;; Constant: STPDFS_BADINO
 	;; StupidFS bad inode
-STPDBOOT_BADINO = 0
+STPDFS_BADINO = 0
 	;; Constant: STPDFS_ROOTINO
-	;; StupidFS root inode
+	;; StupidFS root inode number
 STPDFS_ROOTINO  = 1
 	;; Constant: STPDFS_NDIRECT
+	;; Number of direct block (7)
 STPDFS_NDIRECT  = 7
+	;; Constant: STPDFS_INDIRECT_PER_BLOCK
+STPDFS_INDIRECT_PER_BLOCK = STPDFS_BSIZE / 4
+
 	;; Constant: STPDFS_NAME_MAX
 	;; Max file name length (28)
 STPDFS_NAME_MAX = 28
@@ -33,7 +39,27 @@ STPDFS_CLEANLY_UNMOUNTED = 0
 STPDFS_ERROR             = 1
 STPDFS_DIRTY             = 1
 
+	;; Enum: StupidFS i-node flags
+	;; STPDFS_INO_FLAG_ALOC - I-node is allocated
+	;; STPDFS_INO_FLAG_LZP  - I-node data is compressed using LZP algorithm (see <lzp.asm>)
+	;; STPDFS_INO_FLAG_ENC  - I-node data is encrypted with XChaCha12 (see <xchacha.asm>)
+STPDFS_INO_FLAG_ALOC = 0x8000
+STPDFS_INO_FLAG_LZP  = 0x0001
+STPDFS_INO_FLAG_ENC  = 0x0002
+
+	;; Constant: STPDFS_INODE_PER_BLOCK
+	;; I-node per block
+STPDFS_INODE_PER_BLOCK = sizeof.StpdFS_Inode / STPDFS_BSIZE
+
+	;; Constant: STPDFS_DIRENT_PER_BLOCK
+	;; Directory entry per block
+STPDFS_DIRENT_PER_BLOCK = sizeof.StpdFS_Dirent / STPDFS_BSIZE
+
+
 	;; Struc: StpdFS_FreeList
+	;;
+	;; .free  - List of free block (0-99), index 0 point to next freelist
+	;; .nfree - Index
 	;;
 	;; > ┌──────────┐                                                     
 	;; > │ block 99 │                              
@@ -84,15 +110,15 @@ DEFN StpdFS_Sb
 	;; Struc: StpdFS_Inode
 	;; StupidFS on disk i-node
 	;;
-	;; .mode    - TODO
-	;; .nlink   - TODO
-	;; .uid     - TODO
-	;; .gid     - TODO
-	;; .flags   - TODO
-	;; .size    - Date size in byte
-	;; .zone    - TODO
-	;; .actime  - TODO
-	;; .modtime - TODO
+	;; .mode    - File mode
+	;; .nlink   - Links count
+	;; .uid     - Owner Uid
+	;; .gid     - Group Id
+	;; .flags   - File flags, see <StupidFS i-node flags>
+	;; .size    - Data size in byte
+	;; .zone    - See bellow
+	;; .actime  - Access time (64-bit UNIX timestamp)
+	;; .modtime - Modification time (64-bit UNIX timestamp)
 	;;
 	;;
 	;; Zone 0-6 are direct, zone 7 indirect, zone 8 double indirect, zone 9 triple indirect
@@ -110,17 +136,17 @@ DEFN StpdFS_Sb
 	;; > │zone 7├─────────►│        │      │        │                                      
 	;; > ├──────┤          └────────┘      └────────┘                                      
 	;; > │zone 8├───────┐                                                                  
-	;; > ├──────┤       │Double indirect┌─────────┐    ┌────────┐    ┌─────────┐           
-	;; > │zone 9│       └──────────────►│         ├───►│        ├───►│         │           
-	;; > └──┬───┘                       │         │    │        │    │ Data    │           
-	;; >    │                           │         │    │        │    │         │           
-	;; >    │                           └─────────┘    └────────┘    └─────────┘           
+	;; > ├──────┤       │Double indirect┌────────┐    ┌────────┐    ┌────────┐           
+	;; > │zone 9│       └──────────────►│        ├───►│        ├───►│        │           
+	;; > └──┬───┘                       │        │    │        │    │ Data   │           
+	;; >    │                           │        │    │        │    │        │           
+	;; >    │                           └────────┘    └────────┘    └────────┘           
 	;; >    │ Triple indirect ┌────────┐                                                   
-	;; >    └────────────────►│        │    ┌──────────┐      ┌─────────┐      ┌──────────┐
-	;; >                      │        ├───►│          │      │         │      │          │
-	;; >                      │        │    │          ├─────►│         ├─────►│ Data     │
-	;; >                      └────────┘    │          │      │         │      │          │
-	;; >                                    └──────────┘      └─────────┘      └──────────┘
+	;; >    └────────────────►│        │    ┌────────┐      ┌────────┐      ┌────────┐
+	;; >                      │        ├───►│        │      │        │      │        │
+	;; >                      │        │    │        ├─────►│        ├─────►│ Data   │
+	;; >                      └────────┘    │        │      │        │      │        │
+	;; >                                    └────────┘      └────────┘      └────────┘
 struc StpdFS_Inode {
 	.mode    dw ?
 	.nlink   dw ?
@@ -134,8 +160,9 @@ struc StpdFS_Inode {
 }
 DEFN StpdFS_Inode
 
+
 	;; Struc: StpdFS_Dirent
-	;; StupidFS dir entry
+	;; StupidFS directory entry
 	;;
 	;; .inode - address of i-node
 	;; .name  - null terminated file name (see <STPDFS_NAME_MAX>)
@@ -144,8 +171,6 @@ struc StpdFS_Dirent {
 	.name db STPDFS_NAME_MAX dup(?)
 }
 DEFN StpdFS_Dirent
-
-STPDFS_DIRENT_PER_BLOCK = sizeof.StpdFS_Dirent / STPDFS_BSIZE
 
 	; ------------------------------------------------------------------------
 

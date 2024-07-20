@@ -1,4 +1,4 @@
-	;; File: chacha20.asm
+	;; File: chacha.asm
 	
 	; https://en.wikipedia.org/wiki/Salsa20#ChaCha_variant
 	; https://datatracker.ietf.org/doc/html/rfc7539
@@ -6,7 +6,7 @@
 	format COFF
 	use32
 
-	include 'chacha20.inc'
+	include 'chacha.inc'
 	virtual at 0
 		ctx ChaCha20Ctx
 	end virtual

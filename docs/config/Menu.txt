@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Classes, Macros, Variables
+Don't Index: Classes, Variables, Macros
 
 
 # --------------------------------------------------------------------------
@@ -47,8 +47,8 @@ File: Introduction  (docs/intro.txt)
 Link: Source Code  (https://git.cute.engineering/d0p1/StupidOS)
 File: Coding Style  (docs/coding-style.txt)
 File: FAQ  (docs/faq.txt)
-Link: StupidFS  (https://stupidfs.d0p1.eu/)
 File: Common Object File Format &lparen;COFF&rparen;  (docs/COFF.txt)
+Link: StupidFS  (https://stupidfs.d0p1.eu/)
 
 Group: BootLoader  {
 
@@ -153,11 +153,6 @@ Group: Lib  {
 
       File: rc4.asm  (no auto-title, lib/crypto/rc4/rc4.asm)
 
-      Group: chacha20  {
-
-         File: chacha20.asm  (lib/crypto/chacha20/chacha20.asm)
-         }  # Group: chacha20
-
       Group: Dilithium  {
 
          File: ntt.asm  (lib/crypto/dilithium/ntt.asm)
@@ -168,6 +163,9 @@ Group: Lib  {
          File: sha256.asm  (lib/crypto/sha2/sha256.asm)
          }  # Group: SHA2
 
+      File: xchacha.asm  (lib/crypto/xchacha/xchacha.asm)
+      File: chacha.asm  (lib/crypto/chacha/chacha.asm)
+      File: hchacha.asm  (lib/crypto/hchacha/hchacha.asm)
       }  # Group: Crypto
 
    File: ctype  (no auto-title, lib/c/ctype.asm)

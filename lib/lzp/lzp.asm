@@ -1,8 +1,9 @@
 	;; File: lzp.asm
-	
-	; Lempel-Ziv + Prediction (a fast, efficient, and memory-use
-	; conservative compression algorithm)
-	; (paper: https://ieeexplore.ieee.org/document/488353)
+	;; *Lempel-Ziv + Prediction* (a fast, efficient, and memory-use
+	;; conservative compression algorithm)
+	;;
+	;; (paper: https://ieeexplore.ieee.org/document/488353)
+
 	format COFF
 	use32
 
