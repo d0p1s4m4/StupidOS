@@ -91,7 +91,7 @@ floppy_device:
 	db FLOPPY_BDEV_MAJOR
 	db FLOPPY_CDEV_MAJOR
 
-floppy_blockdev:
+floppy_bdevsw:
 	dd floppy_open
 	dd floppy_strategy
 	dd floppy_ioctl

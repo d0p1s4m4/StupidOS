@@ -40,6 +40,8 @@ kmain:
 
 	mov esi, szMsgKernelAlive
 	call klog
+	mov esi, szMsgBuildDate
+	call klog
 
 	; init pmm (kend, 0x400000)
 	mov eax, kend
@@ -77,6 +79,8 @@ kmain:
 
 	call pit_init
 
+	call proc_init
+
 	call dev_init
 
 	call vfs_init
@@ -88,7 +92,7 @@ kmain:
 	;call cga_putc
 
 .halt:
-	hlt
+;	hlt
 	jmp $
 .error_magic:
 	mov esi, szErrorBootProtocol
@@ -96,13 +100,6 @@ kmain:
 	call klog
 	jmp .halt
 
-	include 'dev/at/cmos.inc'
-	include 'dev/at/com.inc'
-	include 'dev/at/ne2k.inc'
-	include 'dev/at/pit.inc'
-	include 'dev/at/kbd.inc'
-	include 'dev/at/cga.inc'
-	include 'dev/at/floppy.inc'
 	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
@@ -122,6 +119,7 @@ kmain:
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
+szMsgBuildDate db "Built ", BUILD_DATE, 0
 szErrorBootProtocol db "Error: wrong magic number", 0
 
 boot_structure BootInfo

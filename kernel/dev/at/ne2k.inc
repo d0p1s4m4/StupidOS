@@ -63,17 +63,29 @@ NE2K_MAR6 = NE2K_IOBASE + 0xE
 NE2K_MAR7 = NE2K_IOBASE + 0xF
 
 ne2k_init:
+	call ne2k_probe
+	or eax, eax
+	jnz @f
+	mov esi, szMsgNe2kfound
+	call klog
 	mov dx, NE2K_IOBASE
 	in al, dx
 	out dx, al
 
 	mov al, NE2K_CR_STP
 	out dx, al
-	
+@@:	
 	ret
 
 
 ne2k_probe:
+	mov dx, NE2K_IOBASE + NE2K_CR
+	in al, dx
+	and al, 0x27
+	cmp al, 0x21
+	jne @f
+	xor eax, eax
+@@:
 	ret
 
 ne2k_irq:
@@ -82,3 +94,5 @@ ne2k_irq:
 ne2k_device:
 	db 'ne2k', 0, 0, 0, 0
 	dd ne2k_init
+
+szMsgNe2kfound db "NE2K: found", 0

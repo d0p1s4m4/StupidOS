@@ -25,4 +25,8 @@ console_device:
 	dd console_write
 	dd console_write
 
+console_cdevws:
+	dd 0
+	dd 0
+
 uConsoleLock dd 0

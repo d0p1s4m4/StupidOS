@@ -76,3 +76,8 @@ aKbdNormalMap:
 kbd_device:
 	db 'kbd', 0, 0, 0, 0, 0
 	dd kbd_init
+
+kbd_cdevws:
+	dd 0
+	dd 0 
+	dd 0

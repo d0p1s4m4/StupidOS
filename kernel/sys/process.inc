@@ -8,12 +8,12 @@ struc Context {
 DEFN Context
 
 struc Process {
+	.state     dd ?
 	.pagedir   dd ?
 	.kstack    dd ?
 	.parent    dd ?
 	.trapframe dd ?
 	.context   dd ?
-	.next      dd ?
 }
 DEFN Process
 

@@ -1,4 +1,13 @@
 	;; File: dev.inc
+
+	include 'at/cmos.inc'
+	include 'at/com.inc'
+	include 'at/ne2k.inc'
+	include 'at/pit.inc'
+	include 'at/kbd.inc'
+	include 'at/cga.inc'
+	include 'at/floppy.inc'
+
 struc Device {
 	.name db 8 dup(?)
 	.init dd ?
@@ -27,11 +36,12 @@ struc CharDev {
 }
 
 aBlockDevices:
-	dd 10 dup(0)
+	dd floppy_bdevsw
 .end:
 
 aCharDevices:
-	dd 10 dup(0)
+	dd console_cdevws
+	dd com_cdevsw
 .end:
 
 aDevices:

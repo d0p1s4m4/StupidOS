@@ -95,7 +95,7 @@ struc StpdFS_FreeList {
 	;; .freelist  - See <StpdFS_FreeList>
 	;; .rev       - See <STPDFS_SB_REV>
 	;; .state     - See <StupidFS State>
-	;; .time      - Last access time (64bit UNIX timestamp)
+	;; .time      - Last mod time (64bit UNIX timestamp)
 struc StpdFS_Sb {
 	.magic dd ?
 	.isize dd ?
