@@ -28,6 +28,7 @@ SRCS	= kernel.asm \
 			dev/at/cga.inc \
 			dev/at/kbd.inc \
 			dev/at/com.inc \
+			dev/at/ne2k.inc \
 			dev/at/floppy.inc \
 			dev/dev.inc \
 			fs/fat.inc \

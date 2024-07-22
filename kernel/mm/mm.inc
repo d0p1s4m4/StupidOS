@@ -144,6 +144,7 @@ mm_clone_pgdir:
 	ret
 
 	;; Function: mm_init
+	;; Initialize the memory manager
 mm_init:
 	mov esi, szMsgMmInit
 	call klog
@@ -189,10 +190,23 @@ mm_init:
 
 	ret
 
-mm_alloc:
+	;; Function: mm_mmap
+	;;
+	;; In:
+	;;   XXX - addr
+	;;   XXX - length
+	;;   XXX - prot
+	;;   XXX - flags
+mm_mmap:
 	ret
 
-mm_dealloc:
+	;; Function: mm_munmap
+	;;
+	;; In:
+	;;    XXX - addr
+	;;    XXX - length
+	;;
+mm_munmap:
 	ret
 
 mm_wallk_pagedir:

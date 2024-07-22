@@ -24,6 +24,7 @@ proc_alloc:
 	mov eax, -1
 	jmp .end
 @@:
+
 .end:
 	push eax
 	mov eax, uProcLock
@@ -31,7 +32,7 @@ proc_alloc:
 	pop eax
 	ret
 
-
+uNextpid dd 1
 uProcLock dd 0
 pCurrentProc dd 0
 szErrorNoFreeProcess db "Error: can't alloc new process", 0
