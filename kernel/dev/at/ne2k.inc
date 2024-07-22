@@ -108,6 +108,10 @@ ne2k_probe:
 	ret
 
 ne2k_irq:
+	pusha
+	mov esi, szMsgNe2kIRQ
+	call klog
+	popa
 	iret
 
 ne2k_device:
@@ -115,3 +119,4 @@ ne2k_device:
 	dd ne2k_init
 
 szMsgNe2kfound db "NE2K: found", 0
+szMsgNe2kIRQ db "NE2K: IRQ", 0

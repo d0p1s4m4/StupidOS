@@ -6,6 +6,7 @@
 	include 'at/pit.inc'
 	include 'at/kbd.inc'
 	include 'at/cga.inc'
+	include 'at/ata.inc'
 	include 'at/floppy.inc'
 
 struc Device {
@@ -50,6 +51,7 @@ aDevices:
 	dd console_device
 	dd com_device
 	dd ne2k_device
+	dd ata_device
 .end:
 
 dev_init:

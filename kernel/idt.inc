@@ -49,6 +49,14 @@ idt_setup:
 	mov eax, ne2k_irq
 	call idt_set_gate
 
+	mov ecx, 46
+	mov eax, ata_primary_irq
+	call idt_set_gate
+
+	mov ecx, 47
+	mov eax, ata_secondary_irq
+	call idt_set_gate
+
 	mov ecx, 0x42
 	mov eax, isr_syscall
 	call idt_set_gate
