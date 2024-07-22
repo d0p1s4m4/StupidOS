@@ -3,19 +3,6 @@
 
 COM1 = 0x3F8
 
-klog_kputc:
-	mov dx, COM1 + 5
-	push eax
-@@:
-	in al, dx
-	and al, 0x20
-	jnz @b
-	pop eax
-	mov dx, COM1
-	out dx, al
-	ret
-
-
 	;; Function: klog_print
 	;;
 	;; In:
@@ -32,6 +19,54 @@ klog_print:
 	popa
 	jmp @b
 @@:
+	ret
+
+	;; Function: klog_print_integer
+	;;
+	;; In:
+	;;    EDI - number
+	;;
+klog_print_integer:
+	test edi, edi
+	js .print_minus
+
+.print_minus:
+	ret
+
+	;; Function: klog_print_unsigned
+	;;
+	;; In:
+	;;   EDI - number
+	;;
+klog_print_unsigned:
+	push edx
+	push ebx
+	xor ecx, ecx
+	mov eax, edi
+	mov ebx, 10
+.loop_calc:
+	xor edx, edx
+	div ebx
+	push edx
+	inc ecx
+	or eax, eax
+	jnz .loop_calc
+.loop_print:
+	pop eax
+	add al, '0'
+	mov dx, COM1
+	out dx, al
+	pusha
+	call cga_putc
+	popa
+
+	dec ecx
+
+	or cl, cl
+	jnz .loop_print
+	
+	pop ebx
+	pop edx
 	ret
 
 	;; Function: klog_print_time
@@ -158,11 +193,27 @@ klog:
 	jmp .next
 .check_x:
 	cmp al, 'x'
-	jne .unknown_format
+	jne .check_d
 	pop eax
 	pop edi
 	push eax
 	call klog_print_hex
+	jmp .next
+.check_d:
+	cmp al, 'd'
+	jne .check_u
+	pop eax
+	pop edi
+	push eax
+	call klog_print_integer
+	jmp .next
+.check_u:
+	cmp al, 'u'
+	jne .unknown_format
+	pop eax
+	pop edi
+	push eax
+	call klog_print_unsigned
 	jmp .next
 .unknown_format:
 	mov al, '?'

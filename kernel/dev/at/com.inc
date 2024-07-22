@@ -18,7 +18,9 @@ UART8250_IIR = 0x2
 UART8250_FCR = 0x2
 UART8250_LCR = 0x3
 UART8250_MCR = 0x4
+UART8250_MCR_OUT2 = 0x08
 UART8250_LSR = 0x5
+UART8250_LSR_THRE = 0x20
 UART8250_MSR = 0x6
 UART8250_SCR = 0x7
 
@@ -27,37 +29,47 @@ UART8250_DLL = 0x0
 UART8250_DLH = 0x1
 
 com_init:
-	mov ax, COM1
+	push ebx
+	xor cx, cx
+.loop:
+	inc ch
+
+	; get io address
+	movzx eax, cl
+	shl eax, 1
+	add eax, aComPorts
+	mov bx, [eax]
+
+	mov ax, bx
+	push ecx
 	call com_probe
+	pop ecx
 	or eax, eax
 	jnz @f
-	mov esi, szMsgCom1Found
+	; comX found yeah
+	movzx eax, ch
+	push ecx
+	push eax
+	mov esi, szMsgComFound
 	call klog
+	pop ecx
+
+	; mark comX as active
+	mov al, 1
+	shl al, cl
+	or byte [uComActive], al
 @@:
-	mov ax, COM2
-	call com_probe
-	or eax, eax
-	jnz @f
-	mov esi, szMsgCom2Found
-	call klog
-@@:
-	mov ax, COM3
-	call com_probe
-	or eax, eax
-	jnz @f
-	mov esi, szMsgCom3Found
-	call klog
-@@:
-	mov ax, COM4
-	call com_probe
-	or eax, eax
-	jnz @f
-	mov esi, szMsgCom4Found
-	call klog
-@@:
+	inc cl
+	cmp cl, NCOM
+	jb .loop
+
+	pop ebx
 	ret
 
 	;; Function: com_probe
+	;;
+	;; In:
+	;;    AX - IO port
 com_probe:
 	mov dx, ax
 	add dx, UART8250_LCR
@@ -66,6 +78,8 @@ com_probe:
 	dec dx
 	out dx, al
 	xor ecx, ecx
+
+	;; wait a little
 @@:
 	inc ecx
 	cmp ecx, 100
@@ -81,9 +95,29 @@ com_probe:
 	xor eax, eax
 	ret
 
+	;; Function: com_putc
+	;; 
+	;; In:
+	;;    AL - Char to print
+	;;    DX - IO port
+	;;
+com_putc:
+	add dx, UART8250_LSR
+	push eax
+@@:
+	in al, dx
+	and al, UART8250_LSR_THRE
+	jnz @b
+	pop eax
+	sub dx, UART8250_LSR
+	out dx, al
+	ret
+	ret
+
 com_irq1:
 	pusha
-
+	mov esi, szMsgComIRQ
+	call klog
 	popa
 	iret
 
@@ -122,10 +156,16 @@ com_reset:
 uCom1Lock dd 0
 uCom2Lock dd 0
 uComActive db 0
-szMsgCom1Found db "COM: com1 found", 0
-szMsgCom2Found db "COM: com2 found", 0
-szMsgCom3Found db "COM: com3 found", 0
-szMsgCom4Found db "COM: com4 found", 0
+
+szMsgComFound db "COM: com%u found", 0
+szMsgComIRQ db "com irq", 0
+
+aComPorts:
+	dw COM1
+	dw COM2
+	dw COM3
+	dw COM4
+.end:
 
 com_device:
 	db 'com', 0, 0, 0, 0, 0
