@@ -19,7 +19,9 @@ bio_init:
 	rep stosb
 	ret
 
-bio_get:
+	;; Function: bio_read
+	;;
+bio_bread:
 	mov eax, uBIOLock
 	call lock_acquire
 
@@ -27,7 +29,14 @@ bio_get:
 	call lock_release
 	ret
 
+	;; Function: bio_brelse
+	;; Unbusy a buffer and release it to the free lists.
 bio_brelse:
+	mov eax, uBIOLock
+	call lock_acquire
+
+	mov eax, uBIOLock
+	call lock_release
 	ret
 
 uBIOLock dd 0

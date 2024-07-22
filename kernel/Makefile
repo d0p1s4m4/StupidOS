@@ -43,7 +43,7 @@ SRCS	= kernel.asm \
 .PHONY: all
 all: $(KERNEL)
 
-PHONY: const.inc
+.PHONY: const.inc
 const.inc: const.inc.in
 	sh $(TOOLSDIR)/version.sh $< $@
 

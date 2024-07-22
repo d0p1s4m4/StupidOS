@@ -156,17 +156,17 @@ ata_probe:
 	jnz .skip
 
 	push ecx
-	cmp ecx, ATA_CHAN1_IO
+	cmp bx, ATA_CHAN1_IO
 	jne @f
 	add ecx, 2
 	jmp .drive_found
 @@:
-	cmp ecx, ATA_CHAN2_IO
+	cmp bx, ATA_CHAN2_IO
 	jne @f
 	add ecx, 4
 	jmp .drive_found
 @@:
-	cmp ecx, ATA_CHAN3_IO
+	cmp bx, ATA_CHAN3_IO
 	jne @f
 	add ecx, 8
 	jmp .drive_found
