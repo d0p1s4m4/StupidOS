@@ -79,6 +79,8 @@ kmain:
 
 	call pit_init
 
+	call bio_init
+
 	call proc_init
 
 	call dev_init
@@ -116,6 +118,7 @@ kmain:
 	include 'fs/stpdfs.inc'
 	include 'fs/xv6fs.inc'
 	include 'proc.inc'
+	include 'bio.inc'
 
 
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
@@ -126,7 +129,10 @@ boot_structure BootInfo
 
 kTSS TSS
 
+	align 4096
 aProcs rb 64*sizeof.Process
+	align 4096
+aBuffers rb 30*sizeof.Buffer
 
 	align 4096
 stack_bottom:

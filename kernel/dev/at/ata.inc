@@ -1,7 +1,8 @@
 	;; File: ata.inc
 	;;
-	;; <ATA PIO Mode at https://wiki.osdev.org/ATA_PIO_Mode>
-	;; <IDE spec at https://www.cpcwiki.eu/imgs/a/a2/IDE_SPEC.PDF>
+	;; Usefull links:
+	;; - <ATA PIO Mode at https://wiki.osdev.org/ATA_PIO_Mode>
+	;; - <IDE spec at https://www.cpcwiki.eu/imgs/a/a2/IDE_SPEC.PDF>
 
 ATA_PRIMARY_IO        = 0x1F0
 ATA_PRIMARY_IO_CTRL   = 0x3F6
@@ -76,10 +77,21 @@ ATA_CMD_IDENTIFY   = 0xA0
 ata_wait:
 	mov dx, ax
 	add dx, ATA_STATUS
+	xor ecx, ecx
 @@:
+	inc ecx
+	cmp ecx, 5000
+	jg @f
 	in al, dx
 	and al, ATA_STATUS_BSY
 	jnz @b
+@@:
+	ret
+
+ata_select:
+	ret
+
+ata_cmd:
 	ret
 
 	;; Function: ata_probe
@@ -102,7 +114,9 @@ ata_probe:
 	out dx, al
 
 	mov ax, bx
+	push ecx
 	call ata_wait
+	pop ecx
 
 	mov dx, bx
 	add dx, ATA_COMMAND
@@ -110,16 +124,20 @@ ata_probe:
 	out dx, al
 
 	mov ax, bx
+	push ecx
 	call ata_wait
+	pop ecx
 
 	mov dx, bx
 	add dx, ATA_STATUS
 	in al, dx
 	and al, ATA_STATUS_ERR or ATA_STATUS_DRQ
-	jnz @f
+	jnz .skip
 
 	mov ax, bx
+	push ecx
 	call ata_wait
+	pop ecx
 
 	mov dx, bx
 	add dx, ATA_COMMAND
@@ -127,20 +145,39 @@ ata_probe:
 	out dx, al
 
 	mov ax, bx
+	push ecx
 	call ata_wait
+	pop ecx
 
 	mov dx, bx
 	add dx, ATA_STATUS
 	in al, dx
 	and al, ATA_STATUS_ERR or ATA_STATUS_DRQ
-	jnz @f
+	jnz .skip
 
 	push ecx
+	cmp ecx, ATA_CHAN1_IO
+	jne @f
+	add ecx, 2
+	jmp .drive_found
+@@:
+	cmp ecx, ATA_CHAN2_IO
+	jne @f
+	add ecx, 4
+	jmp .drive_found
+@@:
+	cmp ecx, ATA_CHAN3_IO
+	jne @f
+	add ecx, 8
+	jmp .drive_found
+@@:
+.drive_found:
+
 	push ecx
 	mov esi, szMsgAtaFound
 	call klog
 	pop ecx
-@@:
+.skip:
 	inc cl
 	cmp cl, 2
 	jb .loop
@@ -172,9 +209,9 @@ ata_device:
 
 aAtaChans:
 	dw ATA_CHAN0_IO
-;	dw ATA_CHAN1_IO
-;	dw ATA_CHAN2_IO
-;	dw ATA_CHAN3_IO
+	dw ATA_CHAN1_IO
+	dw ATA_CHAN2_IO
+	dw ATA_CHAN3_IO
 .end:
 
 szMsgAtaFound db "ATA: hd%u found", 0

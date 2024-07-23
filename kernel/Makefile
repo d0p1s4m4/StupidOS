@@ -37,6 +37,7 @@ SRCS	= kernel.asm \
 			fs/xv6fs.inc \
 			vfs.inc \
 			proc.inc \
+			bio.inc \
 			$(ASMINCS)
 
 .PHONY: all
