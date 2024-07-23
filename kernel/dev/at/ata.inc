@@ -103,7 +103,9 @@ ata_probe:
 	mov bx, ax
 	xor ecx, ecx
 .loop:
+	push ecx
 	call ata_wait
+	pop ecx
 
 	; select drive
 	mov dx, bx
@@ -172,7 +174,6 @@ ata_probe:
 	jmp .drive_found
 @@:
 .drive_found:
-
 	push ecx
 	mov esi, szMsgAtaFound
 	call klog
