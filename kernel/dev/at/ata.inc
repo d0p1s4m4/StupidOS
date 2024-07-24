@@ -14,8 +14,25 @@ ATA_CHAN1_IO = 0x170
 ATA_CHAN2_IO = 0x1E8
 ATA_CHAN3_IO = 0x168
 
+	;; Constant:  ATA_DATA
+	;; Read/Write data
 ATA_DATA     = 0x0
+
 	;; Constant: ATA_ERROR
+	;;
+	;; > ┌────┬─────┬────┬───┬────┬──┬───┬───┐
+    ;; > │AMNF│TKZNF│ABRT│MCR│IDNF│MC│UNC│BBK│
+    ;; > └────┴─────┴────┴───┴────┴──┴───┴───┘
+    ;; >      7     6    5   4    3  2   1   0
+	;;
+	;; AMNF  - Address mark not found.
+	;; TKZNF - Track zero not found.
+	;; ABRT  - Aborted command.
+	;; MCR   - Media change request.
+	;; IDNF  - ID not found.
+	;; MC    - Media changed
+	;; UNC   - Uncorrectable data error.
+	;; BBK   - Bad Block detected.
 	;;
 ATA_ERROR    = 0x1
 ATA_ERROR_AMNF  = 0x01
@@ -27,11 +44,21 @@ ATA_ERROR_MC    = 0x20
 ATA_ERROR_UNC   = 0x40
 ATA_ERROR_BBK   = 0x80
 
+	;; Constant: ATA_FEATURES
 ATA_FEATURES = 0x1
+
+	;; Constant: ATA_SECCOUNT
 ATA_SECCOUNT = 0x2
+
+	;; Constant: ATA_SECNUM
 ATA_SECNUM   = 0x3
+
+	;; Constant: ATA_CYLLO
 ATA_CYLLO    = 0x4
+
+	;; Constant: ATA_CYLHI
 ATA_CYLHI    = 0x5
+
 	;; Constant: ATA_DRVHEAD
 	;; Drive/Head register
 	;;
@@ -39,7 +66,17 @@ ATA_DRVHEAD  = 0x6
 ATA_DRVHEAD_DRV = 0x10
 ATA_DRVHEAD_LBA = 0x40
 
+	;; Constant: ATA_COMMAND
 ATA_COMMAND  = 0x7
+
+	;; Constant: ATA_CMD_RESTORE
+	;; Recalibrate
+ATA_CMD_RESTORE    = 0x10
+	;; Constant: ATA_CMD_DIAGNOSTIC
+	;; Execute device diagnostic
+ATA_CMD_DIAGNOSTIC = 0x90
+	;; Constant: ATA_CMD_IDENTIFY
+ATA_CMD_IDENTIFY   = 0xA0
 
 	;; Constant: ATA_STATUS
 	;; 
@@ -60,14 +97,13 @@ ATA_CTRL_nIEN = 0x02
 ATA_CTRL_SRST = 0x04
 ATA_CTRL_HOB  = 0x80
 
+	;; Constant: ATA_DRVADDR
+	;; 
 ATA_DRVADDR = 0x1
 ATA_DRVADDR_DS0 = 0x01
 ATA_DRVADDR_DS1 = 0x02
 ATA_DRVADDR_WTG = 0x40
 
-ATA_CMD_RESTORE    = 0x10
-ATA_CMD_DIAGNOSTIC = 0x90
-ATA_CMD_IDENTIFY   = 0xA0
 
 	;; Function: ata_wait
 	;;
@@ -88,6 +124,7 @@ ata_wait:
 @@:
 	ret
 
+	;; Function: ata_select
 ata_select:
 	ret
 
@@ -214,5 +251,8 @@ aAtaChans:
 	dw ATA_CHAN2_IO
 	dw ATA_CHAN3_IO
 .end:
+
+ata_bdevsw:
+	dd 0
 
 szMsgAtaFound db "ATA: hd%u found", 0

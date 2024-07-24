@@ -7,7 +7,7 @@ struc Buffer {
 	.block    dd ?
 	.ulock    dd ?
 	.refcount dd ?
-	.data db 512 dup(?)
+	.data db 1024 dup(?)
 }
 DEFN Buffer
 

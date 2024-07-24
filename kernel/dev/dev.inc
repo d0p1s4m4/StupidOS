@@ -15,6 +15,14 @@ struc Device {
 }
 DEFN Device
 
+	;; Struc: BlkDev
+	;;
+	;; .open     - Open the device in preparation for I/O operations
+	;; .strategy - Start a read or write operation, and return immediately.
+	;; .close    - Close a device.
+	;; .dump     - Write all physical memory to the device.
+	;; .psize    - Return the size of a disk-drive partition.
+	;;
 struc BlkDev {
 	.open     dd ?
 	.strategy dd ?
@@ -24,6 +32,18 @@ struc BlkDev {
 	.psize    dd ?
 }
 
+	;; Struc: CharDev
+	;;
+	;; .open   - open the device.
+	;; .close  - close the device..
+	;; .read   - do an input operation.
+	;; .write  - do an output operation.
+	;; .ioctl  - do an I/O control operation.
+	;; .select - poll device for I/O readiness.
+	;; .stop   - stop output on the device.
+	;; .mmap   - map device offset to memory location
+	;; .reset  - reinitialize device after a bus reset.
+	;;
 struc CharDev {
 	.open   dd ?
 	.close  dd ?
@@ -38,6 +58,7 @@ struc CharDev {
 
 aBlockDevices:
 	dd floppy_bdevsw
+	dd ata_bdevsw
 .end:
 
 aCharDevices:
@@ -54,6 +75,7 @@ aDevices:
 	dd ata_device
 .end:
 
+	;; Function: dev_init
 dev_init:
 	mov ecx, aDevices
 @@:
