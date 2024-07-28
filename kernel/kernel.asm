@@ -77,6 +77,7 @@ kmain:
 
 	call idt_setup
 
+	mov ax, 100 ; 100Hz
 	call pit_init
 
 	call bio_init

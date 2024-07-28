@@ -8,8 +8,30 @@ PIT_CHANNEL1 = 0x40
 PIT_CHANNEL2 = 0x42
 PIT_COMMAND  = 0x43
 
+
+PIT_MAX_FREQ = 1193180
+
 	;; Function: pit_init
+	;; 
+	;; In:
+	;;    AX - freq
 pit_init:
+	movzx eax, ax
+	xor edx, edx
+	mov ecx, PIT_MAX_FREQ
+	div ecx
+
+	push eax
+	mov dx, PIT_COMMAND
+	mov al, 0x34 ;channel 0, lobyte/hibyte, rate generator
+	pop eax
+
+	mov dx, PIT_CHANNEL0
+	out dx, al
+
+	xchg al, ah
+	out dx, al
+
 	ret
 
 	;; Function: pit_irq
