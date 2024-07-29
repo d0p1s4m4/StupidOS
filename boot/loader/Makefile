@@ -5,6 +5,7 @@ LOADER_SRCS	= loader.asm \
 				../common/bootinfo.inc \
 				../../kernel/sys/bootinfo.inc \
 				../../kernel/sys/register.inc \
+				fat.inc \
 				video.inc \
 				memory.inc \
 				logger.inc \
