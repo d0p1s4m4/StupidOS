@@ -1,4 +1,11 @@
+	;; File: disk.inc
 
+	;; Function: disk_read_sectors
+	;;
+	;; In:
+	;;   AX    - LBA starting sector
+	;;   CX    - Sector count
+	;;   ES:BX - buffer 
 disk_read_sectors:
 ;	test byte [bDriveLBA], TRUE
 ;	je .lba_read

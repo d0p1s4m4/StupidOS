@@ -1,5 +1,22 @@
 	;; File: fat12.inc
 
+struc fat_bpb
+{
+	.jump             db 3 dup(?)
+	.oem_name         db 8 dup(?)
+	.bytes_per_sects  dw ?
+	.sects_per_clust  db ?
+	.reserved_sects   dw ?
+	.FAT_count        db ?
+	.root_dir_entries dw ?
+	.total_sects      dw ?
+	.media_type       db ?
+	.sects_per_FAT    dw ?
+	.sects_per_track  dw ?
+	.heads_per_cyl    dw ?
+}
+defn fat_bpb
+
 	;; Struct: fat_entry
 struc fat_entry
 {

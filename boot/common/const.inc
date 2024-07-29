@@ -16,6 +16,7 @@ STACK_TOP      = 0x7000
 
 ; ---------- Magic ------------
 STPDBOOT_MAGIC = 0x53545044
+STPDFS_MAGIC   = 0x44505453
 
 ; ---------- Video ------------
 VIDEO_WIDTH  = 1024
