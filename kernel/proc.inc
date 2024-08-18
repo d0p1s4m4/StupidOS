@@ -32,6 +32,21 @@ proc_alloc:
 	pop eax
 	ret
 
+context_switch:
+	mov ax, 0x23
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+
+	mov eax, esp
+	push 0x23
+	push eax
+	pushf
+	push 0x1b
+	; push addr
+	iret
+
 uNextpid dd 1
 uProcLock dd 0
 pCurrentProc dd 0

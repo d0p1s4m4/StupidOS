@@ -1,9 +1,22 @@
 struc Context {
-	.edi dd ?
-	.esi dd ?
+	.gs  dw ?
+	.fs  dw ?
+	.es  dw ?
+	.ds  dw ?
+	.ss  dw ?
+
+	.eax dd ?
 	.ebx dd ?
+	.ecx dd ?
+	.edx dd ?
+	.esi dd ?
+	.edi dd ?
 	.ebp dd ?
-	.eip dd ?
+
+	.error  dd ?
+	.eip    dd ?
+	.cs     dd ?
+	.eflags dd ?
 }
 DEFN Context
 
