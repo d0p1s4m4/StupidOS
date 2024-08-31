@@ -15,7 +15,7 @@ struc fat_bpb
 	.sects_per_track  dw ?
 	.heads_per_cyl    dw ?
 }
-defn fat_bpb
+DEFN fat_bpb
 
 	;; Struct: fat_entry
 struc fat_entry
@@ -33,7 +33,7 @@ struc fat_entry
 	.start         dw ?
 	.size          dd ?
 }
-defn fat_entry
+DEFN fat_entry
 
 	;; Constants: Attributes
 	;;  ATTR_READ_ONLY - Read-only

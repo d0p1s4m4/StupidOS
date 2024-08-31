@@ -2,6 +2,7 @@
 
 include '../common/fat12.inc'
 
+	;; Function: fat_read_bpb
 fat_read_bpb:
 	mov ax, DISK_BUFFER/0x10
 	mov es, ax

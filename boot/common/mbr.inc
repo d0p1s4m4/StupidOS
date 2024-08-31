@@ -10,6 +10,6 @@ struc Partition
 	.lba       dd ?
 	.sectors   dd ?
 }
-defn Partition
+DEFN Partition
 
 

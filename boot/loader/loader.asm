@@ -76,9 +76,23 @@ _start:
 	cmp dword [DISK_BUFFER], STPDFS_MAGIC
 	jne  .fat_fallback
 
+	mov si, szMsgStpdFSFound
+	call bios_log
+
+	call stpdfs_load_rootdir
+
+	mov si, szKernelStpdfsFile
+	call stpdfs_search
+
+
+	jmp .skip_fat
+
 	; fallback to fat12	
 	; for now fat12 is asumed
 .fat_fallback:
+	mov si, szMsgFatFallback
+	call bios_log
+
 	; get bpb
 	call fat_read_bpb
 
@@ -111,6 +125,8 @@ _start:
 	mov ax, [pKernelStartFat]
 	xor bx, bx
 	call fat_load_binary
+
+.skip_fat:
 
 	; fetch memory map from bios
 	call memory_get_map
@@ -156,6 +172,7 @@ _start:
 	include 'a20.inc'
 	include '../common/bios.inc'
 	include 'fat.inc'
+	include 'stpdfs.inc'
 	include 'disk.inc'
 	include 'logger.inc'
 	include 'memory.inc'
@@ -173,6 +190,9 @@ uKernelSize        dd 0
 
 szMsgStage2        db "StupidOS Loader", 0
 szKernelFile       db "VMSTUPIDSYS", 0
+szKernelStpdfsFile db "vmstupid.sys", 0
+szMsgStpdFSFound   db "StupidFS found", 0
+szMsgFatFallback   db "Fallback to FATFS", 0
 szMsgKernelFound   db "Kernel found, size: %x", 0
 szMsgErrorA20      db "ERROR: can't enable a20 line", 0
 szMsgErrorMemory   db "ERROR: can't detect available memory", 0

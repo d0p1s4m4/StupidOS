@@ -10,7 +10,8 @@ LOADER_SRCS	= loader.asm \
 				memory.inc \
 				logger.inc \
 				a20.inc \
-				multiboot.inc
+				multiboot.inc \
+				stpdfs.inc
 
 .PHONY: all
 all: $(TARGET)

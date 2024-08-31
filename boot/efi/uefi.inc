@@ -80,7 +80,7 @@ struc EFI_TIME
 	.Daylight   UINT8
 	.Pad2       UINT8
 }
-defn EFI_TIME
+DEFN EFI_TIME
 
 struc EFI_TABLE_HEADER
 {
@@ -90,7 +90,7 @@ struc EFI_TABLE_HEADER
 	.CRC32       UINT32
 	.Reserved    UINT32
 }
-defn EFI_TABLE_HEADER
+DEFN EFI_TABLE_HEADER
 
 	;; ========================================================================
 	;; EFI_SYSTEM_TABLE
@@ -131,7 +131,7 @@ struc EFI_SYSTEM_TABLE
 	.NumberOfTableEntries UINTN
 	.ConfigurationTable   UINTPTR
 }
-defn EFI_SYSTEM_TABLE
+DEFN EFI_SYSTEM_TABLE
 
 	;; ========================================================================
 	;; EFI_BOOT_SERVICES
@@ -210,7 +210,7 @@ struc EFI_BOOT_SERVICES
 	.SetMem        UINTPTR
 	.CreateEventEx UINTPTR
 }
-defn EFI_BOOT_SERVICES
+DEFN EFI_BOOT_SERVICES
 
 	;; ========================================================================
 	;; EFI_RUNTIMES_SERVICES
@@ -269,7 +269,7 @@ struc EFI_LOADED_IMAGE_PROTOCOL
 	.ImageDataType   UINT32
 	.Unload          UINTPTR
 }
-defn EFI_LOADED_IMAGE_PROTOCOL
+DEFN EFI_LOADED_IMAGE_PROTOCOL
 
 	;; ========================================================================
 	;; EFI_DEVICE_PATH_PROTOCOL
@@ -282,7 +282,7 @@ struc EFI_DEVICE_PATH_PROTOCOL
 	.SubType UINT8
 	.Length  db 2 dup(?)
 }
-defn EFI_DEVICE_PATH_PROTOCOL
+DEFN EFI_DEVICE_PATH_PROTOCOL
 
 	;; ========================================================================
 	;; EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
@@ -302,7 +302,7 @@ struc EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
 	.EnableCursor      UINTPTR
 	.Mode              UINTPTR
 }
-defn EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
+DEFN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
 
 struc SIMPLE_TEXT_OUTPUT_MODE
 {
@@ -350,7 +350,7 @@ struc EFI_LOAD_FILE_PROTOCOL
 {
 	.LoadFile UINTPTR
 }
-defn EFI_LOAD_FILE_PROTOCOL
+DEFN EFI_LOAD_FILE_PROTOCOL
 
 
 	;; ========================================================================
@@ -372,7 +372,7 @@ struc EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
 	.Revision   UINT64
 	.OpenVolume UINTPTR
 }
-defn EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
+DEFN EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
 
 	;; ========================================================================
 	;; EFI_FILE_PROTOCOL
@@ -400,7 +400,7 @@ struc EFI_FILE_PROTOCOL
 	.WriteEx     UINTPTR
 	.FlushEx     UINTPTR
 }
-defn EFI_FILE_PROTOCOL
+DEFN EFI_FILE_PROTOCOL
 
 	; Open Mode
 EFI_FILE_MODE_READ   = 0x0000000000000001

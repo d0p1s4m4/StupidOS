@@ -1,9 +1,9 @@
 	;; File: macro.inc
 
-	;; Macro: defn name
-macro defn name
-{
-	virtual at 0
-		name name
-	end virtual
+	;; Macro: DEFN name
+macro DEFN x {
+virtual at 0
+  x x
+  sizeof.#x:
+end virtual
 }

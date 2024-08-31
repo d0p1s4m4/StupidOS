@@ -82,7 +82,7 @@ struc MultibootData
         .fb_type   db ?
         .fb_misc   dw 3 dup ?
 }
-defn MultibootData
+DEFN MultibootData
 
 MULTIBOOT_DATA_MEM             = 0x0001
 MULTIBOOT_DATA_BOOTDEV         = 0x0002
@@ -101,7 +101,7 @@ struc MultibootMMap
         .length dq ?
         .type   dd ?
 }
-defn MultibootMMap
+DEFN MultibootMMap
 
 MULTIBOOT_MEMORY_AVAILABLE = 0x1
 MULTIBOOT_MEMORY_RESERVED  = 0x2
@@ -116,4 +116,4 @@ struc MultibootModule
 	.cmdline   dd ?
 	.pad       dd ?
 }
-defn MultibootModule
+DEFN MultibootModule
