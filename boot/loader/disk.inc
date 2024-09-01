@@ -7,8 +7,8 @@
 	;;   CX    - Sector count
 	;;   ES:BX - buffer 
 disk_read_sectors:
-;	test byte [bDriveLBA], TRUE
-;	je .lba_read
+	cmp byte [bDriveLBA], TRUE
+	je .lba_read
 	push ax
 	push bx
 	push cx
@@ -40,14 +40,17 @@ disk_read_sectors:
 	call bios_print
 	ret
 .lba_read:
+	push si
 	mov word [disk_packet.sectors], cx
 	mov word [disk_packet.segment], es
 	mov word [disk_packet.offset], bx
-	mov word [disk_packet.lba], ax
-	mov ds, [disk_packet]
+	mov dword [disk_packet.lba], eax
+	mov si, disk_packet
 	mov dl, [uDrive]
 	mov ah, 0x42
 	int 0x13
+	jc @b
+	pop si
 	ret
 
 C dw 0x00
@@ -59,9 +62,9 @@ disk_packet:
 	db 0
 .sectors:
 	dw 0
-.segment:
-	dw 0
 .offset:
+	dw 0
+.segment:
 	dw 0
 .lba:
 	dd 0

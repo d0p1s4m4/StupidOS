@@ -46,7 +46,7 @@ _start:
 	mov dl, [uDrive]
 	cmp dl, 0x7F
 	; skip disk extension check
-	jle @f
+	jbe @f
 
 	; check disk extensions
 	mov ah, 0x41
@@ -54,6 +54,7 @@ _start:
 	int 0x13
 	jc @f
 	mov [bDriveLBA], TRUE
+
 @@:
 	; detect filesystem (FAT12/16 or StpdFS)
 	; load kernel from filesystem
@@ -260,6 +261,8 @@ hang:
 _edata:
 
 boot_structure BootInfo
+
+inode_cache rb sizeof.Inode
 
 	align 4096
 boot_page_directory:
