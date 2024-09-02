@@ -84,7 +84,17 @@ _start:
 
 	mov si, szKernelStpdfsFile
 	call stpdfs_search
+	jc .error_not_found
 
+	call stpdfs_read_inode
+
+	mov ebx, dword [inode_cache + Inode.size]
+	mov [uKernelSize], ebx
+
+	mov ax, KERNEL_PRELOAD/0x10
+	mov es, ax
+	xor bx, bx
+	call stpdfs_copy_data
 
 	jmp .skip_fat
 
