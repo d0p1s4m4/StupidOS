@@ -247,7 +247,7 @@ common32:
 	cmp ecx, 1024
 	jb @b
 	
-	mov dword [boot_page_directory], boot_0_page_table + (PDE_P or PDE_W) ; preset and writable
+	mov dword [boot_page_directory], boot_0_page_table + (PDE_P or PDE_W) ; present and writable
 
 	mov dword [boot_page_directory + (768 * 4)], boot_0_page_table + (PDE_P or PDE_W)
 

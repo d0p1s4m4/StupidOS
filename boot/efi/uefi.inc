@@ -242,6 +242,7 @@ struc EFI_RUNTIMES_SERVICES
 
 
 }
+DEFN EFI_RUNTIMES_SERVICES
 
 	;; ========================================================================
 	;; EFI_LOADED_IMAGE_PROTOCOL

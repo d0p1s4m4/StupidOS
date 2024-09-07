@@ -106,7 +106,6 @@ run-iso: all
 .PHONY: run-efi
 run-efi: all OVMF32.fd
 	qemu-system-i386 \
-		$(QEMU_COMMON) \
 		-bios OVMF32.fd \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device ide-hd,drive=hdd

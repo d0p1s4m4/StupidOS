@@ -2,11 +2,13 @@
 	format PE DLL EFI at 10000000h
 	entry efimain
 
-	section '.text' code executable readable
-
 	include '../common/const.inc'
 	include '../common/macro.inc'
 	include 'uefi.inc'
+	include '../../kernel/sys/bootinfo.inc'
+	include 'logger.inc'
+
+	section '.text' code executable readable
 
 	;; Function: efimain
 	;;
@@ -46,24 +48,10 @@ efimain:
 	mov ecx, [ebx + EFI_BOOT_SERVICES.Exit]
 	mov [fnExit], ecx
 
-	mov ebx, [eax + EFI_SYSTEM_TABLE.ConOut]
-	mov [pConOut], ebx
+	call efi_log_init
 
-	mov ecx, [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset]
-	mov [fnOutputReset], ecx
-	mov ecx, [ebx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.OutputString]
-	mov [fnOutputStr], ecx
-
-	mov eax, 1
-	push eax
-	push [pConOut]
-	call [fnOutputReset]
-	add esp, 8
-
-	push szHelloMsg
-	push [pConOut]
-	call [fnOutputStr]
-	add esp, 8
+	mov esi, szHelloMsg
+	call efi_log
 
 	; #=======================#
 	; search and load kernel
@@ -89,7 +77,7 @@ efimain:
 
 	section '.data' data readable writeable
 
-szHelloMsg  du 'StupidOS EFI Bootloader', CR, LF, 0
+szHelloMsg  du 'StupidOS EFI Bootloader', 0
 
 			; Search path: / /boot /boot/efi
 aSearchPaths du '\\', 0, \
@@ -97,6 +85,8 @@ aSearchPaths du '\\', 0, \
 				'\\boot\\efi', 0, 0
 szKernelFile du 'vmstupid.sys', 0
 szConfigFile du 'stpdboot.ini', 0 
+
+stBootInfo BootInfo
 
 hImage       dd ?
 pSystemTable dd ?
@@ -112,13 +102,6 @@ fnExit          dd ?
 
 ;; Variable: pRuntimeServices
 pRuntimeServices dd ?
-
-
-;; Variable: pConOut
-;; Pointer to EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
-pConOut       dd ?
-fnOutputReset dd ?
-fnOutputStr   dd ?
 
 ;; Variable: pLoadFileProtocol
 ;; Pointer to EFI_LOAD_FILE_PROTOCOL
