@@ -3,6 +3,8 @@ TARGET = BOOTIA32.EFI
 BOOTIA32_EFI_SRCS = bootia32.asm \
 					uefi.inc \
 					logger.inc \
+					memory.inc \
+					fs.inc \
 					../common/const.inc \
 					../common/macro.inc
 

@@ -1,3 +1,5 @@
+	;; File: logger.inc
+
 	section '.text' code executable readable
 
 	;; Function: efi_log_init

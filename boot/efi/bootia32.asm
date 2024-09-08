@@ -7,6 +7,8 @@
 	include 'uefi.inc'
 	include '../../kernel/sys/bootinfo.inc'
 	include 'logger.inc'
+	include 'memory.inc'
+	include 'fs.inc'
 
 	section '.text' code executable readable
 
@@ -33,25 +35,19 @@ efimain:
 	mov ebx, [eax + EFI_SYSTEM_TABLE.BootServices]
 	mov [pBootServices], ebx
 
-	mov ecx, [ebx + EFI_BOOT_SERVICES.AllocatePool]
-	mov [fnAllocatePool], ecx
-
-	mov ecx, [ebx + EFI_BOOT_SERVICES.FreePool]
-	mov [fnFreePool], ecx
-
-	mov ecx, [ebx + EFI_BOOT_SERVICES.GetMemoryMap]
-	mov [fnGetMemoryMap], ecx
-
 	mov ecx, [ebx + EFI_BOOT_SERVICES.OpenProtocol]
 	mov [fnOpenProtocol], ecx
 
 	mov ecx, [ebx + EFI_BOOT_SERVICES.Exit]
 	mov [fnExit], ecx
 
+	call efi_memory_init
 	call efi_log_init
 
 	mov esi, szHelloMsg
 	call efi_log
+
+	call efi_fs_init
 
 	; #=======================#
 	; search and load kernel
@@ -93,9 +89,6 @@ pSystemTable dd ?
 
 ;; Variable: pBootServices
 pBootServices   dd ?
-fnAllocatePool  dd ?
-fnFreePool      dd ?
-fnGetMemoryMap  dd ?
 fnOpenProtocol  dd ?
 fnCloseProtocol dd ?
 fnExit          dd ?

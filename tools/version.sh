@@ -2,12 +2,12 @@
 
 vers="$(git describe --abbrev=4 --match='v[0-9]*' HEAD 2>/dev/null)"
 
-if [ ! -n "$vers" ]; then
+if [ -z "$vers" ]; then
 	vers="0.0"
 fi
 
-major="$(echo -n "${vers}" | cut -d. -f1)"
-minor="$(echo -n "${vers}" | cut -d. -f1)"
+major="$(printf "%s" "${vers}" | cut -d. -f1)"
+minor="$(printf "%s" "${vers}" | cut -d. -f1)"
 
 commit="$(git rev-parse --short HEAD)"
 
