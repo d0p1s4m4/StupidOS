@@ -14,11 +14,24 @@ FLOPPY_720KB  = 0x3
 FLOPPY_1_44MB = 0x4
 FLOPPY_2_88MB = 0x5
 
+	;; TODO: disk geometry for each floppy type
+HEADS_PER_CYLINDER  = 2
+SECTORS_PER_CLUSTER = 1
+BYTES_PER_SECTOR    = 512
+SECTORS_PER_TRACK   = 18
+TOTAL_SECTORS       = 2880
+
 FLOPPY_MAX = 2
 
+	;; Struct: Floppy
+	;;
+	;; .active - XXX
+	;; .motor  - XXX
 struc Floppy {
 	.active db ?
+	.motor  db ?
 }
+DEFN Floppy
 
 floppy_probe:
 	mov al, CMOS_FLOPPY_TYPE
@@ -45,9 +58,52 @@ floppy_init:
 	call floppy_probe
 	ret
 
+	;; Function: floppy_lba_to_chs
+	;; Convert LBA to CHS
+	;;
+	;; In:
+	;;   EAX - LBA
+	;;
+	;; Out:
+	;; 	AL - Cylinder
+	;;  AH - Head
+	;;  CL - Sector
+floppy_lba_to_chs:
+	push ebp
+	mov ebp, esp
+	sub esp, 1
+	; CYL = LBA / (HPC * SPT)
+	; HEAD = (LBA % (HPC * SPT)) / SPT
+	; SECT = (LBA % (HPC * SPT)) % SPT + 1
+
+	mov edx, eax
+	shr edx, 16
+	mov cx, (HEADS_PER_CYLINDER * SECTORS_PER_TRACK)
+	div cx
+
+	mov [ebp-1], al ; cyl
+
+	mov ax, dx
+	mov cl, SECTORS_PER_TRACK
+	div cl
+
+	mov cl, ah
+	inc cl
+	xchg al, ah
+	mov al, [ebp-1]
+	leave
+	ret
+
+	;; Function: floppy_strategy
+	;; Do a read or write operation
+	;;
+	;; In:
+	;;    EAX - Address of <Buffer>
 floppy_strategy:
 	ret
 
+	;; Function: floppy_open
+	;; Open the device for I/O operations
 floppy_open:
 	push ebp
 	mov ebp, esp
@@ -63,6 +119,8 @@ floppy_open:
 	pop ebp
 	ret
 
+	;; Function: floppy_close
+	;; Close a device.
 floppy_close:
 	xor eax, eax
 	ret
@@ -75,6 +133,7 @@ floppy_dump:
 	ret
 
 floppy_psize:
+	xor eax, eax
 	ret
 
 floppy_irq:

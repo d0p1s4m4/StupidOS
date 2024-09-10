@@ -1,1 +1,4 @@
 File: Introduction
+
+About: StupidOS Kernel
+

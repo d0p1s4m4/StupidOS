@@ -176,7 +176,7 @@ mm_init:
 	KV2P eax
 	mov [edx], eax
 
-	cmp esi, [boot_structure.high_mem]
+	cmp esi, [stBootInfo.high_mem]
 	jb .loop
 
 	; reload cr3

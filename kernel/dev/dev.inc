@@ -18,7 +18,7 @@ DEFN Device
 	;; Struc: BlkDev
 	;;
 	;; .open     - Open the device in preparation for I/O operations
-	;; .strategy - Start a read or write operation, and return immediately.
+	;; .strategy - Do a read or write operation.
 	;; .close    - Close a device.
 	;; .dump     - Write all physical memory to the device.
 	;; .psize    - Return the size of a disk-drive partition.
@@ -31,6 +31,7 @@ struc BlkDev {
 	.dump     dd ?
 	.psize    dd ?
 }
+DEFN BlkDev
 
 	;; Struc: CharDev
 	;;

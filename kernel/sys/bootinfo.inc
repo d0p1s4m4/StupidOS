@@ -7,8 +7,13 @@ struc BootInfoRange {
 }
 
 	;; Struct: BootInfo
-	;;
 	;; StupidOS boot protocol structure
+	;;
+	;; .mmap         - Free memory map
+	;; .kernel_start - Kernel start address
+	;; .kernel_size  - Kernel size in bytes
+	;; .high_mem     - Free memory under 1MB
+	;; .low_mem      - Free memory upper 1MB
 struc BootInfo {
 	.mmap         dd 4*2*20 dup(0)
 	.kernel_start dd ?

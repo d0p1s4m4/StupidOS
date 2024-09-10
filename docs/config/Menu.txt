@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Classes, Variables, Macros
+Don't Index: Variables, Macros, Classes
 
 
 # --------------------------------------------------------------------------
@@ -63,9 +63,12 @@ Group: BootLoader  {
    Group: Loader  {
 
       File: a20.inc  (boot/loader/a20.inc)
+      File: disk.inc  (boot/loader/disk.inc)
+      File: fat.inc  (boot/loader/fat.inc)
       File: loader.asm  (boot/loader/loader.asm)
       File: logger.inc  (boot/loader/logger.inc)
       File: memory.inc  (boot/loader/memory.inc)
+      File: stpdfs.inc  (boot/loader/stpdfs.inc)
       File: video.inc  (boot/loader/video.inc)
       }  # Group: Loader
 
@@ -81,6 +84,9 @@ Group: BootLoader  {
    Group: EFI  {
 
       File: bootia32.asm  (boot/efi/bootia32.asm)
+      File: fs.inc  (boot/efi/fs.inc)
+      File: logger.inc  (boot/efi/logger.inc)
+      File: memory.inc  (boot/efi/memory.inc)
       File: uefi.inc  (boot/efi/uefi.inc)
       }  # Group: EFI
 
@@ -105,10 +111,10 @@ Group: Kernel  {
          File: cmos.inc  (kernel/dev/at/cmos.inc)
          File: com.inc  (kernel/dev/at/com.inc)
          File: floppy.inc  (kernel/dev/at/floppy.inc)
-         File: ide.inc  (kernel/dev/at/ide.inc)
          File: kbd.inc  (kernel/dev/at/kbd.inc)
          File: ne2k.inc  (kernel/dev/at/ne2k.inc)
          File: pit.inc  (kernel/dev/at/pit.inc)
+         File: ata.inc  (kernel/dev/at/ata.inc)
          }  # Group: At
 
       File: console.inc  (kernel/dev/console.inc)
@@ -140,6 +146,8 @@ Group: Kernel  {
    File: lock.inc  (kernel/lock.inc)
    File: pic.inc  (kernel/pic.inc)
    File: vfs.inc  (kernel/vfs.inc)
+   File: bio.inc  (kernel/bio.inc)
+   File: shed.inc  (kernel/sched.inc)
    }  # Group: Kernel
 
 Group: Lib  {

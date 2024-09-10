@@ -14,8 +14,9 @@
 	jmp short kmain
 
 	;; Function: kmain
+	;; Kernel entry point
 	;;
-	;; Parameters:
+	;; In:
 	;; 
 	;;     EAX - Boot Magic
 	;;     EBX - Boot structure address
@@ -29,7 +30,7 @@ kmain:
 	; Copy boot structure
 	mov ecx, sizeof.BootInfo
 	mov esi, ebx
-	mov edi, boot_structure
+	mov edi, stBootInfo
 	rep movsb
 
 	; print hello world 
@@ -52,11 +53,11 @@ kmain:
 	call mm_init
 
 	mov eax, 0xC0400000
-	mov ebx, [boot_structure.high_mem]
+	mov ebx, [stBootInfo.high_mem]
 	add ebx, KERNEL_VIRT_BASE
 	call pmm_free_range
 
-	;mov eax, [boot_structure.low_mem]
+	;mov eax, [stBootInfo.low_mem]
 	;call heap_init
 
 	call pic_init
@@ -87,6 +88,9 @@ kmain:
 	call dev_init
 
 	call vfs_init
+
+	mov ah, 2
+	call bio_bread
 
 	mov eax, SYSCALL_EXIT
 	int 0x42
@@ -126,7 +130,9 @@ szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
 szMsgBuildDate db "Built ", BUILD_DATE, 0
 szErrorBootProtocol db "Error: wrong magic number", 0
 
-boot_structure BootInfo
+	;; Variable: stBootInfo
+	;; <BootInfo>
+stBootInfo BootInfo
 
 kTSS TSS
 
