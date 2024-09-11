@@ -89,11 +89,18 @@ kmain:
 
 	call vfs_init
 
+	; Root inode
+	; rootino = newino(dev(0.0), BLK)
+	; fs_mountroot(rootino);
+
 	mov ah, 2
 	call bio_bread
 
-	mov eax, SYSCALL_EXIT
-	int 0x42
+	xor eax, eax
+	call bio_bread
+
+	;mov eax, SYSCALL_EXIT
+	;int 0x42
 
 	;mov al, 'X'
 	;call cga_putc

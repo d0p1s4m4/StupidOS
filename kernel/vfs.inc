@@ -30,7 +30,16 @@ struc VFSOps {
 	.vget   dd ?
 }
 
-	;; 
+	;; Constants: vnode types
+	;;
+	;; VNODE_TYPE_NON  - XXX
+	;; VNODE_TYPE_REG  - XXX
+	;; VNODE_TYPE_DIR  - XXX
+	;; VNODE_TYPE_BLK  - XXX
+	;; VNODE_TYPE_CHR  - XXX
+	;; VNODE_TYPE_LNK  - XXX
+	;; VNODE_TYPE_SOCK - XXX
+	;; VNODE_TYPE_BAD  - XXX
 VNODE_TYPE_NON  = 0x0
 VNODE_TYPE_REG  = 0x1
 VNODE_TYPE_DIR  = 0x2

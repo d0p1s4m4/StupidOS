@@ -9,7 +9,9 @@
 	;; .refcount - refcount
 	;; .data     - block data
 struc Buffer {
-	.dev      dd ?
+	.dev      dw ?
+	.flags    db ?
+	.bcount   db ?
 	.block    dd ?
 	.ulock    dd ?
 	.refcount dd ?
@@ -17,12 +19,30 @@ struc Buffer {
 }
 DEFN Buffer
 
+	;; Constants: Buffer flags
+	;;
+	;; BUFFER_WRITE - XXX
+	;; BUFFER_READ  - XXX
+	;; BUFFER_ERROR - XXX
+	;; BUFFER_DIRTY - XXX
+	;; BUFFER_INVAL - mark buffer as invalid
+BUFFER_WRITE = 0x0
+BUFFER_READ  = 0x1
+BUFFER_ERROR = 0x2
+BUFFER_DIRTY = 0x4
+BUFFER_INVAL = 0x8
+
 	;; Function: bio_init
 bio_init:
 	mov ecx, sizeof.Buffer * 30
 	xor ax, ax
 	mov edi, aBuffers
 	rep stosb
+	ret
+
+	;; Function: bio_getblk
+	;;
+bio_getblk:
 	ret
 
 	;; Function: bio_read
@@ -46,6 +66,8 @@ bio_bread:
 	call klog
 	jmp .end
 @@:
+	xchg bx, bx
+	mov eax, aBuffers
 	mov ecx, [ecx]
 	mov ecx, [ecx + BlkDev.strategy]
 

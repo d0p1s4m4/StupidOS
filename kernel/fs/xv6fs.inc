@@ -72,6 +72,9 @@ DEFN Xv6FS_Inode
 
 	;; Struc: Xv6FS_Dirent
 	;; xv6FS directory entry
+	;;
+	;; .inum - inode number
+	;; .name - see <XV6FS_DIRSIZE>
 struc Xv6FS_Dirent {
 	.inum dw ?
 	.name db XV6FS_DIRSIZE dup(?)
