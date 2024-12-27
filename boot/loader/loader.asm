@@ -237,6 +237,8 @@ common32:
 	mov edi, KERNEL_BASE
 	rep movsb
 
+	;; XXX: refactor this code
+
 	; identity map first 1MB
 	xor esi, esi
 	xor ecx, ecx

@@ -44,6 +44,10 @@ kmain:
 	mov esi, szMsgBuildDate
 	call klog
 
+	call mm_bootstrap
+
+	xchg bx, bx
+
 	; init pmm (kend, 0x400000)
 	mov eax, kend
 	mov ebx, 0xC0400000
@@ -117,6 +121,7 @@ kmain:
 	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
+	include 'mm/bootstrap.inc'
 	include 'mm/mm.old.inc'
 	include 'lock.inc'
 	include 'gdt.inc'
