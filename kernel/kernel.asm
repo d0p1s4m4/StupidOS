@@ -117,7 +117,7 @@ kmain:
 	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
-	include 'mm/mm.inc'
+	include 'mm/mm.old.inc'
 	include 'lock.inc'
 	include 'gdt.inc'
 	include 'syscall.inc'

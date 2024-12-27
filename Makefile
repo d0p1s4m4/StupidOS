@@ -1,5 +1,7 @@
 .EXPORT_ALL_VARIABLES:
 
+MAKEFLAGS += --no-print-directory
+
 TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SYSROOTDIR := $(TOPDIR)/sysroot
 TOOLSDIR   := $(TOPDIR)/tools
@@ -30,7 +32,7 @@ QEMU_COMMON = \
 		-serial stdio \
 		-monitor telnet::4545,server,nowait \
 		-net nic,model=ne2k_isa \
-		-machine isapc
+		-machine isapc 
 
 SUBDIRS	:= external tools include boot kernel modules lib bin
 

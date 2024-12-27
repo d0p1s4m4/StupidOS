@@ -15,8 +15,8 @@ KERNEL	= vmstupid.sys
 SRCS	= kernel.asm \
 			const.inc \
 			klog.inc \
-			mm/mm.inc \
-			mm/pmm.inc \
+			mm/mm.old.inc \
+			mm/pmm.old.inc \
 			lock.inc \
 			gdt.inc \
 			isr.inc \

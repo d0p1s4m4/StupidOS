@@ -214,6 +214,9 @@ szMsgErrorNotFound db "ERROR: kernel not found", 0
 	; =========================================================================
 	; protected mode code
 	; =========================================================================
+
+	;; subroutine: multiboot
+	;; This subroutine handle multiboot structures and convert them to <BootInfo>
 multiboot:
 	; https://www.gnu.org/software/grub/manual/multiboot/multiboot.html#Machine-state
 
@@ -223,7 +226,8 @@ multiboot:
 
 	; get kernel from module
 
-
+	;; subroutine: common32
+	;; This subroutine move kernel to 0x100000 and setup temporary pagging then jump to kernel code.
 common32:
 	mov [0xB8000], dword 0x07690748
 
@@ -242,14 +246,30 @@ common32:
 	or edx, (PTE_P or PTE_W)
 	mov [edi], edx
 	add edi, 4
-	add esi, 4096
+	add esi, PAGE_SIZE
 	inc ecx
 	cmp ecx, 1024
 	jb @b
-	
+
+	; map 4mb right after kernel (for now we assume there is enough memory)
+	mov edi, boot_kernel_paging_table
+	xor ecx, ecx
+@@:
+	mov edx, esi
+	or edx, (PTE_P or PTE_W)
+	mov [edi], edx
+	add edi, 4
+	add esi, PAGE_SIZE
+	inc ecx
+	cmp ecx, 1024
+	jb @b
+
+	; add entries to page directory 	
 	mov dword [boot_page_directory], boot_0_page_table + (PDE_P or PDE_W) ; present and writable
 
 	mov dword [boot_page_directory + (768 * 4)], boot_0_page_table + (PDE_P or PDE_W)
+
+	mov dword [boot_page_directory + (769 * 4)], boot_kernel_paging_table + (PDE_P or PDE_W)
 
 	mov eax, boot_page_directory
 	mov cr3, eax
@@ -278,7 +298,12 @@ inode_cache rb sizeof.Inode
 boot_page_directory:
 	rb 4096
 
+	; we asume kernel is less than 4mb
 boot_0_page_table:
+	rb 4096
+
+	; We map 4mb after kernel for future kernel page table/directory
+boot_kernel_paging_table:
 	rb 4096
 
 _end:

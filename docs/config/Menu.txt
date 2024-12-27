@@ -20,7 +20,7 @@ Timestamp: Updated yyyy/mm/dd
 # These are indexes you deleted, so Natural Docs will not add them again
 # unless you remove them from this line.
 
-Don't Index: Variables, Macros, Classes
+Don't Index: Macros, Classes, Variables
 
 
 # --------------------------------------------------------------------------
@@ -139,8 +139,11 @@ Group: Kernel  {
 
    Group: Memory Manager  {
 
-      File: mm.inc  (kernel/mm/mm.inc)
-      File: pmm.inc  (kernel/mm/pmm.inc)
+      File: bootstrap.inc  (kernel/mm/bootstrap.inc)
+      File: Introduction  (kernel/mm/intro.txt)
+      File: mm.inc  (kernel/mm/mm.old.inc)
+      File: pmm.inc  (kernel/mm/pmm.old.inc)
+      File: PMMFreeRange  (kernel/mm/pmm.new.inc)
       }  # Group: Memory Manager
 
    File: lock.inc  (kernel/lock.inc)

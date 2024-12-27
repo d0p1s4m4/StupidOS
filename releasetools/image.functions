@@ -35,6 +35,7 @@ get_grub()
 
 create_efi_image()
 {
+	
 	echo
 }
 
@@ -46,9 +47,13 @@ create_stpdboot_ini()
 	stupid_ini="$(cat <<EOF
 CMDLINE=consdev=com0
 MODULE=dummy.mod
-MODULE=dummy2.mod
 EOF
 )"
 
 	echo "$stupid_ini" > "${target}/stupid.ini"
+}
+
+create_hd_image()
+{
+	
 }

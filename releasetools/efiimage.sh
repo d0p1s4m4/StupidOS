@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-: "${IMG=stupidos_hd.img}"
+: "${IMG=stupidos_efi.img}"
+: "${EFI_PART_SIZE=1000000}" # 1Mb
 
 if [ ! -f Makefile ]
 then

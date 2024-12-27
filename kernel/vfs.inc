@@ -4,20 +4,30 @@
 	;; - <https://www.cs.fsu.edu/~awang/courses/cop5611_s2024/vnode.pdf>
 	;;
 
+	;; Struc: VFS
+	;; 
+	;; .name - Filesystem name
+	;; .next - pointer to next VFS
+	;; .ops  - pointer to VFS function
 struc VFS {
-	.name   dd ?
-	.next   dd ?
-	.op     dd ?
+	.name    dd ?
+	.next    dd ?
+	.ops_ptr dd ?
 }
 DEFN VFS
 
+	;; Struc: Mount
+	;;
+	;; .next    - address of next mount
+	;; .ops_ptr - address of mount ops
+	;; .vnodes  -  
 struc Mount {
-	.next   dd ?
-	.op     dd ?
-	.vnodes dd ?
-	.flag   dd ?
-	.bsize  dd ?
-	.data   dd ?
+	.next    dd ?
+	.ops_ptr dd ?
+	.vnodes  dd ?
+	.flag    dd ?
+	.bsize   dd ?
+	.data    dd ?
 }
 
 struc VFSOps {
@@ -30,6 +40,9 @@ struc VFSOps {
 	.vget   dd ?
 }
 
+macro VNODE_TYPE name,value {
+VNODE_TYPE_#name equ value
+}
 	;; Constants: vnode types
 	;;
 	;; VNODE_TYPE_NON  - XXX
@@ -40,14 +53,14 @@ struc VFSOps {
 	;; VNODE_TYPE_LNK  - XXX
 	;; VNODE_TYPE_SOCK - XXX
 	;; VNODE_TYPE_BAD  - XXX
-VNODE_TYPE_NON  = 0x0
-VNODE_TYPE_REG  = 0x1
-VNODE_TYPE_DIR  = 0x2
-VNODE_TYPE_BLK  = 0x3
-VNODE_TYPE_CHR  = 0x4
-VNODE_TYPE_LNK  = 0x5
-VNODE_TYPE_SOCK = 0x6
-VNODE_TYPE_BAD  = 0x7
+VNODE_TYPE NON, 0x0
+VNODE_TYPE REG, 0x1
+VNODE_TYPE DIR, 0x2
+VNODE_TYPE BLK, 0x3
+VNODE_TYPE CHR, 0x4
+VNODE_TYPE LNK, 0x5
+VNODE_TYPE SOCK, 0x6
+VNODE_TYPE BAD, 0x7
 
 	;; Struc: VNode
 struc VNode {

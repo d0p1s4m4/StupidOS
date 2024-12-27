@@ -27,7 +27,7 @@
 	;; > 0x00000000 +---------------+
 	;;
 
-include "pmm.inc"
+include "pmm.old.inc"
 include "../sys/mmu.inc"
 
 	;; Macro: KV2P

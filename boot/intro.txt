@@ -12,7 +12,7 @@ Section: Legacy
 > +------------+       +-------------+       +--------------+
 >
 
-About: Memory Map
+About: Real Mode Memory Map
 
 >
 > 0x100000 +-----------------------+

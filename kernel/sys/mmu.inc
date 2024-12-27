@@ -68,3 +68,6 @@ PTE_A   = 0x020
 PTE_D   = 0x040
 PTE_PAT = 0x080
 PTE_G   = 0x100
+
+	;; PAGE_SIZE: Page size (4Kib)
+PAGE_SIZE = 4096
