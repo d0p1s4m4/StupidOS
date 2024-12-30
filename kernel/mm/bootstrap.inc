@@ -5,7 +5,7 @@
 	;; Setup recursive paging.
 	;; map page dir at 0xFFFFF000
 mm_bootstrap:
-	mov esi, szMsgMmBootstrap
+	mov eax, szMsgMmBootstrap
 	call klog
 	; 0x400000
 	; PDE entry: 0x7ffc00 phys addr and curr virt addr: 0xc07ffc00

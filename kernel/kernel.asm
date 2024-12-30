@@ -39,9 +39,9 @@ kmain:
 	mov [0xC00B8008], dword 0x03640469
 	mov [0xC00B800C], dword 0x0153024F
 
-	mov esi, szMsgKernelAlive
+	mov eax, szMsgKernelAlive
 	call klog
-	mov esi, szMsgBuildDate
+	mov eax, szMsgBuildDate
 	call klog
 
 	call mm_bootstrap
@@ -118,7 +118,7 @@ kmain:
 	call klog
 	jmp .halt
 
-	include 'klog.inc'
+	include 'klog.new.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
 	include 'mm/bootstrap.inc'
