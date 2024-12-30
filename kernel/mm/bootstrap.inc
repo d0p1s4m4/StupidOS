@@ -38,7 +38,7 @@ mm_bootstrap:
 
 	mov eax, 0x400000 + (1023 * PAGE_SIZE)
 	mov cr3, eax
-
+ 
 	ret
 
 szMsgMmBootstrap db "MM: boostrap", 0

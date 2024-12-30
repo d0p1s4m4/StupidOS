@@ -55,5 +55,5 @@ EOF
 
 create_hd_image()
 {
-	
+	echo
 }

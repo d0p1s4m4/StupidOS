@@ -1,49 +1,34 @@
-	;; Based on <https://github.com/rdmsr/tinyvmem at tinyvm>
-VM_BESTFIT    = (1 shl 0)
-VM_INSTANTFIT = (1 shl 1)
-VM_NEXTFIT    = (1 shl 2)
-VM_SLEEP      = (1 shl 3)
-VM_NOSLEEP    = (1 shl 4)
-VM_BOOTSTRAP  = (1 shl 5)
+MM_PTE_BASE = 0xFFC00000
+MM_VIRT_TEMP = 0xD0000000
 
-FREELISTS_N = 4 * 8
-HASHTABLE_N = 16
+	;; EAX - Physical address to map
+mm_map_temp:
+	mov ecx, MM_PTE_BASE + (MM_VIRT_TEMP shr 12)
+	or eax, 0x3
+	mov [ecx], eax
 
-SEGMENT_ALLOCATED = 0
-SEGMENT_FREE      = 1
-SEGMENT_SPAN      = 2
+if COMPAT_I386
+	mov eax, 0x40000 + (1023 * PAGE_SIZE)
+	mov cr3, eax
+else
+	mov eax, MM_VIRT_TEMP
+	invlpg [eax]
+end if
 
-struc VmSegment {
-	.type db ?
-	.imported db ?
-	.base dd ?
-	.size dd ?
-}
+	ret
 
-struc VmObject {
-	.tmp dd ?
-}
+mm_unmap_temp:
+	mov ecx, MM_PTE_BASE + (MM_VIRT_TEMP shr 12)
+	mov dword [ecx], 0
 
-struc VmPager {
-	.tmp dd ?
-}
+if COMPAT_I386
+	mov eax, 0x40000 + (1023 * PAGE_SIZE)
+	mov cr3, eax
+else
+	mov eax, MM_VIRT_TEMP
+	invlpg [eax]
+end if
+	ret
 
-struc Vmem {
-	.name db 32 dup(0)
-	.base dd ?
-	.size dd ?
-	.quantum dd ?
-	.alloc dd ?
-	.free dd ?
-	.source dd ?
-	.qcache_max dd ?
-	.vmflag dd ? ;; db ?
-
-	.segqueue dd ?
-	.freelist dd FREELISTS_N dup(0)
-	.hashtable dd HASHTABLE_N dup(0)
-	.spanlist dd ?
-}
-
-vmem_init:
+mm_init:
 	ret
