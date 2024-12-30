@@ -1,4 +1,5 @@
 .EXPORT_ALL_VARIABLES:
+.DEFAULT_GOAL:=all
 
 MAKEFLAGS += --no-print-directory
 
@@ -47,13 +48,11 @@ endif
 .PHONY: all
 all: $(TARGET)
 
-GOAL:=install
-clean: GOAL:=clean
 
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
 	@echo "📁 $@"
-	@DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(GOAL)
+	@DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(MAKECMDGOALS)
 
 .PHONY: stupid.iso
 stupid.iso: $(SUBDIRS)
@@ -86,7 +85,6 @@ floppy2880.img: $(SUBDIRS)
 	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
 	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
 
-
 OVMF32.fd:
 	wget 'https://retrage.github.io/edk2-nightly/bin/DEBUGIa32_OVMF.fd' -O $@
 
@@ -111,6 +109,11 @@ run-efi: all OVMF32.fd
 		-bios OVMF32.fd \
 		-drive file=fat:rw:./sysroot,if=none,id=hdd \
 		-device ide-hd,drive=hdd
+
+.PHONY: bochs
+bochs:
+	bochs -f .bochsrc
+
 
 .PHONY: docs
 docs:
