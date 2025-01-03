@@ -1,59 +1,81 @@
 	;; File: klog.inc
 	;; Kernel logging utilities
+	;;
 
 COM1 = 0x3F8
 
-	;; Function: klog_print
+	;; Function: _klog_print_str
 	;;
-	;; In:
-	;;    ESI - Null-terminated string to print
-klog_print:
+	;; In: EAX - Null-terminated string to print
+_klog_print_str:
+	push ebp
+	mov ebp, esp
+	
+	push esi
 	mov dx, COM1
+	mov esi, eax
 @@:
 	lodsb
 	or al, al
 	jz @f
 	out dx, al
+
 	pusha
 	call cga_putc
 	popa
+	
 	jmp @b
 @@:
+	pop esi
+	leave
 	ret
 
-	;; Function: klog_print_integer
+	;; Function: _klog_print_int
 	;;
 	;; In:
-	;;    EDI - number
-	;;
-klog_print_integer:
-	test edi, edi
-	js .print_minus
+	;;    EAX - number
+_klog_print_int:
+	test eax, eax
+	jns @f
+	; TODO print '-'
+	mov ecx, eax
+	mov dx, COM1
+	mov al, '-'
+	out dx, al
+	pusha
+	call cga_putc
+	popa
+	mov eax, ecx
+@@:
+	mov ecx, eax
+	sar ecx, 31
+	xor ecx, eax
+	sub ecx, eax
+	
+	mov ecx, eax
+	call _klog_print_unsigned
 
-.print_minus:
 	ret
 
-	;; Function: klog_print_unsigned
+	;; Function: _klog_print_unsigned
 	;;
 	;; In:
-	;;   EDI - number
-	;;
-klog_print_unsigned:
-	push edx
+	;;     EAX - number
+_klog_print_unsigned:
 	push ebx
-	xor ecx, ecx
-	mov eax, edi
 	mov ebx, 10
-.loop_calc:
+	xor ecx, ecx
+@@:
 	xor edx, edx
 	div ebx
 	push edx
 	inc ecx
 	or eax, eax
-	jnz .loop_calc
-.loop_print:
+	jnz @b
+
+@@:
 	pop eax
-	add al, '0'
+	add al, 0
 	mov dx, COM1
 	out dx, al
 	pusha
@@ -61,17 +83,65 @@ klog_print_unsigned:
 	popa
 
 	dec ecx
-
 	or cl, cl
-	jnz .loop_print
-	
+	jnz @b
+
 	pop ebx
-	pop edx
+	
 	ret
 
-	;; Function: klog_print_time
+	;; Function: _klog_print_hex
 	;;
-klog_print_time:
+	;; In:
+	;;    EAX - number
+_klog_print_hex:
+	push ebp
+	mov ebp, esp
+
+	push edi
+	mov edi, eax
+	
+	mov eax, szHexPrefix
+	call _klog_print_str
+
+	or edi, edi
+	jz .print_zero
+
+	xor cl, cl
+.begin:
+	cmp cl, 8
+	je .print_number
+	rol edi, 4
+	mov eax, edi
+	and eax, 0xF
+	mov al, byte [sDigit + eax]
+	mov [szKlogBuffer + ecx], al
+	inc cl
+	jmp .begin
+
+.print_zero:
+	mov al, '0'
+	mov dx, COM1
+	out dx, al
+	pusha
+	call cga_putc
+	popa
+	jmp .end
+
+.print_number:
+	mov [szKlogBuffer + ecx], byte 0
+	mov eax, szKlogBuffer
+	call _klog_print_str
+	
+.end:	
+	pop edi
+	leave
+	ret
+	
+	;; Function: _klog_print_time
+	;; 
+_klog_print_time:
+	; wait CMOS ready
 @@:
 	mov al, 0x0A
 	out CMOS_COMMAND, al
@@ -118,120 +188,122 @@ klog_print_time:
 
 	add ah, 0x30
 	add al, 0x30
-
 	mov [szTime + 7], ah
 	mov [szTime + 8], al
 
+	mov eax, szTime
+	call _klog_print_str
 
-	push esi
-	mov esi, szTime
-	call klog_print
-	pop esi
-
-	ret
-
-klog_print_hex:
-	push esi
-	mov esi, szHexPrefix
-	call klog_print
-	pop esi
-
-	or edi, edi
-	jz .print_zero
-	push esi
-	mov esi, szKlogBuffer
-	xor cl, cl
-.loop:
-	cmp cl, 8
-	je .print_number
-	rol edi, 4
-	mov eax, edi
-	and eax, 0xF
-	mov al, byte [sDigit + eax]
-	mov [esi], al
-	inc esi
-	inc cl
-	jmp .loop
-.print_zero:
-	mov al, '0'
-	out dx, al
-	pusha
-	call cga_putc
-	popa
-	jmp .end
-.print_number:
-	mov [esi], byte 0
-	mov esi, szKlogBuffer
-	call klog_print
-	pop esi
-.end:
 	ret
 
 	;; Function: klog
+	;; 
 	;; Output kernel log
+	;;
+	;; In:
+	;;    EAX      - null-terminated string
+	;;    STACK[X] - var_arg
 klog:
-	call klog_print_time
+	push ebp
+	mov ebp, esp
 
-.loop:
+	push esi
+	mov esi, eax
+	
+	; display log time
+	call _klog_print_time
+
+	mov ecx, 4
+.begin:
 	mov al, [esi]
 	or al, al
 	jz .end
+	; search for formating
 	cmp al, '%'
 	jne .putchar
+	; read next char
 	inc esi
 	mov al, [esi]
+
+	; check if another '%'
 	cmp al, '%'
 	je .putchar
+	
+	;  check if string format
 	cmp al, 's'
-	jne .check_x
-	mov edi, esi
-	pop eax
-	pop esi
-	push eax
-	call klog_print
-	mov esi, edi
+	jne @f
+	; print string
+	mov eax, [ebp + ecx]
+	push ecx
+	call _klog_print_str
+	pop ecx
+	add ecx, 4
+	
 	jmp .next
-.check_x:
+
+	; check if hex format
+@@:
 	cmp al, 'x'
-	jne .check_d
-	pop eax
-	pop edi
-	push eax
-	call klog_print_hex
+	jne @f
+
+	mov eax, [ebp + ecx]
+	push ecx
+	call _klog_print_hex
+	pop ecx
+	add ecx, 4
+
 	jmp .next
-.check_d:
+
+	; check if int format
+@@:
 	cmp al, 'd'
-	jne .check_u
-	pop eax
-	pop edi
-	push eax
-	call klog_print_integer
+	jne @f
+
+	mov eax, [ebp + ecx]
+	push ecx
+	call _klog_print_int
+	pop ecx
+	add ecx, 4
+
 	jmp .next
-.check_u:
+
+	; check if unsigned
+@@: 
 	cmp al, 'u'
-	jne .unknown_format
-	pop eax
-	pop edi
-	push eax
-	call klog_print_unsigned
+	jne @f
+
+	mov eax, [ebp + ecx]
+	push ecx
+	call _klog_print_unsigned
+	pop ecx
+	add ecx, 4
+
 	jmp .next
-.unknown_format:
+	
+	; unknown format
+@@:
 	mov al, '?'
-.putchar:
+
+.putchar: 			; XXX: fix this mess
+	mov dx, COM1
 	out dx, al
 	pusha
 	call cga_putc
 	popa
+
 .next:
 	inc esi
-	jmp .loop
+	jmp .begin
+
 .end:
-	mov esi, szCRLF
-	call klog_print
+	mov eax, szCRLF
+	call _klog_print_str
+
+	leave
 	ret
 
 szTime       db '[00:00:00] ', 0
-szCRLF       db CR, LF, 0
+szCRLF	     db CR, LF, 0
 sDigit       db '0123456789ABCDEF'
-szHexPrefix  db '0x', 0
+szHexPrefix  db '0x', 0	
 szKlogBuffer db '00000000', 0

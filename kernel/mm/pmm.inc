@@ -98,7 +98,7 @@ pmm_free:
 	;; Out:
 	;;    EAX - return -1 on error
 pmm_init:
-	mov esi, szMsgMmInit
+	mov eax, szMsgMmInit
 	call klog
 
 	mov eax, kend

@@ -118,7 +118,7 @@ kmain:
 	call klog
 	jmp .halt
 
-	include 'klog.new.inc'
+	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
 	include 'mm/bootstrap.inc'
