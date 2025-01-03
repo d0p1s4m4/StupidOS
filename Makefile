@@ -48,11 +48,13 @@ endif
 .PHONY: all
 all: $(TARGET)
 
+GOAL:=install
+clean: GOAL:=clean
 
 .PHONY: $(SUBDIRS)
 $(SUBDIRS):
 	@echo "📁 $@"
-	@DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(MAKECMDGOALS)
+	@DESTDIR=$(SYSROOTDIR) $(MAKE) -C $@ $(GOAL)
 
 .PHONY: stupid.iso
 stupid.iso: $(SUBDIRS)
@@ -62,8 +64,8 @@ stupid.iso: $(SUBDIRS)
 stupid.hdd: $(SUBDIRS)
 	dd if=/dev/zero of=$@ bs=1M count=0 seek=64
 	mformat -L 12 -i $@
-# mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
-# mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
+	mcopy -i $@ boot/loader/stpdldr.sys ::/STPDLDR.SYS
+	mcopy -i $@ kernel/vmstupid.sys ::/VMSTUPID.SYS
 
 .PHONY: stupid.tar.gz
 stupid.tar.gz: $(SUBDIRS)
