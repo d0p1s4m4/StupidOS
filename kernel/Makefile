@@ -12,11 +12,16 @@ ASMINCS = sys/bootinfo.inc \
 			sys/register.inc
 
 KERNEL	= vmstupid.sys
+
+MM_SRCS = bootstrap.inc \
+			mm.inc \
+			pmm.inc \
+			vmm.inc
+
 SRCS	= kernel.asm \
 			const.inc \
 			klog.inc \
-			mm/mm.old.inc \
-			mm/pmm.old.inc \
+			$(addprefix mm/, $(MM_SRCS)) \
 			lock.inc \
 			gdt.inc \
 			isr.inc \

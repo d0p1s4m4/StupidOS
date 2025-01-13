@@ -11,6 +11,40 @@ CGA_CURSOR_LOW  = 0xF
 CGA_COLUMNS = 80
 CGA_LINES = 24
 
+CGA_COLOR_FG_BLACK         = 0x00
+CGA_COLOR_FG_BLUE          = 0x01
+CGA_COLOR_FG_GREEN         = 0x02
+CGA_COLOR_FG_CYAN          = 0x03
+CGA_COLOR_FG_RED           = 0x04
+CGA_COLOR_FG_MAGENTA       = 0x05
+CGA_COLOR_FG_BROWN         = 0x06
+CGA_COLOR_FG_LIGHT_GRAY    = 0x07
+CGA_COLOR_FG_DARK_GRAY     = 0x08
+CGA_COLOR_FG_LIGHT_BLUE    = 0x09
+CGA_COLOR_FG_LIGHT_GREEN   = 0x0A
+CGA_COLOR_FG_LIGHT_CYAN    = 0x0B
+CGA_COLOR_FG_LIGHT_RED     = 0x0C
+CGA_COLOR_FG_LIGHT_MAGENTA = 0x0D
+CGA_COLOR_FG_YELLOW        = 0x0E
+CGA_COLOR_FG_WHITE         = 0x0F
+
+CGA_COLOR_BG_BLACK         = 0x00
+CGA_COLOR_BG_BLUE          = 0x10
+CGA_COLOR_BG_GREEN         = 0x20
+CGA_COLOR_BG_CYAN          = 0x30
+CGA_COLOR_BG_RED           = 0x40
+CGA_COLOR_BG_MAGENTA       = 0x50
+CGA_COLOR_BG_BROWN         = 0x60
+CGA_COLOR_BG_LIGHT_GRAY    = 0x70
+CGA_COLOR_BG_DARK_GRAY     = 0x80
+CGA_COLOR_BG_LIGHT_BLUE    = 0x90
+CGA_COLOR_BG_LIGHT_GREEN   = 0xA0
+CGA_COLOR_BG_LIGHT_CYAN    = 0xB0
+CGA_COLOR_BG_LIGHT_RED     = 0xC0
+CGA_COLOR_BG_LIGHT_MAGENTA = 0xD0
+CGA_COLOR_BG_YELLOW        = 0xE0
+CGA_COLOR_BG_WHITE         = 0xF0
+
 	;; Function: cga_getpos
 	;; 
 	;; Out:
@@ -94,7 +128,7 @@ cga_putc:
 	mov cx, [ebp-0x2]
 	shl cx, 1
 	add edx, ecx
-	mov ah, 0x07
+	mov ah, byte [cga_color]
 	mov word [edx], ax
 	mov cx, [ebp-0x2]
 	inc cx
@@ -134,3 +168,5 @@ cga_putc:
 
 cga_device:
 	db 'video', 0, 0, 0
+
+cga_color db CGA_COLOR_FG_LIGHT_GRAY

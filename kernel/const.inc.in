@@ -16,3 +16,7 @@ BUILD_DATE     equ "@DATE@"
 ; ------------- OTHER -----------
 CR   = 0x0D
 LF   = 0x0A
+
+
+CONFIG_COMPAT_I386 = 0
+CONFIG_TRACE_PMM = 1

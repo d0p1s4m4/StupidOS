@@ -4,6 +4,12 @@
 
 COM1 = 0x3F8
 
+macro TRACE {
+	mov byte [cga_color], CGA_COLOR_FG_CYAN
+	call klog
+	mov byte [cga_color], CGA_COLOR_FG_LIGHT_GRAY
+}
+
 	;; Function: _klog_print_str
 	;;
 	;; In: EAX - Null-terminated string to print
@@ -213,7 +219,7 @@ klog:
 	; display log time
 	call _klog_print_time
 
-	mov ecx, 4
+	mov ecx, 8
 .begin:
 	mov al, [esi]
 	or al, al
@@ -298,6 +304,8 @@ klog:
 .end:
 	mov eax, szCRLF
 	call _klog_print_str
+
+	pop esi
 
 	leave
 	ret

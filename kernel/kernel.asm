@@ -46,20 +46,15 @@ kmain:
 
 	call mm_bootstrap
 
-	xchg bx, bx
-
-	; init pmm (kend, 0x400000)
-	mov eax, kend
-	mov ebx, 0xC0400000
 	call pmm_init
 
 	; init vmm
-	call mm_init
+	;call mm_init
 
-	mov eax, 0xC0400000
-	mov ebx, [stBootInfo.high_mem]
-	add ebx, KERNEL_VIRT_BASE
-	call pmm_free_range
+	;mov eax, 0xC0400000
+	;mov ebx, [stBootInfo.high_mem]
+	;add ebx, KERNEL_VIRT_BASE
+	;call pmm_free_range
 
 	;mov eax, [stBootInfo.low_mem]
 	;call heap_init
@@ -121,8 +116,7 @@ kmain:
 	include 'klog.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
-	include 'mm/bootstrap.inc'
-	include 'mm/mm.old.inc'
+	include 'mm/mm.inc'
 	include 'lock.inc'
 	include 'gdt.inc'
 	include 'syscall.inc'
