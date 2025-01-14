@@ -45,6 +45,10 @@ CGA_COLOR_BG_LIGHT_MAGENTA = 0xD0
 CGA_COLOR_BG_YELLOW        = 0xE0
 CGA_COLOR_BG_WHITE         = 0xF0
 
+macro CGA_SET_COLOR col {
+	mov byte [bCGAColor], col
+}
+
 	;; Function: cga_getpos
 	;; 
 	;; Out:
@@ -128,7 +132,7 @@ cga_putc:
 	mov cx, [ebp-0x2]
 	shl cx, 1
 	add edx, ecx
-	mov ah, byte [cga_color]
+	mov ah, byte [bCGAColor]
 	mov word [edx], ax
 	mov cx, [ebp-0x2]
 	inc cx
@@ -169,4 +173,4 @@ cga_putc:
 cga_device:
 	db 'video', 0, 0, 0
 
-cga_color db CGA_COLOR_FG_LIGHT_GRAY
+bCGAColor db CGA_COLOR_FG_LIGHT_GRAY

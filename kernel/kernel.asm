@@ -48,16 +48,13 @@ kmain:
 
 	call pmm_init
 
-	; init vmm
-	;call mm_init
+	mov eax, 4
+	call pmm_alloc
+	xchg bx, bx
 
-	;mov eax, 0xC0400000
-	;mov ebx, [stBootInfo.high_mem]
-	;add ebx, KERNEL_VIRT_BASE
-	;call pmm_free_range
-
-	;mov eax, [stBootInfo.low_mem]
-	;call heap_init
+	mov edx, 4
+	call pmm_free
+	xchg bx, bx
 
 	call pic_init
 

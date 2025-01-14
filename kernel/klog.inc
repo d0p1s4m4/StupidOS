@@ -4,10 +4,22 @@
 
 COM1 = 0x3F8
 
-macro TRACE {
-	mov byte [cga_color], CGA_COLOR_FG_CYAN
+macro TRACE msg, [arg] {
+common
+	_ARGS = 0
+reverse
+	match anything, arg \{
+		_ARGS = _ARGS + 4
+		push dword arg
+	\}
+common
+	CGA_SET_COLOR CGA_COLOR_FG_CYAN
+	mov eax, msg
 	call klog
-	mov byte [cga_color], CGA_COLOR_FG_LIGHT_GRAY
+	if _ARGS
+		add esp, _ARGS
+	end if
+	CGA_SET_COLOR CGA_COLOR_FG_LIGHT_GRAY
 }
 
 	;; Function: _klog_print_str
@@ -81,7 +93,7 @@ _klog_print_unsigned:
 
 @@:
 	pop eax
-	add al, 0
+	add al, '0'
 	mov dx, COM1
 	out dx, al
 	pusha

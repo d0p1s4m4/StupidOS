@@ -37,8 +37,10 @@ DEFN PMMFreeRange
 
 	;; Function: _pmm_map_temp_page
 	;;
+	;; Map physical address at <PMM_VIRT_TEMP>
+	;; 
 	;; In:
-	;;   EAX - physical address to map at <PMM_VIRT_TEMP>
+	;;   EAX - Physical address
 _pmm_map_temp_page:
 	mov ecx, MM_KERNEL_PTE_BASE + (PMM_VIRT_TEMP shr 12) * 4
 	or eax, 0x3
@@ -53,6 +55,10 @@ else
 end if
 	ret
 
+	;; Function: _pmm_unmap_temp_page
+	;; 
+	;; Unmap <PMM_VIRT_TEMP>
+	;;
 _pmm_unmap_temp_page:
 	mov ecx, MM_KERNEL_PTE_BASE + (PMM_VIRT_TEMP shr 12) * 4
 	mov dword [ecx], 0
@@ -94,6 +100,7 @@ _pmm_init_region:
 	call _pmm_map_temp_page
 
 	xor ecx, ecx
+	sub esi, edi ; compute size
 	mov [PMM_VIRT_TEMP], esi
 	mov [PMM_VIRT_TEMP + PMMFreeRange.next], ecx
 	mov ecx, [pPmmFreeListHead]
@@ -111,6 +118,9 @@ _pmm_init_region:
 	leave
 	ret
 
+	;; Function: _pmm_init_low_memory
+	;;
+	;; Initialize bitmap for lower memory (below 1Mb)
 _pmm_init_low_memory:
 	push ebp
 	mov ebp, esp
@@ -153,6 +163,11 @@ _pmm_init_low_memory:
 	leave
 	ret
 
+	;; Function: _pmm_merge_block
+	;;
+_pmm_merge_block:
+	ret
+
 ;;; MARK: public functions
 
 	;; Function: pmm_alloc
@@ -162,24 +177,86 @@ _pmm_init_low_memory:
 	;;
 	;; Out:
 	;;    EAX - first page physical address, 0 on error
+	;;    EDX - error code
 	;;
 pmm_alloc:
+	push ebp
+	mov ebp, esp
+
+	push esi
+	push edi
+	push ebx
+
+	mov edi, eax
+	shl edi, 12 ; multiply by page size
+
+if CONFIG_TRACE_PMM
+	TRACE szTracePmmAlloc, edi
+end if
+
+	xor ebx, ebx
 	mov eax, [pPmmFreeListHead]
+	mov esi, eax
+
+.loop:
 	or eax, eax
 	jnz @f
-	mov edx, ENOMEM
-	ret	; no memory left :'(
+	mov edx, ENOMEM ; no memory left :'(
+	jmp .end
+
 @@:
 	call _pmm_map_temp_page
+	
+	mov eax, dword [PMM_VIRT_TEMP]	; get size
+	sub eax, edi
+	jge @f ; found
+	
+	; get next block
+	mov ebx, esi ; store previous block address
+	mov esi, dword [PMM_VIRT_TEMP + PMMFreeRange.next]
+	call _pmm_unmap_temp_page
+	mov eax, esi
 
+	jmp .loop ; loop next 
+@@: ; memory found
+	mov dword [PMM_VIRT_TEMP], eax ; new size
+	; compute physical address and store it in esi
+	add esi, eax
+
+	or eax, eax ; remove block if no free space left
+	jnz .finalize
+
+	mov edi, dword [PMM_VIRT_TEMP + PMMFreeRange.next]
+	mov eax, pPmmFreeListHead
+	; check if previous block is zero
+	or ebx, ebx
+	jz @f
+	call _pmm_unmap_temp_page
+	mov eax, ebx
+	call _pmm_map_temp_page
+
+	mov eax, PMM_VIRT_TEMP + PMMFreeRange.next
+@@:
+	mov dword [eax], edi ; remove block 
+.finalize:
 	call _pmm_unmap_temp_page
 
+	xor edx, edx
+	mov eax, esi
+
+.end:
+	pop ebx
+	pop edi
+	pop esi
+
+	leave
 	ret
 
 	;; Function: pmm_alloc_page
 	;;
 	;; Out:
 	;;    EAX - page physical address, 0 on error
+	;;    EDX - error code
 pmm_alloc_page:
 	mov eax, 1
 	call pmm_alloc
@@ -189,8 +266,48 @@ pmm_alloc_page:
 	;; 
 	;; In:
 	;;    EAX - Start
-	;;    EDX - End
+	;;    EDX - Page count
 pmm_free:
+	; TODO: merge memory block
+	push ebp
+	mov ebp, esp
+
+	push esi
+	push edi
+
+	shl edx, 12
+	mov edi, edx
+
+	mov esi, eax
+
+if CONFIG_TRACE_PMM
+	TRACE szTracePmmFree, esi, edi
+	mov eax, esi
+end if
+
+	call _pmm_map_temp_page
+	mov dword eax, [pPmmFreeListHead]
+
+	mov dword [PMM_VIRT_TEMP + PMMFreeRange.next], eax
+	mov dword [PMM_VIRT_TEMP], edi
+
+	mov dword [pPmmFreeListHead], esi
+
+	call _pmm_unmap_temp_page
+
+	pop esi
+	pop edi
+
+	leave
+	ret
+
+	;; Function: pmm_free_page
+	;;
+	;; In:
+	;;    EAX - Physical address
+pmm_free_page:
+	mov edx, 1
+	call pmm_free
 	ret
 
 	;; Function: pmm_init
@@ -204,22 +321,10 @@ pmm_init:
 	call _pmm_init_low_memory
 
 if CONFIG_TRACE_PMM
-	mov byte [cga_color], CGA_COLOR_FG_BLUE
-	push dword [au32PmmLowMemBitmap + 28]
-	push dword [au32PmmLowMemBitmap + 24]
-	push dword [au32PmmLowMemBitmap + 20]
-	push dword [au32PmmLowMemBitmap + 16]
-	push dword [au32PmmLowMemBitmap + 12]
-	push dword [au32PmmLowMemBitmap + 8]
-	push dword [au32PmmLowMemBitmap + 4]
-	push dword [au32PmmLowMemBitmap]
-
-	mov eax, szTracePmmBitmap
-
-	TRACE
-
-	add esp, 32
-
+	TRACE szTracePmmBitmap, [au32PmmLowMemBitmap], [au32PmmLowMemBitmap + 4], \
+		[au32PmmLowMemBitmap + 8], [au32PmmLowMemBitmap + 12], \
+		[au32PmmLowMemBitmap + 16], [au32PmmLowMemBitmap + 20], \
+		[au32PmmLowMemBitmap + 24], [au32PmmLowMemBitmap + 28] 
 end if
 
 	mov eax, kend - KERNEL_VIRT_BASE
@@ -227,8 +332,8 @@ end if
 
 	mov edx, 0x400000
 	sub edx, eax
-
 	jle @f
+	
 	cmp edx, PAGE_SIZE
 	jle @f
 
@@ -260,4 +365,7 @@ if CONFIG_TRACE_PMM
 szTracePmmBitmap db "Trace(PMM): low memory bitmap", CR, LF, \
 	"    %x", CR, LF, "    %x", CR, LF, "    %x", CR, LF, "    %x", CR, LF, \
 	"    %x", CR, LF, "    %x", CR, LF, "    %x", CR, LF, "    %x", 0
+
+szTracePmmAlloc db "Trace(PMM): Alloc block (size: %u)", 0
+szTracePmmFree  db "Trace(PMM): Free block (addr: %x, size: %u)", 0
 end if
