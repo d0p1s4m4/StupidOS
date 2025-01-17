@@ -1,80 +1,82 @@
 	;; File: vm.inc
-	;; Based on <https://github.com/rdmsr/tinyvmem at tinyvm>
+	;; Based on <tinyvmem at https://github.com/rdmsr/tinyvmem> and on <Bonwick's paper at https://www.usenix.org/legacy/event/usenix01/full_papers/bonwick/bonwick.pdf>
 
-VM_BESTFIT    = (1 shl 0)
-VM_INSTANTFIT = (1 shl 1)
-VM_NEXTFIT    = (1 shl 2)
-VM_SLEEP      = (1 shl 3)
-VM_NOSLEEP    = (1 shl 4)
-VM_BOOTSTRAP  = (1 shl 5)
-
-FREELISTS_N = 4 * 8
-HASHTABLE_N = 16
-
-SEGMENT_ALLOCATED = 0
-SEGMENT_FREE      = 1
-SEGMENT_SPAN      = 2
-
-struc VmSegment {
-	.type db ?
-	.imported db ?
-	.base dd ?
-	.size dd ?
-}
-
-struc VmObject {
-	.tmp dd ?
-}
-
-struc VmPager {
-	.tmp dd ?
-}
-
-struc Vmem {
-	.name db 32 dup(0)
-	.base dd ?
-	.size dd ?
-	.quantum dd ?
-	.alloc dd ?
-	.free dd ?
-	.source dd ?
-	.qcache_max dd ?
-	.vmflag dd ? ;; db ?
-
-	.segqueue dd ?
-	.freelist dd FREELISTS_N dup(0)
-	.hashtable dd HASHTABLE_N dup(0)
-	.spanlist dd ?
-}
-
-	;; Subroutine: _murmur32
+	;; Function: vmm_init
+	;; 
+	;; Initializes a Vmem arena
 	;;
 	;; In:
-	;;    EAX - Address
-	;; 
-	;; Out:
-	;;    EAX - Hash
-	;;
-_murmur32:
-	; hash ← hash XOR (hash >> 16)
-	mov ecx, eax
-	shr ecx, 16
-	xor eax, ecx
-	; hash ← hash × 0x85ebca6b
-	mov ecx, 0x85ebca6b
-	mul ecx
-	; hash ← hash XOR (hash >> 13)
-	mov ecx, eax
-	shr ecx, 13
-	xor eax, ecx
-	; hash ← hash × 0xc2b2ae35
-	mov ecx, 0xc2b2ae35
-	mul ecx
-	; hash ← hash XOR (hash >> 16)
-	mov ecx, eax
-	shr ecx, 16
-	xor eax, ecx
+	;;     EAX     - Pointer to a Vmem dest
+	;;     EDX     - Base address
+	;;     ECX     - Size
+	;;     ESP[4]  - Quantum
+	;;     ESP[8]  - Pointer to alloc function
+	;;     ESP[12] - Pointer to free function
+	;;     ESP[16] - Poiter to Vmem source
+	;;     ESP[20] - qcache max
+	;;     ESP[24] - Flags
+vmm_init:
+	push ebp
+	mov ebp, esp
+
+	push esi
+	push edi 
+
+	mov [eax + Vmem.base], edx
+	mov [eax + Vmem.size], ecx
+
+	; copy other param from the stack
+	mov ecx, 28
+	mov edx, esp
+	add edx, 4
+	mov esi, edx
+	mov edx, eax
+	add edx, Vmem.quantum
+	mov edi, edx
+	rep movsd
+
+	mov ecx, [eax + Vmem.size]
+	or ecx, ecx
+	jz @f
+
+	mov edx, [eax + Vmem.source]
+	or edx, edx
+	jnz @f
+
+	mov edx, [eax + Vmem.base]
+
+;	call vmm_add
+	add esp, 4
+
+@@:
+	pop edi
+	pop esi
+
+	leave
 	ret
 
-vmem_init:
+	;; Function: vmm_bootstrap
+	;;
+vmm_bootstrap:
+	push ebp 
+	mov ebp, esp
+
+	push ebx
+
+	xor ebx, ebx
+@@:
+	mov eax, aVmemStaticSegs
+	add eax, ebx
+
+	call _vmm_segfree
+
+	add ebx, sizeof.VmSegment
+	cmp ebx, STATIC_SEG_COUNT*sizeof.VmSegment
+	jl @b
+
+	pop ebx
+
+	leave
 	ret
+
+

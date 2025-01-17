@@ -1,7 +1,7 @@
 	;; File: cpu.inc
 
 
-	;; Structure: tss
+	;; Struc: tss
 	;;
 	;; >      31         23         15         7        0
 	;; >      +----------|----------+----------|----------+
@@ -93,7 +93,7 @@ struc GDTGate {
 	
 }
 
-	;; Structure: IDTGate
+	;; Struc: IDTGate
 	;; .offset_low  - TODO
 	;; .selector    - TODO
 	;; .zero        - TODO

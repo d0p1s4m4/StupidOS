@@ -47,6 +47,7 @@ kmain:
 	call mm_bootstrap
 
 	call pmm_init
+	call vmm_bootstrap
 
 	mov eax, 4
 	call pmm_alloc
@@ -111,6 +112,7 @@ kmain:
 	jmp .halt
 
 	include 'klog.inc'
+	include 'queue.inc'
 	include 'dev/console.inc'
 	include 'dev/dev.inc'
 	include 'mm/mm.inc'
@@ -132,7 +134,7 @@ kmain:
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
 szMsgBuildDate db "Built ", BUILD_DATE, 0
 szErrorBootProtocol db "Error: wrong magic number", 0
-
+szKernelHeapStr db "KERNEL-HEAP", 0
 	;; Variable: stBootInfo
 	;; <BootInfo>
 stBootInfo BootInfo

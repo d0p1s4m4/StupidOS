@@ -28,6 +28,7 @@ SRCS	= kernel.asm \
 			pic.inc \
 			idt.inc \
 			heap.inc \
+			queue.inc \
 			dev/console.inc \
 			dev/at/pit.inc \
 			dev/at/cga.inc \
