@@ -16,7 +16,7 @@ KERNEL	= vmstupid.sys
 MM_SRCS = bootstrap.inc \
 			mm.inc \
 			pmm.inc \
-			vmm.inc
+			vmem.inc
 
 SRCS	= kernel.asm \
 			const.inc \

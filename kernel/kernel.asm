@@ -44,21 +44,6 @@ kmain:
 	mov eax, szMsgBuildDate
 	call klog
 
-	call mm_bootstrap
-
-	call pmm_init
-	call vmm_bootstrap
-
-	mov eax, 4
-	call pmm_alloc
-	xchg bx, bx
-
-	mov edx, 4
-	call pmm_free
-	xchg bx, bx
-
-	call pic_init
-
 	; clear tss
 	mov ecx, sizeof.TSS
 	xor ax, ax
@@ -72,6 +57,19 @@ kmain:
 	call gdt_set_tss
 	call gdt_flush
 	call tss_flush
+
+	call mm_bootstrap
+	call mm_init
+
+	mov eax, 4
+	call pmm_alloc
+	xchg bx, bx
+
+	mov edx, 4
+	call pmm_free
+	xchg bx, bx
+
+	call pic_init
 
 	call idt_setup
 

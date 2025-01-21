@@ -48,7 +48,7 @@ struc Vmem {
 	.alloc dd ?
 	.free dd ?
 	.source dd ?
-	.vmflag dd ?
+	.flags dd ?
 
 	.freelist dd FREELISTS_N dup(0)
 	.hashtable dd HASHTABLE_N dup(0)
@@ -112,35 +112,49 @@ __hash_table_addr:
 	leave
 	ret
 
-	;; Function: _vmm_segfree
-	;; 
+	;; Function: _vmem_segfree
+	;;
 	;; In:
 	;;    EAX - Segment address
-_vmm_segfree:
-	;mov ecx, eax
-	;add ecx, VmSegment.seglist.next
+	;;
+_vmem_segfree:
+	; XXX: lock 
+	add eax, VmSegment.seglist
+	mov edx, pVmemFreeSegHead
+	xchg eax, edx
+	call list_insert_head
 
-	;mov edx, [pVmmFreeSegHead]
-	;or edx, edx
-	;jz @f
-	;mov [eax + VmSegment.seglist.next], edx
-	;mov [edx + VmSegment.seglist.prev], ecx
-;@@:
-;	mov [pVmmFreeSegHead], eax
-;	mov [eax + VmSegment.seglist.prev], ecx
-;
-;	inc [iVmmFreeSegCount]
+	inc [iVmemFreeSegCount]
+	; XXX: unlock
+
 	ret
-;
-;	;; Function: _vmm_segalloc
-;_vmm_segalloc:
-;	mov eax, [pVmmFreeSegHead]
-;	or eax, eax
-;	jz @f
-;
-;	dec [iVmmFreeSegCount]
-;@@:
-;	ret
+
+	;; Function: _vmem_segalloc
+	;;
+	;; Out:
+	;;    EAX - Pointer to <VmSegment> object on success, 0 on error
+_vmem_segalloc:
+	push ebp
+	mov ebp, esp
+	; XXX: lock
+	mov eax, [pVmemFreeSegHead]
+	or eax, eax
+	jz .end
+
+	push ebx
+	mov ebx, eax
+	
+	call list_remove
+
+	sub ebx, VmSegment.seglist
+	dec [iVmemFreeSegCount]
+
+	pop ebx
+
+.end:
+	; XXX: unlock
+	leave
+	ret
 
 
 ;;; MARK: public functions
@@ -162,28 +176,72 @@ _vmm_segfree:
 vmem_create:
 	push ebp
 	mov ebp, esp
+	sub esp, 8
 
-	mov [eax + Vmem.base], ecx
-	
-
-
-if CONFIG_TRACE_VMEM
 	push esi
 	push edi
-	push ebx
 
-	mov esi, eax
-	mov edi, edx
-	mov ebx, ecx
+	mov [ebp - 8], eax
+	mov [ebp - 4], ecx
 
-	mov eax, esi
-	mov edx, edi
-	mov ecx, ebx
 
-	pop ebx
+	; zero Vmem object
+	cld
+	mov edi, eax
+	xor eax, eax
+	mov ecx, sizeof.Vmem shr 2
+	cld
+	rep stosd
+
+	; copy name 
+	mov esi, edx
+	mov edx, [ebp - 8]
+	xor cl, cl
+@@:
+	lodsb
+	or al, al
+	jz @f
+	mov [edx], al
+	inc edx
+	inc cl
+	cmp cl, 15
+	jl @b
+@@:
+
+	mov edi, [ebp - 8]
+	mov ecx, [ebp - 4]
+	mov [edi + Vmem.base], ecx
+
+	; copy other from stack to struct
+	mov ecx, 28 shr 2
+	mov esi, ebp
+	add esi, 8
+	mov edi, [ebp - 8]
+	add edi, Vmem.size
+	rep movsd
+
+	mov eax, [ebp - 8]
+	mov edx, [ebp - 4]
+	or edx, edx
+	jnz @f
+	mov ecx, [eax + Vmem.size]
+	or ecx, ecx
+	jz @f
+	push dword [eax + Vmem.flags]
+	call vmem_add
+	add esp, 4
+@@:
+
+if CONFIG_TRACE_VMEM
+	mov esi, [ebp - 8]
+	mov edx, [esi + Vmem.base]
+	mov ecx, [esi + Vmem.size]
+	add ecx, edx
+	TRACE szTraceVmemCreate, esi, edx, ecx
+end if
+
 	pop edi
 	pop esi
-end if
 
 	leave
 	ret
@@ -263,6 +321,52 @@ vmem_xfree:
 	;; Out:
 	;;    EAX - Return Address on success, 0 on failure.
 vmem_add:
+	push ebp
+	mov ebp, esp
+
+	push esi
+	push edi
+	push ebx
+
+	mov esi, eax
+	mov edi, ebx
+	mov ebx, ecx
+
+
+
+	pop ebx
+	pop edi
+	pop esi
+	leave
+	ret
+
+	;; Function: vmem_bootstrap
+	;;
+	;; Initialize static segments
+	;; 
+vmem_bootstrap:
+	push ebp
+	mov ebp, esp
+
+if CONFIG_TRACE_VMEM
+	TRACE szTraceVmemBootstrap
+end if
+
+	push ebx
+
+	xor ebx, ebx
+@@:
+	mov eax, aVmemStaticSegs
+	add eax, ebx
+
+	call _vmem_segfree
+
+	add ebx, sizeof.VmSegment
+	cmp ebx, STATIC_SEG_COUNT*sizeof.VmSegment
+	jl @b
+
+	pop ebx
+	leave
 	ret
 
 ;;; MARK: variables
@@ -272,7 +376,8 @@ pVmemFreeSegHead  dd 0
 iVmemFreeSegCount dd 0
 
 if CONFIG_TRACE_VMM
-szTraceVmemCreate  db "Trace(VMEM): Create %s [%x, %x)", 0
-szTraceVmemAdd     db "Trace(VMEM): %s: Add span [%x, %x)", 0
-szTraceVmemDestroy db "Trace(VMEM): Destroy %s", 0
+szTraceVmemBootstrap db "Trace(VMEM): Bootstrap vmem", 0
+szTraceVmemCreate    db "Trace(VMEM): Create %s [%x, %x)", 0
+szTraceVmemAdd       db "Trace(VMEM): %s: Add span [%x, %x)", 0
+szTraceVmemDestroy   db "Trace(VMEM): Destroy %s", 0
 end if
