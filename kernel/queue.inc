@@ -113,6 +113,10 @@ tailq_insert_after:
 	ret
 
 	;; Function: tailq_insert_tail
+	;; 
+	;; In:
+	;;    EAX - X
+	;;    EDX - X
 tailq_insert_tail:
 	ret
 

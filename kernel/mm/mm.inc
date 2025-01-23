@@ -12,10 +12,10 @@ mm_init:
 
 	mov eax, stVmemKernel
 	push dword 4
-	push dword 5
 	push dword 0
 	push dword 0
 	push dword 0
+	push dword 4096
 
 	mov edx, PMM_VIRT_TEMP
 	mov ecx, kend
@@ -24,6 +24,13 @@ mm_init:
 	mov edx, szVmemKernelName
 	call vmem_create
 	add esp, 24
+
+	mov eax, stVmemKernel
+	mov edx, 4096
+	mov ecx, VMEM_VM_BESTFIT
+	call vmem_alloc
+
+	xchg bx, bx
 
 	ret
 
