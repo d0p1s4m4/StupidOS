@@ -87,6 +87,12 @@ Alter Topic Type: Macro
       equ
 
 
+Alter Topic Type: Section
+
+   Add Keywords:
+      mark
+
+
 Topic Type: Struct
 
    Plural: Structs

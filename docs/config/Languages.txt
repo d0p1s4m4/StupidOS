@@ -116,4 +116,5 @@ Format: 1.52
 Alter Language: Assembly
 
    Add Extensions: asm s inc
+   Function Prototype Ender: :
    Struct Prototype Ender: }
