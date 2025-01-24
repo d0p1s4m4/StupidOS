@@ -23,7 +23,7 @@ kbd_init:
 	or al, al
 	jz @f
 
-	mov esi, szMsgKbdFound
+	mov eax, szMsgKbdFound
 	call klog
 @@:
 	ret

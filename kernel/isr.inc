@@ -8,7 +8,7 @@ forward
 forward
 	isr_#name#:
 		cli
-		mov esi, szIntName
+		mov eax, szIntName
 		call klog
 		if error eq 0
 		push 0
@@ -36,7 +36,7 @@ isr_common:
 	mov eax, [esp+IntFrame.intno]
 	push eax
 
-	mov esi, szMsgInterrupt
+	mov eax, szMsgInterrupt
 	call klog 
 
 	pop eax

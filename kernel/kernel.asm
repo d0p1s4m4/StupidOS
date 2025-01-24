@@ -76,23 +76,23 @@ kmain:
 	mov ax, 100 ; 100Hz
 	call pit_init
 
-	call bio_init
+	;call bio_init
 
-	call proc_init
+	;call proc_init
 
-	call dev_init
+	;call dev_init
 
-	call vfs_init
+	;call vfs_init
 
 	; Root inode
 	; rootino = newino(dev(0.0), BLK)
 	; fs_mountroot(rootino);
 
-	mov ah, 2
-	call bio_bread
+	;mov ah, 2
+	;call bio_bread
 
-	xor eax, eax
-	call bio_bread
+	;xor eax, eax
+	;call bio_bread
 
 	;mov eax, SYSCALL_EXIT
 	;int 0x42
@@ -104,7 +104,7 @@ kmain:
 ;	hlt
 	jmp $
 .error_magic:
-	mov esi, szErrorBootProtocol
+	mov eax, szErrorBootProtocol
 .error:
 	call klog
 	jmp .halt

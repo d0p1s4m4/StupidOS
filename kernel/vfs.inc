@@ -115,8 +115,9 @@ vfs_register:
 
 	mov eax, [eax + VFS.name]
 	push eax
-	mov esi, szMsgVFSRegister
+	mov eax, szMsgVFSRegister
 	call klog
+	pop eax
 	ret
 
 vfs_init:

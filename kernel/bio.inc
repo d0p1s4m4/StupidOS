@@ -62,7 +62,7 @@ bio_bread:
 	cmp ecx, aBlockDevices.end
 	jb @f
 
-	mov esi, szErrorInvalidDevid
+	mov eax, szErrorInvalidDevid
 	call klog
 	jmp .end
 @@:
