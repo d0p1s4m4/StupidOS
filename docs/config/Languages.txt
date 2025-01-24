@@ -117,4 +117,5 @@ Alter Language: Assembly
 
    Add Extensions: asm s inc
    Function Prototype Ender: :
+   Macro Prototype Ender: {
    Struct Prototype Ender: }

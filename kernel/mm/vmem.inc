@@ -92,7 +92,7 @@ DEFN Vmem
 
 ;;; MARK: Private functions
 
-	;; Function: _murmur32
+	;; Function: _vmem_hashtable_hash
 	;;
 	;; In:
 	;;    EAX - Address
@@ -100,7 +100,7 @@ DEFN Vmem
 	;; Out:
 	;;    EAX - Hash
 	;;
-_murmur32:
+_vmem_hashtable_hash:
 	; hash ← hash XOR (hash >> 16)
 	mov ecx, eax
 	shr ecx, 16
@@ -121,19 +121,19 @@ _murmur32:
 	xor eax, ecx
 	ret
 
-	;; Function: _hash_table_addr
+	;; Function: _vmem_hashtable_addr
 	;;
 	;; In:
 	;;    EAX - Vmem
 	;;    EDX - ADDR 
-__hash_table_addr:
+_vmem_hashtable_addr:
 	push ebp
 	mov ebp, esp
 	push esi
 
 	mov esi, eax
 	mov eax, edx
-	call _murmur32
+	call _vmem_hashtable_hash
 	and eax, VMEM_HASHTABLE_N-1 ; x % y (y is a power of two)
 	shl eax, 2
 
@@ -244,7 +244,54 @@ _vmem_refill:
 	;;    ESP[20] - addrp 
 	;;
 _vmem_segfit:
+	mov edx, [esp + 20]
+	mov eax, [eax + VmemSegment.base]
+	mov [edx], eax
+
 	xor eax, eax
+	ret
+
+	;; Function: _vmem_add_to_freelist
+	;;
+	;; Add segment to <Vmem> freelist.
+	;;
+	;; In:
+	;;    EAX - Pointer to <Vmem> object.
+	;;    EDX - Pointer to <VmemSegment> object.
+	;;
+_vmem_add_to_freelist:
+	mov ecx, [edx + VmemSegment.size]
+	VMEM_GET_LIST_FROM_SIZE ecx, VMEM_FREELISTS_N
+	shl ecx, 2
+
+	lea eax, [eax + Vmem.freelist]
+	add eax, ecx
+
+	lea edx, [edx + VmemSegment.seglist]
+	call list_insert_head
+	ret
+
+	;; Function: _vmem_insert_segment
+	;;
+	;; In:
+	;;    EAX - Pointer to <Vmem> object.
+	;;    EDX - Pointer to <VmemSegment>.
+	;;    ECX - Pointer to <TailQEntry>.
+	;;
+_vmem_insert_segment:
+	lea eax, [eax + Vmem.segqueue]
+	lea edx, [edx + VmemSegment.segqueue]
+	xchg edx, ecx
+	call tailq_insert_after
+	ret
+
+	;; Function: _vmem_hashtable_insert
+	;;
+	;; In:
+	;;   EAX - Pointer to <Vmem> object.
+	;;   EDX - Pointer 
+_vmem_hashtable_insert:
+
 	ret
 
 	;; Function: _vmem_add
@@ -589,7 +636,6 @@ vmem_xalloc:
 
 .best_fit:
 	; iterate each item in list
-	xchg bx, bx
 	mov eax, [ebp - 12]
 .best_fit_loop:
 	mov eax, [eax]
@@ -626,7 +672,7 @@ vmem_xalloc:
 	cmp [ebp - 12], eax
 	jl .best_fit
 .next:
-if 0
+if 1
 	; NetBSD does this
 	; https://github.com/NetBSD/src/blob/trunk/sys/kern/subr_vmem.c#L1296-L1301
 	mov eax, [ebp + 24]
@@ -642,18 +688,8 @@ end if
 
 	; return error and free allocated segment if needed 
 .fail:
-	mov eax, [ebp - 8]
-	or eax, eax
-	jz @f
-	call _vmem_segfree
-@@:
-	mov eax, [ebp - 4]
-	or eax, eax
-	jz @f
-	call _vmem_segfree
-@@:
-	xor eax, eax
-	mov edx, ENOMEM
+	xor edi, edi
+	mov ebx, ENOMEM
 	jmp .end
 
 .found:
@@ -675,33 +711,103 @@ end if
 	sub ecx, eax
 	mov [edx + VmemSegment.size], ecx
 	mov eax, [ebp - 16]
-	mov dword [eax + VmemSegment.base], [ebp - 20]
+	push ecx
+	mov ecx, [ebp - 20]
+	mov [eax + VmemSegment.base], ecx
+	pop ecx
 	mov edx, [eax + VmemSegment.size]
 	sub edx, ecx
 	mov [eax + VmemSegment.size], edx
 
 	; insert to freelist
-	VMEM_GET_LIST_FROM_SIZE ecx, VMEM_FREELISTS_N
-	shl ecx, 2
 	mov eax, esi
-	add eax, Vmem.freelist
-	add eax, ecx
-
 	mov edx, [ebp - 8]
-	add edx, VmemSegment.seglist
-	call list_insert_head
+	call _vmem_add_to_freelist
+	
+	; insert segment before the allocated one
+	mov eax, esi
+	mov edx, [ebp - 8]
+
+	mov ecx, [ebp - 16]
+	TAILQ_PREV ecx, VmemSegment.segqueue
+	call _vmem_insert_segment
 
 	mov dword [ebp - 8], 0
 @@:
 
 	; split right
 
+	; (seg->size != size) && (seg->size - size) > quantum - 1) 
+	mov edx, [ebp - 16]
+	mov ecx, [edx + VmemSegment.size]
+	cmp edi, ecx
+	je @f
+	mov eax, [esi + Vmem.quantum]
+	dec eax
+	sub ecx, edi
+	cmp ecx, eax
+	jle @f
+
+	; offset the segment
+	mov [edx + VmemSegment.size], ecx
+	mov eax, [edx + VmemSegment.base]
+	mov ecx, eax
+	add eax, edi
+	mov [edx + VmemSegment.base], eax
+
+	mov edx, [ebp - 4]
+	mov [edx + VmemSegment.base], ecx
+	mov [edx + VmemSegment.size], edi
+
+	; insert to free list
+	mov eax, esi
+	call _vmem_add_to_freelist
+	
+	; put new allocated seg before
+	mov eax, esi
+	mov edx, [ebp - 4]
+	mov ecx, [ebp - 16]
+	TAILQ_PREV ecx, VmemSegment.segqueue
+	call _vmem_insert_segment
+
+	mov edx, [ebp - 4]
+	mov [ebp - 16], edx
+
+	mov dword [ebp - 4], 0
+
+@@:
+	mov edx, [ebp - 16]
+	mov dword [edx + VmemSegment.type], VMEM_SEGMENT_ALLOCATED
+
+	mov eax, esi
+	call _vmem_hashtable_insert
+
+	mov edx, [ebp - 16]
+	mov edi, [edx + VmemSegment.base]
+	xor ebx, ebx
+
+if CONFIG_TRACE_VMEM
+	lea edx, [esi + Vmem.name]
+	TRACE szTraceVmemAlloc, edx, edi
+end if
 
 .end:
+	mov eax, [ebp - 8]
+	or eax, eax
+	jz @f
+	call _vmem_segfree
+@@:
+	mov eax, [ebp - 4]
+	or eax, eax
+	jz @f
+	call _vmem_segfree
+@@:
+	mov eax, edi
+	mov edx, ebx
+
 	pop ebx
-	pop esi
 	pop edi
-	pop ebx
+	pop esi
 
 	leave
 	ret
@@ -843,5 +949,6 @@ if CONFIG_TRACE_VMM
 szTraceVmemBootstrap db "Trace(VMEM): Bootstrap vmem", 0
 szTraceVmemCreate    db "Trace(VMEM): Create %s [%x, %x)", 0
 szTraceVmemAdd       db "Trace(VMEM): %s: Add span [%x, %x)", 0
+szTraceVmemAlloc     db "Trace(VMEM): %s: Alloc: %x", 0
 szTraceVmemDestroy   db "Trace(VMEM): Destroy %s", 0
 end if

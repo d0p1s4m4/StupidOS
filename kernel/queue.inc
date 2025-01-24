@@ -98,6 +98,12 @@ struc TailQEntry {
 	.prev dd ?
 }
 
+	;; Macro: TAILQ_PREV
+	;;
+macro TAILQ_PREV reg, field {
+	mov reg, [reg + field#.prev]
+}
+
 	;; Function: tailq_insert_head
 	;;
 	;; In:
