@@ -5,19 +5,13 @@
 efi_fs_init:
 
 	; OpenProtocol(EFI_HANDLE Handle, EFI_GUID *proto, VOID **Interface, EFI_HANDLE AgentHandle, UINT32 Attrs)
-	push 0
-	push [hImage]
-	push pLoadedImage
-	push aFSProtoGUID
-	push [hImage]
-	call [fnOpenProtocol]
-	add esp, 20
+	EFI_CALL [fnOpenProtocol], [hImage], aFSProtoGUID, pLoadedImage, [hImage], 0, 2
 
 	or eax, eax
 	jnz .error
 	ret
 .error:
-	mov esi, szErrTmp
+	mov eax, szErrTmp
 	call efi_log
 
 	ret

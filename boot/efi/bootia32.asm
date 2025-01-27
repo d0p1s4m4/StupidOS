@@ -14,19 +14,22 @@
 
 	;; Function: efimain
 	;;
-	;; Parameters:
+	;; In:
+	;;     [ESP+4] - handle
+	;;     [ESP+8] - <EFI_SYSTEM_TABLE>
 	;;
-	;;     [esp+4] - handle
-	;;     [esp+8] - <EFI_SYSTEM_TABLE>
-	;;
-	;; Returns:
-	;;
-	;;     eax - efi status
+	;; Out:
+	;;     EAX - efi status
 	;;
 efimain:
-	mov eax, [esp+4]
-	mov [hImage], eax
+	push ebp
+	mov ebp, esp
+
+	EFI_INIT [ebp + 8], [ebp + 12]
+
 	mov eax, [esp+8]
+	mov [hImage], eax
+	mov eax, [esp+12]
 	mov [pSystemTable], eax
 
 	mov ebx, [eax + EFI_SYSTEM_TABLE.RuntimeServices]
@@ -44,7 +47,7 @@ efimain:
 	call efi_memory_init
 	call efi_log_init
 
-	mov esi, szHelloMsg
+	mov eax, szHelloMsg
 	call efi_log
 
 	call efi_fs_init

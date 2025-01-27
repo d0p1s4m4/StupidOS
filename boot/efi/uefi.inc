@@ -1,5 +1,88 @@
 	;; File: uefi.inc
 
+macro EFI_CALL fn, [arg] {
+	common
+		_ARGS = 0
+	reverse
+		match anything, arg \{
+			_ARGS = _ARGS + 4
+			push dword arg
+		\}
+	common
+		call fn
+		if _ARGS
+			add esp, _ARGS
+		end if
+}
+
+macro EFI_GET_INTERFACE reg, interface {
+	if interface in <ConsoleInHandle,ConIn,ConsOutHandle,ConOut,StandardErrorHandle,StdErr>
+		mov reg, [pEfiSystemTable]
+		mov reg, [reg + EFI_SYSTEM_TABLE.#interface]
+	end if
+}
+
+macro EFI_INIT handle, table {
+	local efi_init_bad
+	local efi_init_end
+	clc
+	; image handle
+	mov eax, handle
+	or eax, eax
+	jz efi_init_bad
+	mov [hEfiImage], eax
+	mov eax, table
+	mov [pEfiSystemTable], eax
+
+	mov edx, [eax + EFI_SYSTEM_TABLE.BootServices]
+	mov [pEfiBootServices], edx
+
+	mov edx, [eax + EFI_SYSTEM_TABLE.RuntimeServices]
+	mov [pEfiRuntimeServices], edx
+
+	jmp efi_init_end
+efi_init_bad:
+	stc
+efi_init_end:
+}
+
+EFI_SUCCESS           = 0x0
+EFI_ERR               = 0x80000000
+
+EFI_LOAD_ERROR           = (EFI_ERR or 1)
+EFI_INVALID_PARAMETER    = (EFI_ERR or 2)
+EFI_UNSUPPORTED          = (EFI_ERR or 3)
+EFI_BAD_BUFFER_SIZE      = (EFI_ERR or 4)
+EFI_BUFFER_TOO_SMALL     = (EFI_ERR or 5)
+EFI_NOT_READY            = (EFI_ERR or 6)
+EFI_DEVICE_ERROR         = (EFI_ERR or 7)
+EFI_WRITE_PROTECTED      = (EFI_ERR or 8)
+EFI_OUT_OF_RESOURCEs     = (EFI_ERR or 9)
+EFI_VOLUME_CORRUPTED     = (EFI_ERR or 10)
+EFI_VOLUME_FULL          = (EFI_ERR or 11)
+EFI_NO_MEDIA             = (EFI_ERR or 12)
+EFI_MEDIA_CHANGED        = (EFI_ERR or 13)
+EFI_NOT_FOUND            = (EFI_ERR or 14)
+EFI_ACCESS_DEBIED        = (EFI_ERR or 15)
+EFI_NO_RESPONSE          = (EFI_ERR or 16)
+EFI_NO_MAPPING           = (EFI_ERR or 17)
+EFI_TIMEOUT              = (EFI_ERR or 18)
+EFI_NOT_STARTED          = (EFI_ERR or 19)
+EFI_ALREADY_STARTED      = (EFI_ERR or 20)
+EFI_ABORTED              = (EFI_ERR or 21)
+EFI_ICMP_ERROR           = (EFI_ERR or 22)
+EFI_TFTP_ERROR           = (EFI_ERR or 23)
+EFI_PROTOCOL_ERROR       = (EFI_ERR or 24)
+EFI_INCOMPATIBLE_VERSION = (EFI_ERR or 25)
+EFI_SECURITY_VIOLATION   = (EFI_ERR or 26)
+EFI_CRC_ERROR            = (EFI_ERR or 27)
+EFI_END_OF_MEDIA         = (EFI_ERR or 28)
+EFI_END_OF_FILE          = (EFI_ERR or 31)
+EFI_INVALID_LANGUAGE     = (EFI_ERR or 32)
+EFI_COMPROMISED_DATA     = (EFI_ERR or 33)
+EFI_IP_ADDRESS_CONFLICT  = (EFI_ERR or 34)
+EFI_HTTP_ERROR           = (EFI_ERR or 35)
+
 struc BOOLEAN
 {
 	. db ?
@@ -56,14 +139,6 @@ struc UINTPTR
 {
 	align 4
 	. dd ?
-}
-
-struc EFI_GUID 
-{
-	.Data1 dd ?
-	.Data2 dw ?
-	.Data3 dw ?
-	.Data4 db 8 dup(?)
 }
 
 struc EFI_TIME
@@ -211,6 +286,17 @@ struc EFI_BOOT_SERVICES
 	.CreateEventEx UINTPTR
 }
 DEFN EFI_BOOT_SERVICES
+
+EFI_LOCATE_SEARCH_ALL_HANDLES        = 0x0
+EFI_LOCATE_SEARCH_BY_REGISTER_NOTIFY = 0x1
+EFI_LOCATE_SEARCH_BY_PROTOCOL        = 0x2
+
+EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL  = 0x00000001
+EFI_OPEN_PROTOCOL_GET_PROTOCOL        = 0x00000002
+EFI_OPEN_PROTOCOL_TEST_PROTOCOL       = 0x00000004
+EFI_OPEN_PROTOCOL_BY_CHILD_CONTROLLER = 0x00000008
+EFI_OPEN_PROTOCOL_BY_DRIVER           = 0x00000010
+EFI_OPEN_PROTOCOL_EXCLUSIVE           = 0x00000020
 
 	;; ========================================================================
 	;; EFI_RUNTIMES_SERVICES
@@ -364,7 +450,7 @@ EFI_LOAD_FILE2_PROTOCOL equ EFI_LOAD_FILE_PROTOCOL
 	;; ========================================================================
 	;; EFI_SIMPLE_FILE_SYSTEM_PROTOCOL
 	;; ========================================================================
-EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID equ 0x022, 0x5b, 0x4e, 0x96, 0x59, 0x64, 0xd2, 0x11, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
+EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID equ 0x22, 0x5b, 0x4e, 0x96, 0x59, 0x64, 0xd2, 0x11, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
 ;EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID equ 0x0964e5b22, 0x6459, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b
 
 EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_REVISION = 0x00010000
@@ -417,3 +503,10 @@ EFI_FILE_RESERVED   = 0x0000000000000008
 EFI_FILE_DIRECTORY  = 0x0000000000000010
 EFI_FILE_ARCHIVE    = 0x0000000000000020
 EFI_FILE_VALID_ATTR = 0x0000000000000037 
+
+section '.data' data readable writeable
+
+hEfiImage           dd 0
+pEfiSystemTable     dd 0
+pEfiBootServices    dd 0
+pEfiRuntimeServices dd 0

@@ -4,9 +4,7 @@
 
 	;; Function: efi_log_init
 efi_log_init:
-	mov eax, [pSystemTable]
-	add eax, EFI_SYSTEM_TABLE.ConOut
-	mov eax, [eax]
+	EFI_GET_INTERFACE eax, ConOut
 	mov [pConOut], eax
 
 	mov ecx, [eax + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL.Reset]
@@ -16,23 +14,18 @@ efi_log_init:
 	mov [fnOutputStr], ecx
 
 	mov eax, [pRuntimeServices]
-	mov ecx, [eax + EFI_RUNTIMES_SERVICES.GetTime]
-	mov [fnGetTime], ecx
+	mov eax, [eax + EFI_RUNTIMES_SERVICES.GetTime]
+	mov [fnGetTime], eax
 
-	push 1
-	push [pConOut]
-	call [fnOutputReset]
-	add esp, 8
+	EFI_CALL [fnOutputReset], [pConOut], 1
 
 	ret
 
 	;; Function: efi_log_time
 efi_log_time:
 	; GetTime(EFI_TIME *time, EFI_TIME_CAPS *cap)
-	push 0
-	push stEfiTime
-	call [fnGetTime]
-	add esp, 8
+
+	EFI_CALL [fnGetTime], stEfiTime, 0
 
 	; Hours 
 	mov al, [stEfiTime + EFI_TIME.Hour]
@@ -79,31 +72,31 @@ efi_log_time:
 	movzx cx, ah
 	mov [szTime + 16], cx
 
-	push szTime
-	push [pConOut]
-	call [fnOutputStr]
-	add esp, 8
+	EFI_CALL [fnOutputStr], [pConOut], szTime
 
 	ret
 
 	;; Function: efi_log
 	;;
 	;; In:
-	;;    ESI - string to print
+	;;    EAX - string to print
 efi_log:
-	call efi_log_time
+	push ebp
+	mov ebp, esp
 
 	push esi
-	push [pConOut]
-	call [fnOutputStr]
-	add esp, 8
+	mov esi, eax
+
+	call efi_log_time
+
+	EFI_CALL [fnOutputStr], [pConOut], esi
 
 	; print CRLF
-	push szEndLine
-	push [pConOut]
-	call [fnOutputStr]
-	add esp, 8
+	EFI_CALL [fnOutputStr], [pConOut], szEndLine
 
+	pop esi
+
+	leave
 	ret
 
 section '.data' data readable writable
