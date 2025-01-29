@@ -36,3 +36,4 @@ bochsrc.bxrc
 webring.json
 webring.txt
 kernel/const.inc
+boot/common/const.inc

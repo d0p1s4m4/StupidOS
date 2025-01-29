@@ -3,20 +3,25 @@ TARGET = boot_floppy1440.bin \
 		boot_mbr.bin \
 		boot_hdd.bin
 
+COMMON_DIR = ../common
+
+COMMON_SRCS = const.inc \
+				fat12.inc 
+
 FLOPPY_SRCS	= floppy.asm \
-			../common/const.inc \
-			../common/fat12.inc
+			$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS))
 
 HDD_SRCS = hdd.asm \
-			../common/const.inc \
-			../common/fat12.inc
+			$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS))
 
 MBR_SRCS = mbr.asm \
-			../common/const.inc \
-			../common/fat12.inc
+			$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS))
 
 .PHONY: all
 all: $(TARGET)
+
+%.inc: %.inc.in
+	sh $(TOOLSDIR)/version.sh $< $@
 
 boot_floppy1440.bin: $(FLOPPY_SRCS)
 	$(AS) floppy.asm $@

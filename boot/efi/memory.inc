@@ -3,7 +3,7 @@
 	section '.text' code executable readable
 
 efi_memory_init:
-	mov eax, [pBootServices]
+	mov eax, [pEfiBootServices]
 	mov ecx, [eax + EFI_BOOT_SERVICES.AllocatePool]
 	mov [fnAllocatePool], ecx
 

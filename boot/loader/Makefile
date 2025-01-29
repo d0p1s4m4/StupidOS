@@ -1,10 +1,17 @@
 TARGET = stpdldr.sys
 
+COMMON_DIR = ../common
+SYS_DIR    = ../../kernel/sys
+
+COMMON_SRCS = const.inc \
+				bootinfo.inc
+
+SYS_SRCS = bootinfo.inc \
+			register.inc
+
 LOADER_SRCS	= loader.asm \
-				../common/const.inc \
-				../common/bootinfo.inc \
-				../../kernel/sys/bootinfo.inc \
-				../../kernel/sys/register.inc \
+				$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS)) \
+				$(addprefix $(SYS_DIR)/, $(SYS_SRCS)) \
 				fat.inc \
 				video.inc \
 				memory.inc \
@@ -17,6 +24,8 @@ LOADER_SRCS	= loader.asm \
 .PHONY: all
 all: $(TARGET)
 
+%.inc: %.inc.in
+	sh $(TOOLSDIR)/version.sh $< $@
 
 stpdldr.sys: $(LOADER_SRCS)
 	$(AS) loader.asm $@

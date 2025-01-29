@@ -26,29 +26,13 @@ efimain:
 	mov ebp, esp
 
 	EFI_INIT [ebp + 8], [ebp + 12]
-
-	mov eax, [esp+8]
-	mov [hImage], eax
-	mov eax, [esp+12]
-	mov [pSystemTable], eax
-
-	mov ebx, [eax + EFI_SYSTEM_TABLE.RuntimeServices]
-	mov [pRuntimeServices], ebx
-
-	mov ebx, [eax + EFI_SYSTEM_TABLE.BootServices]
-	mov [pBootServices], ebx
-
-	mov ecx, [ebx + EFI_BOOT_SERVICES.OpenProtocol]
-	mov [fnOpenProtocol], ecx
-
-	mov ecx, [ebx + EFI_BOOT_SERVICES.Exit]
-	mov [fnExit], ecx
-
-	call efi_memory_init
+	
 	call efi_log_init
 
-	mov eax, szHelloMsg
-	call efi_log
+	call efi_memory_init
+
+	LOG szHelloMsg
+
 
 	call efi_fs_init
 
@@ -86,20 +70,3 @@ szKernelFile du 'vmstupid.sys', 0
 szConfigFile du 'stpdboot.ini', 0 
 
 stBootInfo BootInfo
-
-hImage       dd ?
-pSystemTable dd ?
-
-;; Variable: pBootServices
-pBootServices   dd ?
-fnOpenProtocol  dd ?
-fnCloseProtocol dd ?
-fnExit          dd ?
-
-;; Variable: pRuntimeServices
-pRuntimeServices dd ?
-
-;; Variable: pLoadFileProtocol
-;; Pointer to EFI_LOAD_FILE_PROTOCOL
-pLoadFileProtocol dd ?
-fnLoadFile        dd ?
