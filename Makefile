@@ -1,30 +1,31 @@
-.EXPORT_ALL_VARIABLES:
 .DEFAULT_GOAL:=all
 
-MAKEFLAGS += --no-print-directory
+export MAKEFLAGS += --no-print-directory
 
-TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-SYSROOTDIR := $(TOPDIR)/sysroot
-TOOLSDIR   := $(TOPDIR)/tools
+export LIB = 
 
-BINDIR = /bin
-LIBDIR = /usr/lib
-INCDIR = /usr/include
-ASMDIR = /usr/asm
+export TOPDIR     := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+export SYSROOTDIR := $(TOPDIR)/sysroot
+export TOOLSDIR   := $(TOPDIR)/tools
 
-AS = fasm
-CC ?= gcc
-RM = rm -f
+export BINDIR = /bin
+export LIBDIR = /usr/lib
+export INCDIR = /usr/include
+export ASMDIR = /usr/asm
 
-MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
-MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
-MK_PACKAGE   := \"StupidOS\"
+export AS = fasm
+export CC ?= gcc
+export RM = rm -f
 
-CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" \
+export MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
+export MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
+export MK_PACKAGE   := \"StupidOS\"
+
+export CFLAGS	= -DMK_COMMIT="$(MK_COMMIT)" \
 			-DMK_BUGREPORT="$(MK_BUGREPORT)" \
 			-DMK_PACKAGE="$(MK_PACKAGE)" \
 			-I$(TOPDIR)include
-LDFLAGS	= 
+export LDFLAGS	= 
 
 
 QEMU_COMMON = \
@@ -44,6 +45,7 @@ TARGET	+= stupid.iso stupid.hdd
 else
 EXEXT	= .exe
 endif
+export EXEXT
 
 .PHONY: all
 all: $(TARGET)

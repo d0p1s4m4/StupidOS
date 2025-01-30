@@ -1,5 +1,7 @@
 MODULE = dummy.mod
 
+INST = $(addprefix $(DESTDIR)/, $(MODULE))
+
 all:
 
 clean:
@@ -7,7 +9,8 @@ clean:
 $(MODULE): $(MODULE:.mod=.asm)
 	fasm $^ $@
 
+$(DESTDIR)/%.mod: %.mod
+	install -D $< $@
+
 .PHONY: install
-install: $(MODULE)
-	@ mkdir -p $(DESTDIR)
-	install $< $(DESTDIR)
+install: $(INST)

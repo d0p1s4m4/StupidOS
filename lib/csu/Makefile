@@ -1,13 +1,16 @@
-TARGET	= crt0.o
+LIBS	= crt0.o
 
-all: $(TARGET)
+INST	= $(addprefix $(DESTDIR)$(LIBDIR)/, $(LIBS))
+
+all: $(LIBS)
 
 %.o: %.asm
 	$(AS) $< $@
 
-clean:
-	$(RM) $(TARGET)
+$(DESTDIR)$(LIBDIR)/%.o: %.o
+	install -D $< $@
 
-install: $(TARGET)
-	@ mkdir -p $(DESTDIR)$(LIBDIR)
-	install $(TARGET) $(DESTDIR)$(LIBDIR)
+clean:
+	$(RM) $(LIBS)
+
+install: $(INST)

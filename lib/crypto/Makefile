@@ -1,4 +1,4 @@
-TARGET	= libcrypto.a
+LIBS	= libcrypto.a
 OBJS	= sha2/sha256.o sha2/sha512.o \
 			chacha/chacha.o \
 			hchacha/hchacha.o
@@ -12,27 +12,33 @@ ASMS	= sha2/sha2.inc \
 			chacha/chacha.inc \
 			hchacha/hchacha.inc
 
-INCCRYPOTDIR = $(INCDIR)/crypto
-ASMCRYPTODIR = $(ASMDIR)/crypto
+INST = $(addprefix $(DESTDIR)$(INCDIR)/, $(INCS)) \
+		$(addprefix $(DESTDIR)$(ASMDIR)/, $(ASMS)) \
+		$(addprefix $(DESTDIR)$(LIBDIR)/, $(LIBS))
 
-all: $(TARGET)
+.PHONY: all
+all: $(LIBS)
 
-$(TARGET): $(OBJS)
+$(LIBS): $(OBJS)
 	$(AR) rcs $@ $^
 
 %.o: %.asm
 	$(AS) $< $@
 
-clean:
-	$(RM) $(TARGET) $(OBJS)
+$(DESTDIR)$(INCDIR)/%.h: %.h
+	install -D $< $@
 
-install: $(TARGET)
-	@ mkdir -p $(DESTDIR)$(LIBDIR)
-	install $(TARGET) $(DESTDIR)$(LIBDIR)
-	@ mkdir -p $(DESTDIR)$(INCCRYPOTDIR)
-	install $(INCS) $(DESTDIR)$(INCCRYPOTDIR)
-	install crypto.h $(DESTDIR)$(INCDIR)
-	@ mkdir -p $(DESTDIR)$(ASMCRYPTODIR)
-	install $(ASMS) $(DESTDIR)$(ASMCRYPTODIR)
+$(DESTDIR)$(ASMDIR)/%.inc: %.inc
+	install -D $< $@
+
+$(DESTDIR)$(LIBDIR)/%.a: %.a
+	install -D $< $@
+
+.PHONY: clean
+clean:
+	$(RM) $(LIBS) $(OBJS)
+
+.PHONY: install
+install: $(INST)
 
 

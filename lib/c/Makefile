@@ -1,20 +1,28 @@
-TARGET	= libc.a
+LIBS	= libc.a
 OBJS	= ctype.o
 INCS	= stddef.h time.h ctype.h
 
-all: $(TARGET)
+INST = $(addprefix $(DESTDIR)$(INCDIR)/, $(INCS)) \
+		$(addprefix $(DESTDIR)$(LIBDIR)/, $(LIBS))
 
-$(TARGET): $(OBJS)
+.PHONY: all
+all: $(LIBS)
+
+$(LIBS): $(OBJS)
 	$(AR) rcs $@ $^
 
 %.o: %.asm
 	$(AS) $< $@
 
-clean:
-	$(RM) $(TARGET) $(OBJS)
+$(DESTDIR)$(INCDIR)/%.h: %.h
+	install -D $< $@
 
-install: $(TARGET)
-	@ mkdir -p $(DESTDIR)$(LIBDIR)
-	install $(TARGET) $(DESTDIR)$(LIBDIR)
-	@ mkdir -p $(DESTDIR)$(INCDIR)
-	install $(INCS) $(DESTDIR)$(INCDIR)
+$(DESTDIR)$(LIBDIR)/%.a: %.a
+	install -D $< $@
+
+.PHONY: clean
+clean:
+	$(RM) $(LIBS) $(OBJS)
+
+.PHONY: install
+install: $(INST)
