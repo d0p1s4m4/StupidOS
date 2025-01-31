@@ -64,6 +64,7 @@ typedef struct aouthdr
 # define AOUTHSZ sizeof(AOUTHDR)
 
 # define OMAGIC  0404
+# define NMAGIC  0410
 # define ZMAGIC  0413
 # define STMAGIC 0401
 # define SHMAGIC 0443

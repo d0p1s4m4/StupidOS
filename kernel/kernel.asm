@@ -13,6 +13,8 @@
 
 	jmp short kmain
 
+	;; XXX: kernel header
+
 	;; Function: kmain
 	;; Kernel entry point
 	;;
@@ -132,7 +134,6 @@ kmain:
 szMsgKernelAlive db "Kernel (", VERSION_FULL , ") is alive", 0
 szMsgBuildDate db "Built ", BUILD_DATE, 0
 szErrorBootProtocol db "Error: wrong magic number", 0
-szKernelHeapStr db "KERNEL-HEAP", 0
 	;; Variable: stBootInfo
 	;; <BootInfo>
 stBootInfo BootInfo

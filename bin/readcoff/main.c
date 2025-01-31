@@ -24,9 +24,38 @@ static const struct {
 	{F_MACH_UNKNOWN, "unknown"}
 };
 
+static const struct {
+	int flag;
+	char *str;
+} FLAGS[] = {
+	{F_RELFLG,   "F_RELFLG"},
+	{F_EXEC,     "F_EXEC"},
+	{F_LNNO,     "F_LNNO"},
+	{F_LSYMS,    "F_LSYMS"},
+	{F_LITTLE,   "F_LITTLE"},
+	{F_BIG,      "F_BIG"},
+	{F_SYMMERGE, "F_SYMMERGE"},
+
+	{0, NULL}
+};
+
+static const struct {
+	int16_t mag;
+	char *str;
+} AOUTMAG[] = {
+	{OMAGIC,  "OMAGIC"},
+	{NMAGIC,  "NMAGIC"},
+	{ZMAGIC,  "ZMAGIC"},
+	{STMAGIC, "STMAGIC"},
+	{SHMAGIC, "SHMAGIC"},
+
+	{0, NULL}
+};
+
 /* */
 static const char *prg_name;
 static const char *mach = NULL;
+static const char *aoutmag = NULL;
 
 /* */
 static int display_header = 0;
@@ -138,7 +167,15 @@ main(int argc, char **argv)
 		printf("  Start of Symbol Table:     %d (bytes into file)\n", file_header.f_symptr);
 		printf("  Number of Symbols:         %d\n", file_header.f_nsyms);
 		printf("  Size of optional header:   %hu\n", file_header.f_opthdr);
-		printf("  Flags:                     0x%hx\n\n", file_header.f_flags);
+		printf("  Flags:                     ");
+		for (idx = 0; FLAGS[idx].str != NULL; idx++)
+		{
+			if (file_header.f_flags & FLAGS[idx].flag)
+			{
+				printf("%s ", FLAGS[idx].str);
+			}
+		}
+		printf("\n\n");
 	}
 
 	if (display_optional_header)
@@ -146,8 +183,16 @@ main(int argc, char **argv)
 		if (file_header.f_opthdr)
 		{
 			fread(&aout_header, 1, AOUTHSZ, fp);
+			for (idx = 0; AOUTMAG[idx].str != NULL; idx++)
+			{
+				if (aout_header.magic == AOUTMAG[idx].mag)
+				{
+					aoutmag = AOUTMAG[idx].str;
+					break;
+				} 
+			}
 			printf("A.out header\n");
-			printf("  Magic: %hx\n", aout_header.magic);
+			printf("  Magic: %s\n", aoutmag);
 			printf("  Entry: 0x%08X\n", aout_header.entry);
 			printf("\n");
 		}

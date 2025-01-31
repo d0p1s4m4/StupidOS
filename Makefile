@@ -15,7 +15,10 @@ export ASMDIR = /usr/asm
 
 export AS = fasm
 export CC ?= gcc
+export LD = $(TOOLSDIR)/ld
 export RM = rm -f
+export TOOL_CC ?= gcc
+export TOOL_LD ?= ld
 
 export MK_BUGREPORT := \"https://git.cute.engineering/d0p1/StupidOS/issues\"
 export MK_COMMIT    := \"$(shell git rev-parse --short HEAD)\"
