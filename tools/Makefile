@@ -15,7 +15,7 @@ elf2coff$(EXEXT): ../bin/elf2coff/main.c
 parted$(EXEXT): ../sbin/parted/main.c
 	$(TOOL_CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
-ranlib$(EXEXT): ../bin/ranlib/main.c
+ranlib$(EXEXT): ../bin/ranlib/main.c ../bin/ar/archive.c
 	$(TOOL_CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 ar$(EXEXT): ../bin/ar/main.c

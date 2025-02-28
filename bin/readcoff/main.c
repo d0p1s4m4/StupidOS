@@ -62,6 +62,7 @@ static int display_header = 0;
 static int display_optional_header = 0;
 static int display_sections = 0;
 static int display_symbol_table = 0;
+static int display_relocs = 0;
 
 static void
 usage(int retval)
@@ -95,10 +96,12 @@ main(int argc, char **argv)
 	AOUTHDR aout_header;
 	SCNHDR section_header;
 	SYMENT sym_entry;
+	RELOC reloc_entry;
 	char name[9];
 	char *type;
 	FILE *fp;
 	int idx;
+	int j;
 	time_t timedat;
 	char *string_table;
 	size_t sz_stable;
@@ -118,9 +121,19 @@ main(int argc, char **argv)
 				display_optional_header = 1;
 				display_symbol_table = 1;
 				display_sections = 1;
+				//display_relocs = 1;
+				break;
+			case 'r':
+				display_relocs = 1;
 				break;
 			case 'H':
 				display_header = 1;
+				break;
+			case 's':
+				display_symbol_table = 1;
+				break;
+			case 'S':
+				display_sections = 1;
 				break;
 			case 'h':
 				usage(EXIT_SUCCESS);
@@ -238,6 +251,32 @@ main(int argc, char **argv)
 		printf("\n");
 	}
 
+	if (display_relocs)
+	{
+		for (idx = 0; idx < file_header.f_nscns; idx++)
+		{
+			fseek(fp, file_header.f_opthdr + FILHSZ + (SCNHSZ * idx), SEEK_SET);
+			if (fread(&section_header, 1, SCNHSZ, fp) != SCNHSZ)
+			{
+				return (EXIT_FAILURE);
+			}
+
+			if (section_header.s_relptr == 0 || section_header.s_nreloc == 0) continue;
+
+			memset(name, 0, 9);
+			memcpy(name, section_header.s_name, 8);
+			printf("Relocation for section '%s' at offset 0x%X contains %hu entries:\n", name, section_header.s_relptr, section_header.s_nreloc);
+			printf(" Address  Index    Type\n");
+			fseek(fp, section_header.s_relptr, SEEK_SET);
+			for (j = 0; j < section_header.s_nreloc; j++)
+			{
+				fread(&reloc_entry, 1, RELSZ, fp);
+				printf(" %08X %08X %04ho\n", reloc_entry.r_vaddr, reloc_entry.r_symndx, reloc_entry.r_type);
+			}
+			printf("\n");
+		}
+	}
+
 	if (display_symbol_table)
 	{
 		fseek(fp, 0L, SEEK_END);
@@ -248,16 +287,13 @@ main(int argc, char **argv)
 		printf("Symbol table contains %d entries:\n", file_header.f_nsyms);
 		printf("  Num:    Value  Type Name\n");
 		assert(sizeof(SYMENT) == SYMESZ);
-		for (idx = 0; idx <= file_header.f_nsyms; idx++)
+		for (idx = 0; idx < file_header.f_nsyms; idx++)
 		{
 			fseek(fp, file_header.f_symptr + (SYMESZ * idx), SEEK_SET);
 			fread(&sym_entry, 1, SYMESZ, fp);
 			memset(name, 0, 9);
 			memcpy(name, sym_entry.n_name, 8);
-			if (sym_entry.n_zeroes == 0)
-			{
-			}
-			printf("  %2d:    %08x  %hd ", idx, sym_entry.n_value, sym_entry.n_type);
+			printf("  %2d:    %08x  %hu %d %hd ", idx, sym_entry.n_value, sym_entry.n_type, sym_entry.n_sclass, sym_entry.n_scnum);
 			if (sym_entry.n_zeroes)
 			{
 				printf("%s\n", name);

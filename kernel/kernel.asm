@@ -65,11 +65,9 @@ kmain:
 
 	mov eax, 4
 	call pmm_alloc
-	xchg bx, bx
 
 	mov edx, 4
 	call pmm_free
-	xchg bx, bx
 
 	call pic_init
 

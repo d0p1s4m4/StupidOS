@@ -30,8 +30,6 @@ mm_init:
 	mov ecx, VMEM_VM_BESTFIT
 	call vmem_alloc
 
-	xchg bx, bx
-
 	ret
 
 szVmemKernelName db "kmem", 0

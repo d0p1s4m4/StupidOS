@@ -280,6 +280,8 @@ common32:
 	or eax, (CR0_PG or CR0_WP)
 	mov cr0, eax
 
+	cli ; ensure interrupt are disabled
+
 	mov eax, STPDBOOT_MAGIC
 	mov ebx, boot_structure
 
