@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <errno.h>
 #include "fas2sym.h"
 
 static const char *prg_name;

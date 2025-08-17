@@ -68,7 +68,7 @@ coff_addsym(struct rsym **syms, int *symcnt, char *strtab, SYMENT *syment)
 		name = nbuff;
 	}
 
-
+	free(sym);
 }
 
 static void

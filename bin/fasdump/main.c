@@ -2,142 +2,163 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+#include <unistd.h>
+#include <libgen.h>
 #include <fas.h>
 
-struct buff {
-	size_t size;
-	uint8_t *data;
-};
+static char *prg_name = NULL;
 
-static char *prg_name = "fasdump";
-static struct fas_header hdr;
-static struct buff strtab = { 0, NULL };
-static struct buff symtab = { 0, NULL };
-static struct buff psrc = { 0, NULL };
-static struct buff asmdmp = { 0, NULL };
-static struct buff sectab = { 0, NULL };
-static struct buff symref = { 0, NULL };
+static FAS_Hdr hdr;
+static char *strtab = NULL;
+static FAS_Sym *symtab = NULL;
+static uint8_t *psrc = NULL;
+static uint32_t *sectab = NULL;
+static size_t sec_cnt = 0;
+static size_t sym_cnt = 0;
+
+static int display_header = 0;
+static int display_sections = 0;
+static int display_symbols = 0;
 
 static void
-version(void)
+pstr2cstr(char *dst, const uint8_t *src)
 {
-	printf("%s (%s) %s\n", prg_name, MK_PACKAGE, MK_COMMIT);
-	exit(EXIT_SUCCESS);
+	size_t psz;
+
+	psz = *src++;
+	while (psz > 0)
+	{
+		*dst++ = *src++;
+		psz--;
+	}
+	*dst = '\0';
 }
 
 static void
-usage(int retval)
+fas_cleanup(void)
 {
-	if (retval == EXIT_FAILURE)
-	{
-		fprintf(stderr, "Try '%s -h' for more informations.", prg_name);
-	}
-
-	exit(retval);
+	free(sectab);
+	sectab = NULL;
+	free(psrc);
+	psrc = NULL;
+	free(symtab);
+	symtab = NULL;
+	free(strtab);
+	strtab = NULL;
 }
 
 static int
-readall(uint8_t *dest, size_t size, FILE *fp)
+fas_load_table(uint8_t **dest, size_t offset, size_t size, FILE *fp)
 {
-	size_t total;
-	size_t byte_read;
-
-	total = 0;
-	do
-	{
-		byte_read = fread(dest + total, 1, size - total, fp);
-		if (byte_read == 0)
-		{
-			return (-1);
-		}
-
-		total += byte_read;
-	}
-	while (total < size);
-
-	return (0);
-}
-
-static int
-load_table(struct buff *dst, size_t off, size_t len, FILE *fp)
-{
-	dst->size = len;
-	if (len == 0)
+	if (size == 0)
 	{
 		return (0);
 	}
 
-	dst->data = (uint8_t *)malloc(len);
-	if (dst->data == NULL)
+	*dest = (uint8_t *)malloc(size);
+	if (*dest == NULL)
 	{
 		return (-1);
 	}
 
-	if (fseek(fp, off, SEEK_SET) != 0)
+	if (fseek(fp, offset, SEEK_SET) != 0)
 	{
-		goto clean_up;
+		return (-1);
 	}
 
-	if (readall(dst->data, len, fp) != 0)
+	if (fread(*dest, size, 1, fp) != 1)
 	{
-		goto clean_up;
+		return (-1);
 	}
 
 	return (0);
-
-clean_up:
-	free(dst->data);
-	dst->size = 0;
-	return (-1);
 }
 
-static int
-read_header(FILE *fp)
+int
+fas_load_file(const char *file)
 {
-	if (readall((uint8_t *)&hdr, sizeof(struct fas_header), fp) != 0)
+	FILE *fp;
+
+	fp = fopen(file, "rb");
+	if (fp == NULL)
 	{
 		return (-1);
+	}
+
+	if (fread(&hdr, sizeof(FAS_Hdr), 1, fp) != 1)
+	{
+		goto err;
 	}
 
 	if (hdr.magic != FAS_MAGIC)
 	{
-		return (-1);
+		goto err;
 	}
 
-	return (0);
-}
-
-static inline char *
-strtab_get(size_t off)
-{
-	if (off > strtab.size)
+	if (fas_load_table((uint8_t **)&strtab, hdr.strtab_off,
+					   hdr.strtab_len, fp) != 0)
 	{
-		return (NULL);
+		goto err_cleanup;
 	}
 
-	return (strtab.data + off);
+	if (fas_load_table((uint8_t **)&symtab, hdr.symtab_off,
+					   hdr.symtab_len, fp) != 0)
+	{
+		goto err_cleanup;
+	}
+
+	if (fas_load_table(&psrc, hdr.psrc_off, hdr.psrc_len, fp) != 0)
+	{
+		goto err_cleanup;
+	}
+
+	if (fas_load_table((uint8_t **)&sectab, hdr.sectab_off,
+					   hdr.sectab_len, fp) != 0)
+	{
+		goto err_cleanup;
+	}
+
+	sym_cnt = hdr.symtab_len / sizeof(FAS_Sym);
+	sec_cnt = hdr.sectab_len / sizeof(uint32_t);
+
+	fclose(fp);
+	return (0);
+
+err_cleanup:
+	fas_cleanup();
+err:
+	fclose(fp);
+	return (-1);
 }
 
 static void
 print_header(void)
 {
 	printf("FAS Header:\n");
-	printf("  Magic:                %X\n", hdr.magic);
-	printf("  Fasm version:         %d.%d\n", hdr.ver_major,
-		   hdr.ver_minor);
-	printf("  Length:               %hu\n", hdr.length);
-	printf("  Input file:           %s\n", strtab_get(hdr.ifnm_off));
-	printf("  Output file:          %s\n", strtab_get(hdr.ofnm_off));
-	printf("  String table offset:  0x%08X\n", hdr.strtab_off);
-	printf("  String table length:  %u\n", hdr.strtab_len);
-	printf("  Symbol table offset:  0x%08X\n", hdr.symtab_off);
-	printf("  Symbol table length:  %u\n", hdr.symtab_len);
-	printf("  ASM dump offset:      0x%08X\n", hdr.asmdmp_off);
-	printf("  ASM dump length:      %d\n", hdr.asmdmp_len);
-	printf("  Section table offset: 0x%08X\n", hdr.sectab_off);
-	printf("  Section table length: %d\n", hdr.sectab_len);
-	printf("  Symref table offset:  0x%08X\n", hdr.symref_off);
-	printf("  Symref table length:  %d\n", hdr.symref_len);
+	printf("  Magic:                       %" PRIX32 "\n", hdr.magic);
+	printf("  Fasm version:                %" PRIu8 ".%" PRIu8 "\n",
+		   hdr.ver_major, hdr.ver_minor);
+	printf("  Header Length:               %" PRIu16 "\n", hdr.length);
+	printf("  Input file:                  %s\n", strtab + hdr.ifnm_off);
+	printf("  Output file:                 %s\n", strtab + hdr.ofnm_off);
+	printf("  String table offset:         0x%08" PRIX32 "\n",
+		   hdr.strtab_off);
+	printf("  String table length:         %" PRIu32 "\n", hdr.strtab_len);
+	printf("  Symbol table offset:         0x%08" PRIX32 "\n",
+		   hdr.symtab_off);
+	printf("  Symbol table length:         %" PRIu32 "\n", hdr.symtab_len);
+	printf("  Preprocessed sources offset: 0x%08" PRIX32 "\n",
+		   hdr.psrc_off);
+	printf("  Preprocessed sources length: %" PRIu32 "\n", hdr.psrc_len);
+	printf("  ASM dump offset:             0x%08" PRIX32 "\n",
+		   hdr.asmdmp_off);
+	printf("  ASM dump length:             %" PRIu32 "\n", hdr.asmdmp_len);
+	printf("  Section table offset:        0x%08" PRIX32 "\n",
+		   hdr.sectab_off);
+	printf("  Section table length:        %" PRIu32 "\n", hdr.sectab_len);
+	printf("  Symref table offset:         0x%08" PRIX32 "\n",
+		   hdr.symref_off);
+	printf("  Symref table length:         %" PRIu32 "\n", hdr.symref_len);
 
 	printf("\n");
 }
@@ -145,59 +166,18 @@ print_header(void)
 static void
 print_sections(void)
 {
-	size_t seccnt;
 	size_t idx;
-	uint32_t *sec;
 
-	seccnt = sectab.size / sizeof(uint32_t);
-	sec = (uint32_t *)sectab.data;
 	printf("Section names:\n");
-	for (idx = 0; idx < seccnt; idx++)
+	for (idx = 0; idx < sec_cnt; idx++)
 	{
-		printf("  %s\n", strtab_get(sec[idx]));
+		printf("  %s\n", strtab + sectab[idx]);
 	}
 	printf("\n");
 }
 
 static void
-pstr2cstr(char *dst, const char *src)
-{
-	size_t plen;
-
-	plen = *src++;
-
-	while (plen > 0)
-	{
-		*dst++ = *src++;
-		plen--;
-	}
-	*dst = '\0';
-}
-
-static void
-print_sym_name(uint32_t off)
-{
-	char name_str[255] = {0};
-
-	if (off == 0)
-	{
-		return;
-	}
-	if (off & (1<<31))
-	{
-		strncpy(name_str, strtab_get(off & ~(1<<31)), 255);
-		name_str[254] = '\0';
-	}
-	else
-	{
-		pstr2cstr(name_str, psrc.data + off);
-	}
-
-	printf("%s", name_str);
-}
-
-static void
-print_sym_section(uint8_t type, uint32_t rel)
+print_symbol_section(uint8_t type, uint32_t rel)
 {
 	if (type == FAS_ABS)
 	{
@@ -211,101 +191,95 @@ print_sym_section(uint8_t type, uint32_t rel)
 	}
 	else
 	{
-		printf("%-3" PRIu32 " %-2" PRIu8 " ", rel, type);
+		printf("%-3" PRIu32 " ", rel);
 	}
 }
-/*
-static const char *
-get_symbol_type(uint8_t type)
-{
-	switch (type)
-	{
-	case FAS_ABS:
-		return ("ABS");
-	case FAS_REL_32:
-		return ("REL_32");
-	default:
-		break;
-	}
 
-	return ("???");
+static void
+print_symbol_name(uint32_t off)
+{
+	char name_str[256] = {0};
+
+	if (off == 0)
+	{
+		return;
+	}
+	if (off & (1<<31))
+	{
+		printf("%s", strtab + (off & ~(1<<31)));
+	}
+	else
+	{
+		pstr2cstr(name_str, psrc + off);
+		printf("%s", name_str);
+	}
 }
-*/
+
 static void
 print_symbols(void)
 {
-	size_t symcnt;
 	size_t idx;
-	struct fas_symbol *sym;
 
 	printf("Symbol table:\n");
-	symcnt = symtab.size / sizeof(struct fas_symbol);
-	sym = (struct fas_symbol *)symtab.data;
-
 	printf("   Num: Value              Size Ndx Name\n");
 
-	for (idx = 0; idx < symcnt; idx++)
+	for (idx = 0; idx < sym_cnt; idx++)
 	{
-		printf("%6d: ", idx);
-		printf("0x%016" PRIx64 " ", sym[idx].value);
-		printf("%-4" PRIu8 " ", sym[idx].size);
-		//printf("%s ", get_symbol_type(sym[idx].type));
-		print_sym_section(sym[idx].type, sym[idx].reloc);
-		print_sym_name(sym[idx].name_off);
+		printf("%6zu: ", idx);
+		printf("0x%016" PRIx64 " ", symtab[idx].value);
+		printf("%-4" PRIu8 " ", symtab[idx].size);
+		print_symbol_section(symtab[idx].type, symtab[idx].reloc);
+		print_symbol_name(symtab[idx].name_off);
 		printf("\n");
-/*
-		printf("\t %04" PRIx16 " : ", sym[idx].flags);
-		if (sym[idx].flags & FAS_SYM_DEF) printf("DEF ");
-		if (sym[idx].flags & FAS_SYM_ASM_TIME) printf("ASM_TIME ");
-		if (sym[idx].flags & FAS_SYM_NOT_FWD_REF) printf("NOT_FWD ");
-		if (sym[idx].flags & FAS_SYM_USED) printf("USED ");
-		if (sym[idx].flags & FAS_SYM_PRD_USED) printf("PRD_USED ");
-		if (sym[idx].flags & FAS_SYM_LPRD_USED) printf("LPRD_USED ");
-		if (sym[idx].flags & FAS_SYM_PRD_DEF) printf("PRD_DEF ");
-		if (sym[idx].flags & FAS_SYM_LPRD_DEF) printf("LPRD_DEF ");
-		if (sym[idx].flags & FAS_SYM_OPT_ADJ) printf("OPT_ADJ ");
-		if (sym[idx].flags & FAS_SYM_TWO_CMPLMNT) printf("TWO_CMPLMNT ");
-		if (sym[idx].flags & FAS_SYM_MARKER) printf("MARKER ");
-		printf("\n");
-*/
-		/*printf("%X\n", sym[idx].value);*/
 	}
 	printf("\n");
 }
 
 static void
-print_asm_dump(void)
+version(void)
 {
-	struct fas_asmdmp *dmp;
+	printf("%s (%s) %s\n", prg_name, MK_PACKAGE, MK_COMMIT);
+	exit(EXIT_SUCCESS);
+}
 
-	dmp = (struct fas_asmdmp *)asmdmp.data;
-	printf(" 0x%" PRIx32 " 0x%" PRIx64 "\n", dmp->of_off, dmp->addr);
+static void
+usage(int retval)
+{
+	if (retval == EXIT_FAILURE)
+	{
+		fprintf(stderr, "Try '%s -h' for more informations.\n",
+				prg_name);
+	}
+	else
+	{
+		printf("Usage: %s [-aHsS] file\n", prg_name);
+	}
+
+	exit(retval);
 }
 
 static int
-process_file(char *fname)
+process_file(char *file)
 {
-	FILE *fp;
-
-	fp = fopen(fname, "rb");
-	if (fp == NULL)
+	if (fas_load_file(file) != 0)
 	{
 		return (EXIT_FAILURE);
 	}
 
-	read_header(fp);
-	load_table(&strtab, hdr.strtab_off, hdr.strtab_len, fp);
-	load_table(&symtab, hdr.symtab_off, hdr.symtab_len, fp);
-	load_table(&psrc, hdr.psrc_off, hdr.psrc_len, fp);
-	load_table(&asmdmp, hdr.asmdmp_off, hdr.asmdmp_len, fp);
-	load_table(&sectab, hdr.sectab_off, hdr.sectab_len, fp);
+	if (display_header)
+	{
+		print_header();
+	}
 
-	print_header();
-	print_sections();
-	print_symbols();
-	print_asm_dump();
+	if (display_sections)
+	{
+		print_sections();
+	}
 
-	fclose(fp);
+	if (display_symbols)
+	{
+		print_symbols();
+	}
 
 	return (EXIT_SUCCESS);
 }
@@ -313,9 +287,13 @@ process_file(char *fname)
 int
 main(int argc, char *argv[])
 {
-	while ((argc > 1) && (argv[1][0] == '-'))
+	int c;
+
+	prg_name = basename(argv[0]);
+
+	while ((c = getopt(argc, argv, "hHVSsa")) != -1)
 	{
-		switch (argv[1][1])
+		switch (c)
 		{
 		case 'h':
 			usage(EXIT_SUCCESS);
@@ -323,16 +301,30 @@ main(int argc, char *argv[])
 		case 'V':
 			version();
 			break;
+		case 'H':
+			display_header = 1;
+			break;
+		case 's':
+			display_symbols = 1;
+			break;
+		case 'S':
+			display_sections = 1;
+			break;
+		case 'a':
+			display_header = 1;
+			display_symbols = 1;
+			display_sections = 1;
+			break;
 		default:
 			usage(EXIT_FAILURE);
 			break;
 		}
-
-		argv++;
-		argc--;
 	}
 
-	if (argc <= 1) usage(EXIT_FAILURE);
+	if (optind >= argc)
+	{
+		usage(EXIT_FAILURE);
+	}
 
-	return (process_file(argv[1]));
+	return (process_file(argv[optind]));
 }

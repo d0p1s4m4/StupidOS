@@ -174,7 +174,8 @@ fas_export_symbols(void)
 
 		name_idx = fas_export_symbol_name(fas_symtab[idx].name_off);
 
-		elf_add_symbol(name_idx, fas_symtab[idx].value, 0,
+		elf_add_symbol(name_idx, fas_symtab[idx].value,
+					   fas_symtab[idx].size,
 					   ELF32_ST_INFO(STB_LOCAL, STT_OBJECT), SHN_ABS);
 	}
 
