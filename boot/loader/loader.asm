@@ -98,7 +98,7 @@ _start:
 
 	jmp .skip_fat
 
-	; fallback to fat12	
+	; fallback to fat12
 	; for now fat12 is asumed
 .fat_fallback:
 	mov si, szMsgFatFallback
@@ -129,7 +129,7 @@ _start:
 	xor bx, bx
 
 	call disk_read_sectors
-	
+
 	; load stage 2
 	mov ax, KERNEL_PRELOAD/0x10
 	mov es, ax
@@ -146,7 +146,7 @@ _start:
 	call boot_info_print_mmap
 
 	; video information
-	;call video_setup
+	call video_setup
 
 	; load GDT and enter Protected-Mode
 	lgdt [gdt_ptr]

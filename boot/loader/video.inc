@@ -6,7 +6,7 @@ struc VesaInfo
 	.Version               dw ?
 	.OEMNamePtr            dd ?
 	.Capabilities          dd ?
-	.VideoModesPtr         dw ?
+	.VideoModesPtr         dd ?
 	.CountOf64KBlocks      dw ?
 	.OEMSoftwareRevision   dw ?
 	.OEMVendorNamePtr      dd ?
@@ -28,7 +28,7 @@ struc VesaModeInfo
 	.WindowPositioning dd ?
 	.BytesPerScanLine  dw ?
 
-	; --  
+	; --
 	.Width            dw ?
 	.Height           dw ?
 	.WidthChar        db ?
@@ -72,11 +72,11 @@ video_setup:
 	jne .err
 	cmp [vesa_block_buffer.Signature], 'VESA'
 	jne .err
-
-	push [vesa_block_buffer.OEMProductNamePtr]
-	push [vesa_block_buffer.OEMVendorNamePtr]
-	push [vesa_block_buffer.CountOf64KBlocks]
-	push [vesa_block_buffer.OEMNamePtr]
+	; XXX: fix me
+	push word [vesa_block_buffer.OEMProductNamePtr]
+	push word [vesa_block_buffer.OEMVendorNamePtr]
+	push word [vesa_block_buffer.CountOf64KBlocks]
+	push word [vesa_block_buffer.OEMNamePtr]
 	xor ecx, ecx
 	mov cx, [vesa_block_buffer.Version]
 	push ecx
@@ -84,7 +84,7 @@ video_setup:
 	call bios_log
 
 	mov di, vesa_info_block_buffer
-	mov bx, [vesa_block_buffer.VideoModesPtr]
+	mov ebx, [vesa_block_buffer.VideoModesPtr]
 	mov cx, [bx]
 	cmp cx, 0xFFFF
 	je .err
@@ -110,6 +110,7 @@ vesa_block_buffer VesaInfo
 vesa_info_block_buffer VesaModeInfo
 
 szMsgVesaInfo db "Version: %x", CR, LF, "OEM Name: %s", CR, LF, "Total Memory: %d", CR, LF, "Vendor name: %s", CR, LF, "Product name: %s", 0
+szMsgVesaModeInfo db "%dx%dx%d", CR, LF, 0
 szMsgDetectVideo db "Fetch video information.", 0
 szMsgFramebuffer db "Fb: %x", 0
 szMsgErrorVesa db "Failed to detect VBE mode", 0

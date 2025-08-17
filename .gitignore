@@ -33,6 +33,9 @@ bochsrc.bxrc
 *.EFI
 *.fd
 *.mod
+*.fas
+*.sym
+*.dbg
 webring.json
 webring.txt
 kernel/const.inc
