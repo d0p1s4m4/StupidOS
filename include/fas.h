@@ -51,7 +51,6 @@ enum fas_symbol_type
 	FAS_PLT_R_32
 };
 
-
 typedef struct fas_symbol
 {
 	uint64_t value;
@@ -66,14 +65,14 @@ typedef struct fas_symbol
 	uint32_t psrc_line_off;
 } FAS_Sym;
 
-struct fas_psrc_line
+typedef struct fas_psrc_line
 {
 	uint32_t from;
 	uint32_t lineno;
 	uint32_t src_off;
 	uint32_t macro_off;
 	uint8_t  tokens[];
-};
+} FAS_Psrc_Line;
 
 enum fas_code
 {
@@ -82,7 +81,7 @@ enum fas_code
 	FAS_CODE_64 = 64
 };
 
-struct fas_asmdmp
+typedef struct fas_asmdmp
 {
 	uint32_t of_off;
 	uint32_t psrc_line_off;
@@ -93,7 +92,7 @@ struct fas_asmdmp
 	uint8_t  code;
 	uint8_t  virt;
 	uint8_t  high;
-};
+} FAS_Asmdmp;
 
 enum fas_register
 {

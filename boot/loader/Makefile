@@ -1,4 +1,4 @@
-TARGET = stpdldr.sys
+include stpd.base.mk
 
 COMMON_DIR = ../common
 SYS_DIR    = ../../kernel/sys
@@ -22,19 +22,22 @@ LOADER_SRCS	= loader.asm \
 				disk.inc
 
 .PHONY: all
-all: $(TARGET)
-
-%.inc: %.inc.in
-	sh $(TOOLSDIR)/version.sh $< $@
+all: stpdldr.sys
 
 stpdldr.sys: $(LOADER_SRCS)
-	$(AS) loader.asm $@
+	$(MSG_BUILD)
+	@$(FASM) loader.asm $@ >/dev/null
 
-.PHONY: clean
-clean:
-	$(RM) $(TARGET)
+%.inc: %.inc.in
+	@$(VERSION_SH)
 
 .PHONY: install
-install: $(TARGET)
-	@ mkdir -p $(DESTDIR)
-	install $(TARGET) $(DESTDIR)
+install: $(DESTDIR)/stpdldr.sys
+
+$(DESTDIR)/stpdldr.sys: stpdldr.sys
+	$(MSG_INSTALL)
+	@install -D $< $@
+
+CLEANFILES = stpdldr.sys $(COMMON_DIR)/const.inc
+
+include stpd.clean.mk

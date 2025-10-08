@@ -1,3 +1,3 @@
-SUBDIRS = bootsect loader efi
+SUBDIRS = bootsect efi loader
 
-include $(TOPDIR)/rules.mk
+include stpd.subdirs.mk

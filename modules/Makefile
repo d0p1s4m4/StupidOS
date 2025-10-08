@@ -1,3 +1,3 @@
 SUBDIRS = dummy
 
-include $(TOPDIR)/rules.mk
+include stpd.subdirs.mk

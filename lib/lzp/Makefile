@@ -17,12 +17,6 @@ $(LIBS): $(OBJS)
 %.o: %.asm
 	$(AS) $< $@
 
-$(DESTDIR)$(INCDIR)/%.h: %.h
-	install -D $< $@
-
-$(DESTDIR)$(ASMDIR)/%.inc: %.inc
-	install -D $< $@
-
 $(DESTDIR)$(LIBDIR)/%.a: %.a
 	install -D $< $@
 
@@ -33,3 +27,4 @@ clean:
 .PHONY: install
 install: $(INST)
 
+include stpd.inc.mk

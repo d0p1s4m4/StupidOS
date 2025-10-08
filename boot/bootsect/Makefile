@@ -1,4 +1,6 @@
-TARGET = boot_floppy1440.bin \
+include stpd.base.mk
+
+BINS = boot_floppy1440.bin \
 		boot_floppy2880.bin \
 		boot_mbr.bin \
 		boot_hdd.bin
@@ -18,26 +20,30 @@ MBR_SRCS = mbr.asm \
 			$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS))
 
 .PHONY: all
-all: $(TARGET)
+all: $(BINS)
 
 %.inc: %.inc.in
-	sh $(TOOLSDIR)/version.sh $< $@
+	@$(VERSION_SH)
 
 boot_floppy1440.bin: $(FLOPPY_SRCS)
-	$(AS) floppy.asm $@
+	$(MSG_BUILD)
+	@$(FASM) floppy.asm $@ >/dev/null
 
 boot_floppy2880.bin: $(FLOPPY_SRCS)
-	$(AS) -DFLOPPY_SIZE=FLOPPY_2880 floppy.asm $@
+	$(MSG_BUILD)
+	@$(FASM) -DFLOPPY_SIZE=FLOPPY_2880 floppy.asm $@ >/dev/null
 
 boot_mbr.bin: $(MBR_SRCS)
-	$(AS) mbr.asm $@
+	$(MSG_BUILD)
+	@$(FASM) mbr.asm $@ >/dev/null
 
 boot_hdd.bin: $(HDD_SRCS)
-	$(AS) hdd.asm $@
-
-.PHONY: clean
-clean:
-	$(RM) $(TARGET)
+	$(MSG_BUILD)
+	@$(FASM) hdd.asm $@ >/dev/null
 
 .PHONY: install
-install: $(TARGET)
+install: $(BINS)
+
+CLEANFILES = $(BINS) $(COMMON_DIR)/const.inc
+
+include stpd.clean.mk

@@ -1,5 +1,4 @@
-TARGET = BOOTIA32.EFI
-
+include stpd.base.mk
 
 COMMON_DIR = ../common
 
@@ -15,19 +14,22 @@ BOOTIA32_EFI_SRCS = bootia32.asm \
 					$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS))
 
 .PHONY: all
-all: $(TARGET)
+all: BOOTIA32.EFI
 
 %.inc: %.inc.in
-	sh $(TOOLSDIR)/version.sh $< $@
+	@$(VERSION_SH)
 
 BOOTIA32.EFI: $(BOOTIA32_EFI_SRCS)
-	$(AS) bootia32.asm $@
-
-.PHONY: clean
-clean:
-	$(RM) $(TARGET)
+	$(MSG_BUILD)
+	@$(FASM) bootia32.asm $@ >/dev/null
 
 .PHONY: install
-install: $(TARGET)
-	@ mkdir -p $(DESTDIR)/EFI/BOOT
-	install $(TARGET) $(DESTDIR)/EFI/BOOT
+install: $(DESTDIR)/EFI/BOOT/BOOTIA32.EFI
+
+$(DESTDIR)/EFI/BOOT/BOOTIA32.EFI: BOOTIA32.EFI 
+	$(MSG_INSTALL)
+	@install -D $< $@
+
+CLEANFILES = BOOTIA32.EFI $(COMMON_DIR)/const.inc
+
+include stpd.clean.mk

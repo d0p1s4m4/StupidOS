@@ -1,4 +1,4 @@
 SYSINCS = errno.h
-INCS = coff.h elf.h ar.h ranlib.h $(addprefix sys/, $(SYSINCS))
+INCS = ar.h coff.h elf.h fas.h ranlib.h stupidc.h $(addprefix sys/, $(SYSINCS))
 
-include $(TOPDIR)/rules.mk
+include stpd.inc.mk

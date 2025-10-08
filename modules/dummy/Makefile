@@ -1,16 +1,20 @@
+include stpd.base.mk
+
 MODULE = dummy.mod
 
-INST = $(addprefix $(DESTDIR)/, $(MODULE))
-
-all:
-
-clean:
+all: $(MODULE)
 
 $(MODULE): $(MODULE:.mod=.asm)
-	fasm $^ $@
+	$(MSG_BUILD)
+	@fasm $^ $@
 
-$(DESTDIR)/%.mod: %.mod
-	install -D $< $@
+$(DESTDIR)/$(MODULE): $(MODULE)
+	$(MSG_INSTALL)
+	@install -D $< $@
 
 .PHONY: install
-install: $(INST)
+install: $(DESTDIR)/$(MODULE)
+
+CLEANFILES = $(MODULE)
+
+include stpd.clean.mk

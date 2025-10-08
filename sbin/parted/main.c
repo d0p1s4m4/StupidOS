@@ -2,10 +2,130 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <inttypes.h>
 #include <errno.h>
 #include <libgen.h>
+#include <unistd.h>
+#include <fdisk/device.h>
+#include <fdisk/disk.h>
+#include <fdisk/cmd.h>
+#include <fdisk/version.h>
 #include "mbr.h"
 
+const char *prg_name = NULL;
+
+static struct device dev;
+static struct disk disk;
+
+static const char *partfile[4] = { NULL, NULL, NULL, NULL };
+
+static int do_list = 0;
+static int do_script = 0;
+static int do_import = 0;
+static int do_export = 0;
+
+static void
+usage(int retcode)
+{
+	if (retcode == EXIT_FAILURE)
+	{
+		fprintf(stderr, "Try '%s -h' for more information.\n", prg_name);
+	}
+	else
+	{
+		printf("Usage: %s [-hVlsei] [-p0-3 img] disk\n", prg_name);
+		printf(" Options:\n");
+		printf("  -l\tdump disk information\n");
+		printf("  -s\tscript mode\n");
+		printf("  -h\tdisplay this help and exit\n");
+		printf("  -p0-3 img\tXXX\n");
+		printf("  -i\timport\n");
+		printf("  -e\textract\n");
+		printf("  -V\toutput version information.\n");
+		printf("\nReport bugs to <%s>\n", MK_BUGREPORT);
+	}
+
+	exit(retcode);
+}
+
+static void
+version(void)
+{
+	print_version();
+
+	exit(EXIT_SUCCESS);
+}
+
+static int
+parted(const char *disk_path)
+{
+	struct device dev;
+	struct disk dsk;
+	struct context ctx;
+
+	if (device_open(&dev, disk_path) != 0)
+	{
+		return (EXIT_FAILURE);
+	}
+
+	repl(&ctx);
+
+	device_close(&dev);
+	return (EXIT_SUCCESS);
+}
+
+int
+main(int argc, char **argv)
+{
+	int c;
+
+	prg_name = basename(argv[0]);
+	while ((c = getopt(argc, argv, "hVlsp:ei")) != -1)
+	{
+		switch (c)
+		{
+		case 'h':
+			usage(EXIT_SUCCESS);
+			break;
+		case 'V':
+			version();
+			break;
+		case 'l':
+			do_list = 1;
+			break;
+		case 's':
+			do_script = 1;
+			break;
+		case 'p':
+			/* XXX: maybe there is a better way to do this  */
+			if (optind >= argc || (optarg[0] < '0' && optarg[0] > '3'))
+			{
+				usage(EXIT_FAILURE);
+			}
+			partfile[optarg[0] - '0'] = argv[optind];
+			optind++;
+			break;
+		case 'e':
+			do_export = 0;
+			break;
+		case 'i':
+			do_import = 0;
+			break;
+		default:
+			usage(EXIT_FAILURE);
+			break;
+		}
+	}
+
+	if (optind >= argc)
+	{
+		usage(EXIT_FAILURE);
+	}
+
+	return (parted(argv[optind]));
+}
+
+#if 0
 static char *prg_name = NULL;
 static int dump_info = 0;
 static const char *diskpath = NULL;
@@ -28,7 +148,7 @@ dump_partition_info(Partition part)
 	}
 	else
 	{
-		printf("no\n");	
+		printf("no\n");
 	}
 	printf("\tType: %d\n", part.type);
 	printf("\tLBA Start: %d\n", part.lba_start);
@@ -54,28 +174,7 @@ dump_disk(void)
 	}
 }
 
-static void
-usage(int retcode)
-{
-	if (retcode == EXIT_FAILURE)
-	{
-		fprintf(stderr, "Try '%s -h' for more information.\n", prg_name);
-	}
-	else
-	{
-		printf("Usage: %s [-hVd] disk\n", prg_name);
-		printf("\t-h\tdisplay this help and exit\n");
-		printf("\t-V\toutput version information.\n");
-		printf("\t-d\tdump disk information\n");
-		printf("\t-p0-3\t\n");
-		printf("\t-o out\twrite to file 'out'\n");
-		printf("\t-e\textract\n");
-		printf("\t-i img\t\n");
-		printf("\nReport bugs to <%s>\n", MK_BUGREPORT);
-	}
 
-	exit(retcode);
-}
 
 static void
 version(void)
@@ -156,3 +255,4 @@ main(int argc, char **argv)
 
 	return (EXIT_SUCCESS);
 }
+#endif

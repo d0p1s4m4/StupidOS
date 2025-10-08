@@ -1,4 +1,4 @@
-TOPGOALS = all clean install
+include stpd.base.mk
 
-.PHONY: $(TOPGOALS)
-$(TOPGOALS):
+all:
+	@echo TODO

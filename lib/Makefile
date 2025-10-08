@@ -1,3 +1,3 @@
 SUBDIRS = csu crypto lzp c
 
-include $(TOPDIR)/rules.mk
+include stpd.subdirs.mk

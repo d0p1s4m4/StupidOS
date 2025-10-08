@@ -281,6 +281,8 @@ process_file(char *file)
 		print_symbols();
 	}
 
+	fas_cleanup();
+
 	return (EXIT_SUCCESS);
 }
 

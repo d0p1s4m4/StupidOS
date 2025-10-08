@@ -1,3 +1,3 @@
 SUBDIRS = cmd
 
-include $(TOPDIR)/rules.mk
+include stpd.subdirs.mk

@@ -22,7 +22,10 @@
 	jmp 0x0:start
 
 start:
-	; set LBA 
+	sti
+	mov [uBootDrive], dl
+
+	; set LBA
 	mov ah, 0x41
 	mov bx, 0x55AA
 	mov dl, 0x80
@@ -60,6 +63,8 @@ start:
 .end:
 	hlt
 	jmp $
+
+uBootDrive db 0
 
 disk_packet:
 	db 0x10

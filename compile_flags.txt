@@ -1,0 +1,4 @@
+-Iinclude
+-DMK_COMMIT="\"XXXX\""
+-DMK_BUGREPORT="\"XXXX\""
+-DMK_PACKAGE="\"build\""

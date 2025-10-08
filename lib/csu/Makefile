@@ -14,3 +14,5 @@ clean:
 	$(RM) $(LIBS)
 
 install: $(INST)
+
+include stpd.base.mk

@@ -8,13 +8,11 @@ INCS	= sha2/sha2.h \
 			dilithium/dilithium.h \
 			falcon/falcon.h \
 			keccak/keccak.h
-ASMS	= sha2/sha2.inc \
+ASMINCS	= sha2/sha2.inc \
 			chacha/chacha.inc \
 			hchacha/hchacha.inc
 
-INST = $(addprefix $(DESTDIR)$(INCDIR)/, $(INCS)) \
-		$(addprefix $(DESTDIR)$(ASMDIR)/, $(ASMS)) \
-		$(addprefix $(DESTDIR)$(LIBDIR)/, $(LIBS))
+INST = $(addprefix $(DESTDIR)$(LIBDIR)/, $(LIBS))
 
 .PHONY: all
 all: $(LIBS)
@@ -25,11 +23,6 @@ $(LIBS): $(OBJS)
 %.o: %.asm
 	$(AS) $< $@
 
-$(DESTDIR)$(INCDIR)/%.h: %.h
-	install -D $< $@
-
-$(DESTDIR)$(ASMDIR)/%.inc: %.inc
-	install -D $< $@
 
 $(DESTDIR)$(LIBDIR)/%.a: %.a
 	install -D $< $@
@@ -41,4 +34,4 @@ clean:
 .PHONY: install
 install: $(INST)
 
-
+include stpd.inc.mk

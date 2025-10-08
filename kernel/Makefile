@@ -1,6 +1,4 @@
-AS	= fasm
-RM	= rm -f
-INSTALL = install
+include stpd.base.mk
 
 ASMINCS = sys/bootinfo.inc \
 			sys/coff.inc \
@@ -11,7 +9,7 @@ ASMINCS = sys/bootinfo.inc \
 			sys/process.inc \
 			sys/register.inc
 
-KERNEL	= vmstupid.sys
+KERNEL	= vmstupid
 
 MM_SRCS = bootstrap.inc \
 			mm.inc \
@@ -47,24 +45,32 @@ SRCS	= kernel.asm \
 			$(ASMINCS)
 
 .PHONY: all
-all: $(KERNEL)
+all: $(KERNEL).sys $(KERNEL).sym
 
 .PHONY: const.inc
 const.inc: const.inc.in
-	sh $(TOOLSDIR)/version.sh $< $@
+	@$(VERSION_SH)
 
-$(KERNEL): $(SRCS)
-	$(AS) kernel.asm $@
+$(KERNEL).sys $(KERNEL).fas &: $(SRCS)
+	$(MSG_BUILD)
+	@$(FASM) -s $(KERNEL).fas kernel.asm $(KERNEL).sys >/dev/null
 
-.PHONY: clean
-clean:
-	$(RM) $(KERNEL)
+$(KERNEL).sym: $(KERNEL).fas
+	$(MSG_CREATE)
+	@$(FAS2SYM) -o $@ $<
 
 .PHONY: install
-install: $(KERNEL)
-	@ mkdir -p $(DESTDIR)
-	install $(KERNEL) $(DESTDIR)
-	@ mkdir -p $(DESTDIR)$(ASMDIR)/sys
-	install $(ASMINCS) $(DESTDIR)$(ASMDIR)/sys
+install: $(DESTDIR)/$(KERNEL).sys $(SYMSDIR)/$(KERNEL).sym
 
-.PHONY: all clean install
+$(DESTDIR)/$(KERNEL).sys: $(KERNEL).sys
+	$(MSG_INSTALL)
+	@install -D $< $@
+
+$(SYMSDIR)/$(KERNEL).sym: $(KERNEL).sym
+	$(MSG_INSTALL)
+	@install -D $< $@
+
+CLEANFILES = $(KERNEL).sys $(KERNEL).fas $(KERNEL).sys const.inc
+
+include stpd.clean.mk
+include stpd.inc.mk
