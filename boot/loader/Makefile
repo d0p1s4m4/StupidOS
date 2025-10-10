@@ -1,7 +1,7 @@
-include stpd.base.mk
-
 COMMON_DIR = ../common
 SYS_DIR    = ../../kernel/sys
+
+KERNEL = stpdldr
 
 COMMON_SRCS = const.inc \
 				bootinfo.inc
@@ -9,7 +9,7 @@ COMMON_SRCS = const.inc \
 SYS_SRCS = bootinfo.inc \
 			register.inc
 
-LOADER_SRCS	= loader.asm \
+SRCS	= loader.asm \
 				$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS)) \
 				$(addprefix $(SYS_DIR)/, $(SYS_SRCS)) \
 				fat.inc \
@@ -21,23 +21,10 @@ LOADER_SRCS	= loader.asm \
 				stpdfs.inc \
 				disk.inc
 
-.PHONY: all
-all: stpdldr.sys
-
-stpdldr.sys: $(LOADER_SRCS)
-	$(MSG_BUILD)
-	@$(FASM) loader.asm $@ >/dev/null
-
-%.inc: %.inc.in
+.PHONY: $(COMMON_DIR)/const.inc
+$(COMMON_DIR)/const.inc: $(COMMON_DIR)/const.inc.in
 	@$(VERSION_SH)
 
-.PHONY: install
-install: $(DESTDIR)/stpdldr.sys
+CLEANFILES = $(COMMON_DIR)/const.inc
 
-$(DESTDIR)/stpdldr.sys: stpdldr.sys
-	$(MSG_INSTALL)
-	@install -D $< $@
-
-CLEANFILES = stpdldr.sys $(COMMON_DIR)/const.inc
-
-include stpd.clean.mk
+include stpd.kernel.mk

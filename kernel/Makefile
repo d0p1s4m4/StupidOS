@@ -1,5 +1,3 @@
-include stpd.base.mk
-
 ASMINCS = sys/bootinfo.inc \
 			sys/coff.inc \
 			sys/cpu.inc \
@@ -44,33 +42,10 @@ SRCS	= kernel.asm \
 			bio.inc \
 			$(ASMINCS)
 
-.PHONY: all
-all: $(KERNEL).sys $(KERNEL).sym
-
 .PHONY: const.inc
 const.inc: const.inc.in
 	@$(VERSION_SH)
 
-$(KERNEL).sys $(KERNEL).fas &: $(SRCS)
-	$(MSG_BUILD)
-	@$(FASM) -s $(KERNEL).fas kernel.asm $(KERNEL).sys >/dev/null
+CLEANFILES = const.inc
 
-$(KERNEL).sym: $(KERNEL).fas
-	$(MSG_CREATE)
-	@$(FAS2SYM) -o $@ $<
-
-.PHONY: install
-install: $(DESTDIR)/$(KERNEL).sys $(SYMSDIR)/$(KERNEL).sym
-
-$(DESTDIR)/$(KERNEL).sys: $(KERNEL).sys
-	$(MSG_INSTALL)
-	@install -D $< $@
-
-$(SYMSDIR)/$(KERNEL).sym: $(KERNEL).sym
-	$(MSG_INSTALL)
-	@install -D $< $@
-
-CLEANFILES = $(KERNEL).sys $(KERNEL).fas $(KERNEL).sys const.inc
-
-include stpd.clean.mk
-include stpd.inc.mk
+include stpd.kernel.mk
