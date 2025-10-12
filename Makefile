@@ -23,7 +23,7 @@ BUILD_RULES := build-tools .WAIT
 BUILD_RULES += includes-kernel includes-include includes-lib .WAIT
 BUILD_RULES += build-user build-kernel
 
-USER_RULES := install-bin install-sbin
+USER_RULES := install-lib .WAIT install-bin install-sbin
 KERNEL_RULES := install-boot install-kernel install-modules
 
 IMAGES = stupid.iso stupid.hdd floppy1440.img floppy2880.img
@@ -56,7 +56,7 @@ build-user: $(USER_RULES)
 build-kernel: $(KERNEL_RULES)
 
 $(eval $(foreach X,kernel include lib,$(call subdir-rule,includes,$X)))
-$(eval $(foreach X,bin sbin,$(call subdir-rule,install,$X)))
+$(eval $(foreach X,lib bin sbin,$(call subdir-rule,install,$X)))
 $(eval $(foreach X,boot kernel modules,$(call subdir-rule,install,$X)))
 
 .PHONY: stupid.tar.gz
