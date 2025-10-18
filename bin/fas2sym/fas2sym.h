@@ -30,6 +30,9 @@ int elf_write(const char *file);
 void elf_cleanup(void);
 
 /* main.c */
+extern const char *text_begin;
+extern const char *text_end;
+
 void msg_err(const char *fmt, ...);
 void msg_errx(const char *fmt, ...);
 void msg_verbose(int level, const char *fmt, ...);

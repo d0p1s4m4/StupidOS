@@ -11,7 +11,7 @@ $(KERNEL).sys $(KERNEL).fas &: $(SRCS)
 
 $(KERNEL).sym: $(KERNEL).fas
 	$(MSG_CREATE)
-	@$(FAS2SYM) -o $@ $<
+	@$(FAS2SYM) $(FAS2SYMFLAGS) -o $@ $<
 
 .PHONY: install
 install: $(DESTDIR)/$(KERNEL).sys $(SYMSDIR)/$(KERNEL).sym

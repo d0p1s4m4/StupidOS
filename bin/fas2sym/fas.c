@@ -131,9 +131,9 @@ fas_export_symbol_name(uint32_t name_off)
 		return (0); /* anonymous symbol */
 	}
 
-	if (name_off & (1<<31)) /* if in fas strtab */
+	if (name_off & (1u<<31)) /* if in fas strtab */
 	{
-		ptr = fas_strtab + (name_off & ~(1<<31)); /* XXX */
+		ptr = fas_strtab + (name_off & ~(1u<<31)); /* XXX */
 	}
 	else /* otherwhise it's in psrc */
 	{

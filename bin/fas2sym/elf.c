@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <elf.h>
 #include "fas2sym.h"
 
 enum sections {
 	SEC_NULL   = 0,
+	SEC_TEXT,
 	SEC_SHSTRTAB,
 	SEC_STRTAB,
 	SEC_SYMTAB,
@@ -17,20 +19,25 @@ static Elf32_Ehdr elf_ehdr = {
 		ELFCLASS32, ELFDATA2LSB, EV_CURRENT,
 		0, 0, 0, 0, 0, 0, 0, 0, 0
 	},
-	ET_REL, EM_386, EV_CURRENT, 0, 0, 0, 0,
+	ET_DYN, EM_386, EV_CURRENT, 0, 0, 0, 0,
     sizeof(Elf32_Ehdr), sizeof(Elf32_Phdr), 0,
 	sizeof(Elf32_Shdr), SEC_END, SEC_SHSTRTAB
 };
 
 static Elf32_Shdr elf_shdrs[SEC_END] = {
 	{ 0, SHT_NULL, 0, 0, 0, 0, SHN_UNDEF, 0, 0, 0 },
+	/* .text */
+	{
+		1, SHT_NOBITS, SHF_ALLOC | SHF_EXECINSTR,
+		0, 0, 0, SHN_UNDEF, 0, 1, 0
+	},
 	/* .shstrtab */
-	{ 1, SHT_STRTAB, 0, 0, 0, 0, SHN_UNDEF, 0, 1, 0 },
+	{ 7, SHT_STRTAB, 0, 0, 0, 0, SHN_UNDEF, 0, 1, 0 },
 	/* .strtab */
-	{ 11, SHT_STRTAB, 0, 0, 0, 0, SHN_UNDEF, 0, 1, 0 },
+	{ 17, SHT_STRTAB, 0, 0, 0, 0, SHN_UNDEF, 0, 1, 0 },
 	/* .symtab */
 	{
-		19, SHT_SYMTAB, 0, 0, 0, 0,
+		25, SHT_SYMTAB, 0, 0, 0, 0,
 		SEC_STRTAB, 0, 4, sizeof(Elf32_Sym)
 	}
 };
@@ -42,7 +49,7 @@ static struct buffer elf_symtab = { 0, 0, NULL };
 static int
 elf_shstrtab_init(void)
 {
-	const uint8_t initial[] = "\0.shstrtab\0.strtab\0.symtab\0";
+	const uint8_t initial[] = "\0.text\0.shstrtab\0.strtab\0.symtab\0";
 
 	return (buffer_put(&elf_shstrtab, initial, sizeof(initial), NULL));
 }
@@ -100,6 +107,8 @@ elf_add_symbol(uint32_t name_off, uint32_t value, uint32_t size,
 	msg_verbose(2, "add symbol: %s",
 				(char *)(elf_strtab.data + name_off));
 
+	elf_shdrs[SEC_SYMTAB].sh_info += 1;
+
 	return (buffer_put(&elf_symtab, (uint8_t *)&sym,
 					   sizeof(Elf32_Sym), NULL));
 }
@@ -146,6 +155,55 @@ elf_compute_section_offsets(void)
 	elf_shdrs[SEC_SYMTAB].sh_size = elf_symtab.cnt;
 }
 
+static void
+elf_resolve_symbols(void)
+{
+	Elf32_Sym *syms;
+	char *strtab;
+	size_t idx;
+	size_t symcnt;
+	uint32_t begin = 0;
+	uint32_t end = 0;
+
+	if (text_begin == NULL || text_end == NULL)
+	{
+		return;
+	}
+
+	syms = (Elf32_Sym *)elf_symtab.data;
+	strtab = (char *)elf_strtab.data;
+	symcnt = (elf_symtab.cnt / sizeof(Elf32_Sym));
+
+	for (idx = 0; idx < symcnt; idx++)
+	{
+		if (strcmp(strtab + syms[idx].st_name, text_begin) == 0)
+		{
+			begin = syms[idx].st_value;
+			msg_verbose(1, "Sym %s: %X\n", text_begin, begin);
+		}
+		else if (strcmp(strtab + syms[idx].st_name, text_end) == 0)
+		{
+			end = syms[idx].st_value;
+		}
+
+		if (begin != 0 && end != 0)
+		{
+			break;
+		}
+	}
+
+	elf_shdrs[SEC_TEXT].sh_addr = begin;
+	elf_shdrs[SEC_TEXT].sh_size = end - begin;
+
+	for (idx = 0; idx < symcnt; idx++)
+	{
+		if (syms[idx].st_value >= begin && syms[idx].st_value <= end)
+		{
+			syms[idx].st_shndx = SEC_TEXT;
+		}
+	}
+}
+
 int
 elf_write(const char *file)
 {
@@ -166,6 +224,8 @@ elf_write(const char *file)
 	elf_ehdr.e_shoff = sizeof(Elf32_Ehdr);
 	elf_ehdr.e_shoff += elf_shstrtab.cnt +  elf_strtab.cnt;
 	elf_ehdr.e_shoff += elf_symtab.cnt;
+
+	elf_resolve_symbols();
 
 	if (fwrite(&elf_ehdr, sizeof(Elf32_Ehdr), 1, fp) != 1)
 	{
@@ -193,7 +253,7 @@ elf_write(const char *file)
 	/* section headers */
 	elf_compute_section_offsets();
 	/* XXX: fix me */
-	elf_shdrs[SEC_SYMTAB].sh_info = 0; /* (elf_symtab.cnt / sizeof(Elf32_Sym)) + 1;*/
+	elf_shdrs[SEC_SYMTAB].sh_info += 1;/*= 0; *//* (elf_symtab.cnt / sizeof(Elf32_Sym)) + 1;*/
 
 	if (fwrite(elf_shdrs, sizeof(Elf32_Shdr), SEC_END, fp) != SEC_END)
 	{

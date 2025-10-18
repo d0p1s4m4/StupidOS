@@ -10,6 +10,8 @@
 static const char *prg_name;
 static const char *outfile = "out.sym";
 static int verbose = 0;
+const char *text_begin = NULL;
+const char *text_end = NULL;
 
 static void
 msg_err_common(const char *fmt, va_list ap)
@@ -77,6 +79,15 @@ usage(int retval)
 	else
 	{
 		printf("Usage: %s [-o OUTPUT] file\n", prg_name);
+		printf("OPTIONS:\n");
+		printf("  -o OUTPUT     Set output file (default: %s)\n",
+			outfile);
+		printf("  -t begin,end  XXXX (addr or symbol)\n");
+		/*
+		 * -t start,end (text)
+		 * -b start,end (bss)
+		 * -d start,end (data)
+		 */
 	}
 
 	exit(retval);
@@ -95,10 +106,11 @@ main(int argc, char **argv)
 {
 	int c;
 	int status;
+	char *tmp;
 
 	prg_name = basename(argv[0]);
 
-	while ((c = getopt(argc, argv, "hvVo:")) != -1)
+	while ((c = getopt(argc, argv, "hvVo:t:")) != -1)
 	{
 		switch (c)
 		{
@@ -113,6 +125,19 @@ main(int argc, char **argv)
 			break;
 		case 'o':
 			outfile = optarg;
+			break;
+		case 't':
+			tmp = strchr(optarg, ',');
+			if (tmp == NULL)
+			{
+				usage(EXIT_FAILURE);
+			}
+
+			*tmp = '\0';
+			text_begin = optarg;
+			text_end = tmp + 1;
+
+			msg_verbose(2, ".text: %s, %s", text_begin, text_end);
 			break;
 		default:
 			usage(EXIT_FAILURE);

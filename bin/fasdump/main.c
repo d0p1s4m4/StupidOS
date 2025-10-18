@@ -185,7 +185,7 @@ print_symbol_section(uint8_t type, uint32_t rel)
 		return;
 	}
 
-	if (rel & (1<<31))
+	if (rel & (1u<<31))
 	{
 		printf("UND ");
 	}
@@ -204,9 +204,9 @@ print_symbol_name(uint32_t off)
 	{
 		return;
 	}
-	if (off & (1<<31))
+	if (off & (1u<<31))
 	{
-		printf("%s", strtab + (off & ~(1<<31)));
+		printf("%s", strtab + (off & ~(1u<<31)));
 	}
 	else
 	{
@@ -230,6 +230,7 @@ print_symbols(void)
 		printf("%-4" PRIu8 " ", symtab[idx].size);
 		print_symbol_section(symtab[idx].type, symtab[idx].reloc);
 		print_symbol_name(symtab[idx].name_off);
+		/*printf(" %" PRIx8, symtab[idx].flags); */
 		printf("\n");
 	}
 	printf("\n");

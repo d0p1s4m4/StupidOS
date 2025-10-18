@@ -42,6 +42,8 @@ SRCS	= kernel.asm \
 			bio.inc \
 			$(ASMINCS)
 
+FAS2SYMFLAGS = -t kmain,kend
+
 .PHONY: const.inc
 const.inc: const.inc.in
 	@$(VERSION_SH)
