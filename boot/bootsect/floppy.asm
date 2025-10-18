@@ -3,7 +3,7 @@
 	use16
 
 	include '../common/const.inc'
-	include '../common/macro.inc'
+	include 'sys/macro.inc'
 
 	org BOOTSECT_BASE
 

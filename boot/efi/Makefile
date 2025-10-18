@@ -2,9 +2,7 @@ include stpd.base.mk
 
 COMMON_DIR = ../common
 
-COMMON_SRCS = const.inc \
-				macro.inc
-
+COMMON_SRCS = const.inc 
 
 BOOTIA32_EFI_SRCS = bootia32.asm \
 					uefi.inc \

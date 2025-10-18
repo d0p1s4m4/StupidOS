@@ -2,7 +2,7 @@
 	format binary
 
 	include '../common/const.inc'
-	include '../common/macro.inc'
+	include 'sys/macro.inc'
 	include 'multiboot.inc'
 
 	org LOADER_BASE

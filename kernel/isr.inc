@@ -1,4 +1,6 @@
 	;; File: isr.inc
+
+	;; Macro: ISR
 macro ISR [name,error] {
 forward
 	dd isr_#name

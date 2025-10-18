@@ -29,7 +29,7 @@ ifndef TOOLSDIR
 $(error "TOOLSDIR is undefined")
 endif
 
-FASM    = fasm
+FASM    = INCLUDE=$(SYSROOTDIR)$(ASMDIR) fasm
 CC      = $(TOOLSDIR)/bin/tcc
 AR      = ar
 FAS2SYM = $(TOOLSDIR)/bin/fas2sym

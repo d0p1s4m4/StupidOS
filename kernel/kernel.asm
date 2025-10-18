@@ -19,7 +19,7 @@
 	;; Kernel entry point
 	;;
 	;; In:
-	;; 
+	;;
 	;;     EAX - Boot Magic
 	;;     EBX - Boot structure address
 	;;
@@ -35,7 +35,7 @@ kmain:
 	mov edi, stBootInfo
 	rep movsb
 
-	; print hello world 
+	; print hello world
 	mov [0xC00B8000], dword 0x08740953
 	mov [0xC00B8004], dword 0x05700675
 	mov [0xC00B8008], dword 0x03640469

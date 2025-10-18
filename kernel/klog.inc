@@ -4,6 +4,7 @@
 
 COM1 = 0x3F8
 
+	;; Macro: TRACE
 macro TRACE msg, [arg] {
 common
 	_ARGS = 0

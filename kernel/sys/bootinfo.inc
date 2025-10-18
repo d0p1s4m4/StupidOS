@@ -1,4 +1,33 @@
 	;; File: bootinfo.inc
+	;; StupidOS Boot protocol constants and structs
+
+	;; Constant: BOOT_HEADER_MAGIC
+BOOT_HEADER_MAGIC     = 0x44505453
+	;; Constant: BOOT_BOOTLOADER_MAGIC
+BOOT_BOOTLOADER_MAGIC = 0x53545044
+
+	;; Struct: BootHeader
+	;;
+	;; .magic         - Must be <BOOT_HEADER_MAGIC>
+	;; .load_end_addr - TODO
+	;; .bss_end_addr  - TODO
+	;; .entry_addr    - Kernel entry point
+struc BootHeader {
+	.magic         dd ?
+	.load_end_addr dd ?
+	.bss_end_addr  dd ?
+	.entry_addr    dd ?
+}
+
+	;; Struct: BootMMapEntry
+	;; Memory map entry
+	;;
+	;; .base   - TODO
+	;; .length - TODO
+struc BootMMapEntry {
+	.base dq ?
+	.length dq ?
+}
 
 	;; Struct: BootInfoRange
 struc BootInfoRange {

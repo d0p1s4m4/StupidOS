@@ -3,7 +3,7 @@
 	entry efimain
 
 	include '../common/const.inc'
-	include '../common/macro.inc'
+	include 'sys/macro.inc'
 	include 'uefi.inc'
 	include '../../kernel/sys/bootinfo.inc'
 	include 'logger.inc'

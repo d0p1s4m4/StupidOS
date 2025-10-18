@@ -1,6 +1,6 @@
 	;; File: bootinfo.inc
 
-	include '../../kernel/sys/bootinfo.inc'
+	include 'sys/bootinfo.inc'
 
 	;; Constant: BOOTINFO_MEMORY_LIMIT
 BOOTINFO_MEMORY_LIMIT = 0xFFFFF000
