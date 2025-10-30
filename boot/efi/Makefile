@@ -14,9 +14,6 @@ BOOTIA32_EFI_SRCS = bootia32.asm \
 .PHONY: all
 all: BOOTIA32.EFI
 
-%.inc: %.inc.in
-	@$(VERSION_SH)
-
 BOOTIA32.EFI: $(BOOTIA32_EFI_SRCS)
 	$(MSG_BUILD)
 	@$(FASM) bootia32.asm $@ >/dev/null
@@ -28,6 +25,6 @@ $(DESTDIR)/EFI/BOOT/BOOTIA32.EFI: BOOTIA32.EFI
 	$(MSG_INSTALL)
 	@install -D $< $@
 
-CLEANFILES = BOOTIA32.EFI $(COMMON_DIR)/const.inc
+CLEANFILES = BOOTIA32.EFI
 
 include stpd.clean.mk

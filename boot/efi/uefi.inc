@@ -1,5 +1,6 @@
 	;; File: uefi.inc
 
+	;; Macro: EFI_CALL
 macro EFI_CALL fn, [arg] {
 	common
 		_ARGS = 0
@@ -15,6 +16,7 @@ macro EFI_CALL fn, [arg] {
 		end if
 }
 
+	;; Macro: EFI_GET_INTERFACE
 macro EFI_GET_INTERFACE reg, interface {
 	if interface in <ConsoleInHandle,ConIn,ConsOutHandle,ConOut,StandardErrorHandle,StdErr>
 		mov reg, [pEfiSystemTable]
@@ -22,6 +24,7 @@ macro EFI_GET_INTERFACE reg, interface {
 	end if
 }
 
+	;; Macro: EFI_INIT
 macro EFI_INIT handle, table {
 	local efi_init_bad
 	local efi_init_end
@@ -196,7 +199,7 @@ struc EFI_SYSTEM_TABLE
 	.FirmwareVendor       UINTPTR
 	.FirmwareRevision     UINT32
 	.ConsoleInHandle      EFI_HANDLE
-	.ConIn                UINTPTR 
+	.ConIn                UINTPTR
 	.ConsoleOutHandle     EFI_HANDLE
 	.ConOut               UINTPTR
 	.StandardErrorHandle  EFI_HANDLE
@@ -339,7 +342,7 @@ EFI_MEMORY_MORE_RELIABLE = 0x0000000000010000
 EFI_MEMORY_RO            = 0x0000000000020000
 EFI_MEMORY_SP            = 0x0000000000040000
 EFI_MEMORY_CPU_CRYPTO    = 0x0000000000080000
-EFI_MEMORY_RUNTIME       = 0x8000000000000000 
+EFI_MEMORY_RUNTIME       = 0x8000000000000000
 	;; ========================================================================
 	;; EFI_RUNTIMES_SERVICES
 	;; ========================================================================
@@ -544,7 +547,7 @@ EFI_FILE_SYSTEM     = 0x0000000000000004
 EFI_FILE_RESERVED   = 0x0000000000000008
 EFI_FILE_DIRECTORY  = 0x0000000000000010
 EFI_FILE_ARCHIVE    = 0x0000000000000020
-EFI_FILE_VALID_ATTR = 0x0000000000000037 
+EFI_FILE_VALID_ATTR = 0x0000000000000037
 
 section '.data' data readable writeable
 

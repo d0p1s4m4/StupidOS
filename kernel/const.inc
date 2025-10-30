@@ -7,15 +7,6 @@ KERNEL_HEAP_SIZE = 260046848
 
 PSIZE = 0x1000
 
-STPDBOOT_MAGIC = 0x53545044
-
-; --------- VERSION -------------
-VERSION_MAJOR  = @MAJOR@
-VERSION_MINOR  = @MINOR@
-VERSION_COMMIT equ "@COMMIT@"
-VERSION_FULL   equ "@FULLVERSION@"
-BUILD_DATE     equ "@DATE@"
-
 ; ------------- OTHER -----------
 CR   = 0x0D
 LF   = 0x0A

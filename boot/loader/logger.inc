@@ -72,7 +72,7 @@ bios_log_number:
 
 	or cl, cl
 	jnz .loop_print
-	
+
 	pop bx
 	pop dx
 	ret
@@ -80,7 +80,7 @@ bios_log_number:
 	;; Function: bios_log_hex
 	;;
 	;; Parameters:
-	;;     EDI - number     
+	;;     EDI - number
 bios_log_hex:
 	push si
 	mov si, szHexPrefix
@@ -115,6 +115,23 @@ bios_log_hex:
 	pop si
 .end:
 	ret
+
+bios_log_warn:
+	call bios_log_time
+	push si
+	mov si, szLogWarn
+	jmp bios_log_error.common
+
+	;; Function: bios_log_error
+	;;
+bios_log_error:
+	call bios_log_time
+	push si
+	mov si, szLogError
+.common:
+	call bios_print
+	pop si
+	jmp bios_log.loop
 
 	;; Function: bios_log
 	;;
@@ -157,7 +174,7 @@ bios_log:
 	jne .unknown_format
 	pop ax
 	pop word di
-	push ax 
+	push ax
 	call bios_log_number
 	jmp .next
 .unknown_format:
@@ -174,9 +191,10 @@ bios_log:
 
 	ret
 
-
 szTime      db '[00:00:00] ', 0
 szHexPrefix db '0x', 0
 sDigits     db '0123456789ABCDEF'
 szEndLine   db CR, LF, 0
 szBuffer    db '00000000', 0
+szLogError  db 'ERROR: ', 0
+szLogWarn   db 'WARN: ', 0

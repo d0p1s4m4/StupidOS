@@ -1,5 +1,6 @@
 	;; File: logger.inc
 
+	;; Macro: LOG
 macro LOG msg, [arg] {
 	common
 		_ARGS = 0
@@ -116,7 +117,7 @@ efi_log_time:
 	; GetTime(EFI_TIME *time, EFI_TIME_CAPS *cap)
 	EFI_CALL [fnGetTime], stEfiTime, 0
 
-	; Hours 
+	; Hours
 	mov al, [stEfiTime + EFI_TIME.Hour]
 	xor ah, ah
 	mov cl, 10
@@ -142,11 +143,11 @@ efi_log_time:
 
 	movzx cx, al
 	mov [szTime + 8], cx
-	
+
 	movzx cx, ah
 	mov [szTime + 10], cx
 
-	; Secondes 
+	; Secondes
 	mov al, [stEfiTime + EFI_TIME.Second]
 	xor ah, ah
 	mov cl, 10
@@ -157,7 +158,7 @@ efi_log_time:
 
 	movzx cx, al
 	mov [szTime + 14], cx
-	
+
 	movzx cx, ah
 	mov [szTime + 16], cx
 
@@ -175,7 +176,7 @@ efi_log:
 
 	push esi
 	push edi
-	push ebx 
+	push ebx
 
 	mov esi, eax
 	mov edi, eax

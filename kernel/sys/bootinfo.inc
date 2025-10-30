@@ -1,12 +1,12 @@
 	;; File: bootinfo.inc
 	;; StupidOS Boot protocol constants and structs
 
-	;; Constant: BOOT_HEADER_MAGIC
+	;; Define: BOOT_HEADER_MAGIC
 BOOT_HEADER_MAGIC     = 0x44505453
-	;; Constant: BOOT_BOOTLOADER_MAGIC
+	;; Define: BOOT_BOOTLOADER_MAGIC
 BOOT_BOOTLOADER_MAGIC = 0x53545044
 
-	;; Struct: BootHeader
+	;; Struc: BootHeader
 	;;
 	;; .magic         - Must be <BOOT_HEADER_MAGIC>
 	;; .load_end_addr - TODO
@@ -14,12 +14,12 @@ BOOT_BOOTLOADER_MAGIC = 0x53545044
 	;; .entry_addr    - Kernel entry point
 struc BootHeader {
 	.magic         dd ?
+	.entry_addr    dd ?
 	.load_end_addr dd ?
 	.bss_end_addr  dd ?
-	.entry_addr    dd ?
 }
 
-	;; Struct: BootMMapEntry
+	;; Struc: BootMMapEntry
 	;; Memory map entry
 	;;
 	;; .base   - TODO
@@ -28,14 +28,18 @@ struc BootMMapEntry {
 	.base dq ?
 	.length dq ?
 }
+DEFN BootMMapEntry
 
-	;; Struct: BootInfoRange
+	;; Define: BOOT_MAX_MMAP_ENTRY
+BOOT_MAX_MMAP_ENTRY = 16
+
+	;; Struc: BootInfoRange
 struc BootInfoRange {
 	.base dd ?
 	.length dd ?
 }
 
-	;; Struct: BootInfo
+	;; Struc: BootInfo
 	;; StupidOS boot protocol structure
 	;;
 	;; .mmap         - Free memory map
@@ -50,7 +54,4 @@ struc BootInfo {
 	.high_mem     dd ?
 	.low_mem      dd ?
 }
-virtual at 0
-  BootInfo BootInfo
-  sizeof.BootInfo:
-end virtual
+DEFN BootInfo

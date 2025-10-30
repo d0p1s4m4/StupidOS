@@ -1,0 +1,32 @@
+.Dd October 27, 2025
+.Dt BOOT.CFG 5
+.Os
+.Sh NAME
+.Nm boot.cfg
+.Nd configuration file for StupidBoot
+.Sh DESCRIPTION
+The file
+.Pa /boot.cfg
+XXXX
+.Ss FILE FORMAT
+.Pq Sq = .
+Lines begining with a semi-colon
+.Pq Sq \;
+are comments and are ignored.
+.Bl -tag -width resolution
+.It Sy textmode
+XXX
+.It Sy resolution
+XXX
+.It Sy kernel
+XXX
+.It Sy cmdline
+xxxx
+.El
+.Sh EXAMPLES
+.Bd -literal -offset indent
+textmode=no
+resolution=1024x768x32
+.Ed
+.Sh SEE ALSO
+.Xr stpdldr.sys 8

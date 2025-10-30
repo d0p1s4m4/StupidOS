@@ -2,6 +2,7 @@
 	format binary
 
 	include 'const.inc'
+	include 'sys/version.inc'
 	include 'sys/macro.inc'
 	include 'sys/bootinfo.inc'
 	include 'sys/cpu.inc'
@@ -26,7 +27,7 @@
 kmain:
 	mov esp, stack_top
 
-	cmp eax, STPDBOOT_MAGIC
+	cmp eax, BOOT_BOOTLOADER_MAGIC
 	jne .error_magic
 
 	; Copy boot structure

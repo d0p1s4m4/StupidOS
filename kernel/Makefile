@@ -5,7 +5,8 @@ ASMINCS = sys/bootinfo.inc \
 			sys/macro.inc \
 			sys/mmu.inc \
 			sys/process.inc \
-			sys/register.inc
+			sys/register.inc \
+			sys/version.inc
 
 KERNEL	= vmstupid
 
@@ -44,10 +45,10 @@ SRCS	= kernel.asm \
 
 FAS2SYMFLAGS = -t kmain,kend
 
-.PHONY: const.inc
-const.inc: const.inc.in
+.PHONY: sys/version.inc
+sys/version.inc: sys/version.inc.in
 	@$(VERSION_SH)
 
-CLEANFILES = const.inc
+CLEANFILES = sys/version.inc
 
 include stpd.kernel.mk

@@ -1,4 +1,8 @@
+	;; File: multiboot.inc
+
+	;; Define: MULTIBOOT_HDR_MAGIC
 MULTIBOOT_HDR_MAGIC = 0x1BADB002
+	;; Define: MULTIBOOT_MAGIC
 MULTIBOOT_MAGIC     = 0x2BADB002
 
 MULTIBOOT_HDR_ALIGN       = 0x1
@@ -7,6 +11,7 @@ MULTIBOOT_HDR_VIDEO       = 0x4
 MULTIBOOT_HDR_AOUT_KLUDGE = 0x10000
 MULTIBOOT_FLAGS = MULTIBOOT_HDR_ALIGN or MULTIBOOT_HDR_MEMINFO or MULTIBOOT_HDR_VIDEO or MULTIBOOT_HDR_AOUT_KLUDGE
 
+	;; Struc: MultibootHeader
 struc MultibootHeader addr
 {
         .magic    dd MULTIBOOT_HDR_MAGIC
@@ -27,6 +32,7 @@ struc MultibootHeader addr
         .depth     dd VIDEO_DEPTH
 }
 
+	;; Struc: MultibootData
 struc MultibootData
 {
         .flags dd ?
@@ -94,6 +100,7 @@ MULTIBOOT_DATA_BOOTLOADER_NAME = 0x0200
 MULTIBOOT_DATA_VBE             = 0x0800
 MULTIBOOT_DATA_FB              = 0x1000
 
+	;; Struc: MultibootMMap
 struc MultibootMMap
 {
         .size   dd ?
@@ -109,6 +116,7 @@ MULTIBOOT_MEMORY_ACPI      = 0x3
 MULTIBOOT_MEMORY_NVS       = 0x4
 MULTIBOOT_MEMORY_BADPARAM  = 0x5
 
+	;; Struc: MultibootModule
 struc MultibootModule
 {
 	.mod_start dd ?

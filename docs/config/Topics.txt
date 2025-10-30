@@ -81,12 +81,6 @@ Format: 1.52
 # topics [at] naturaldocs [dot] org.
 
 
-Alter Topic Type: Macro
-
-   Add Keywords:
-      equ
-
-
 Alter Topic Type: Section
 
    Add Keywords:

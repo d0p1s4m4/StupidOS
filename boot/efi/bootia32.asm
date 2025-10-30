@@ -33,7 +33,6 @@ efimain:
 
 	LOG szHelloMsg
 
-
 	call efi_fs_init
 
 	; #=======================#

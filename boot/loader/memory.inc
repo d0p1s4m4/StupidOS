@@ -1,39 +1,39 @@
 	;; File: memory.inc
-	;; Detect available memory 
-	;; 
-
-	;; Constants: Address type
+	;; Detect available memory
 	;;
-	;; See <AddressRange.Type>
-	;;
-	;; ADDRESS_RANGE_MEMORY   - Available and usable RAM.
-	;; ADDRESS_RANGE_RESERVED - Reserved or in use.
-ADDRESS_RANGE_MEMORY   = 1
-ADDRESS_RANGE_RESERVED = 2
 
-	;; Struct: AddressRange
-struc E820AddressRange
-{
-	;; Variable: BaseAddrLow
-	;; Low 32 Bits of Base Address
+	;; Constants: Memory type
+	;;
+	;; E820_MEMORY_USABLE           - Normal RAM
+	;; E820_MEMORY_RESERVED         - xxx
+	;; E820_MEMORY_ACPI_RECLAIMABLE - XXXX
+	;; E820_MEMORY_NVS              - xxx
+	;; E820_MEMORY_BAD              - Bad region
+E820_MEMORY_USABLE           = 1
+E820_MEMORY_RESERVED         = 2
+E820_MEMORY_ACPI_RECLAIMABLE = 3
+E820_MEMORY_NVS              = 4
+E820_MEMORY_BAD              = 5
+
+
+	;; Struc: E820AddressRange
+	;;
+	;; .BaseAddrLow  - Low 32 bits of Base Address
+	;; .BaseAddrHigh - High 32 Bits of Base Address
+	;; .LengthLow    - Low 32 Bits of Length in Bytes
+	;; .LengthHigh   - High 32 Bits of Length in Bytes
+	;; .Type         - Address type of this range. See <Memory type>
+struc E820AddressRange {
 	.BaseAddrLow  dd ?
-	;; Variable: BaseAddrHigh
-	;; High 32 Bits of Base Address
 	.BaseAddrHigh dd ?
-	;; Variable: LengthLow
-	;; Low 32 Bits of Length in Bytes
 	.LengthLow    dd ?
-	;; Variable: LengthHigh
-	;; High 32 Bits of Length in Bytes
 	.LengthHigh   dd ?
-	;; Variable: Type
-	;; Address type of this range. <Address type>
 	.Type         dd ?
 
 }
 
-    ;; Function: memory_e820_get_mmap_entry
-	;; 
+    ;; Function: memory_e820_get_map
+	;;
 	;; In:
 	;;    EAX   - Function code
 	;;    EBX   - Continuation
@@ -49,7 +49,7 @@ struc E820AddressRange
 	;;    EBX   - Continuation
 memory_e820_get_map:
 	xor ebx, ebx
-@@:	
+@@:
 	clc
 	xor eax, eax
 	mov es, ax
@@ -64,7 +64,7 @@ memory_e820_get_map:
 	or ebx, ebx
 	jz .end
 
-	cmp [pE280AddrRange.Type], 0x1
+	cmp [pE280AddrRange.Type], E820_MEMORY_USABLE
 	jne @b
 
 	mov ecx, [pE280AddrRange.BaseAddrHigh]
@@ -113,11 +113,11 @@ memory_get_for_large_conf:
 @@:
 	ret
 
-	;; Function: memory_get_extended_memory_size
+	;; Function: memory_get_map
 	;;
 	;; In:
 	;;    AH - Function code 88h
-	;;  
+	;;
     ;; Out:
 	;;    CF - Non-Carry - indicates no error
 	;;    AX - Number of contiguous KB above 1MB

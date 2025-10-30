@@ -12,6 +12,7 @@ readline(const char *prompt)
 	size_t linsz = 0;
 	size_t buffsz;
 	char *line = NULL;
+	char *tmp = NULL;
 	char buffer[BUFFSZ];
 
 	printf(prompt);
@@ -19,11 +20,14 @@ readline(const char *prompt)
 	{
 		buffsz = strlen(buffer);
 
-		line = realloc(line, linsz + buffsz + 1);
-		if (line == NULL)
+		tmp = realloc(line, linsz + buffsz + 1);
+		if (tmp == NULL)
 		{
+			free(line);
 			return (NULL);
 		}
+
+		line = tmp;
 
 		memcpy(line + linsz, buffer, buffsz);
 		linsz += buffsz;

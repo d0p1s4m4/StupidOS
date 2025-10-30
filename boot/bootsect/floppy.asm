@@ -44,7 +44,8 @@ volume_id    dd 0xB00B135 	; hope mine will grow :'(
 volume_label db 'Stupid Boot'
 system_id    db 'FAT12  '
 
-
+	;; Function: _start
+	;; Boot Sector entry point
 _start:
 	cli
 	cld

@@ -22,9 +22,6 @@ MBR_SRCS = mbr.asm \
 .PHONY: all
 all: $(BINS)
 
-%.inc: %.inc.in
-	@$(VERSION_SH)
-
 boot_floppy1440.bin: $(FLOPPY_SRCS)
 	$(MSG_BUILD)
 	@$(FASM) floppy.asm $@ >/dev/null
@@ -44,6 +41,6 @@ boot_hdd.bin: $(HDD_SRCS)
 .PHONY: install
 install: $(BINS)
 
-CLEANFILES = $(BINS) $(COMMON_DIR)/const.inc
+CLEANFILES = $(BINS)
 
 include stpd.clean.mk

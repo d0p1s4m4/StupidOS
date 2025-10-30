@@ -4,10 +4,13 @@ SYS_DIR    = ../../kernel/sys
 KERNEL = stpdldr
 
 COMMON_SRCS = const.inc \
-				bootinfo.inc
+				bootinfo.inc \
+				cfg.inc \
+				bios.inc
 
 SYS_SRCS = bootinfo.inc \
-			register.inc
+			register.inc \
+			mmu.inc
 
 SRCS	= loader.asm \
 				$(addprefix $(COMMON_DIR)/, $(COMMON_SRCS)) \
@@ -21,10 +24,6 @@ SRCS	= loader.asm \
 				stpdfs.inc \
 				disk.inc
 
-.PHONY: $(COMMON_DIR)/const.inc
-$(COMMON_DIR)/const.inc: $(COMMON_DIR)/const.inc.in
-	@$(VERSION_SH)
-
-CLEANFILES = $(COMMON_DIR)/const.inc
+FAS2SYMFLAGS = -t _start,_end
 
 include stpd.kernel.mk

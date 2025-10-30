@@ -15,17 +15,9 @@ KERNEL_PRELOAD = 0xF000
 STACK_TOP      = 0x7000
 
 ; ---------- Magic ------------
-STPDBOOT_MAGIC = 0x53545044
 STPDFS_MAGIC   = 0x44505453
 
 ; ---------- Video ------------
 VIDEO_WIDTH  = 1024
 VIDEO_HEIGHT = 768
 VIDEO_DEPTH  = 32
-
-; --------- Version -----------
-VERSION_MAJOR  = @MAJOR@
-VERSION_MINOR  = @MINOR@
-VERSION_COMMIT equ "@COMMIT@"
-VERSION_FULL   equ "@FULLVERSION@"
-BUILD_DATE     equ "@DATE@"

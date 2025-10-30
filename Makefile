@@ -21,7 +21,7 @@ SUBDIRS := external tools include lib bin sbin boot kernel modules tests
 
 BUILD_RULES := build-tools .WAIT
 BUILD_RULES += includes-kernel includes-include includes-lib .WAIT
-BUILD_RULES += build-user build-kernel
+BUILD_RULES += build-user build-kernel install-share
 
 USER_RULES := install-lib .WAIT install-bin install-sbin
 KERNEL_RULES := install-boot install-kernel install-modules
@@ -58,6 +58,7 @@ build-kernel: $(KERNEL_RULES)
 $(eval $(foreach X,kernel include lib,$(call subdir-rule,includes,$X)))
 $(eval $(foreach X,lib bin sbin,$(call subdir-rule,install,$X)))
 $(eval $(foreach X,boot kernel modules,$(call subdir-rule,install,$X)))
+$(eval $(foreach X,share,$(call subdir-rule,install,$X)))
 
 .PHONY: stupid.tar.gz
 stupid.tar.gz: $(BUILD_RULES)
@@ -69,7 +70,7 @@ stupid.tar.gz: $(BUILD_RULES)
 
 .PHONY: stupid.iso
 stupid.iso: $(BUILD_RULES)
-	@echo "TODO"
+	@printf "%s: TODO\n" "$@"
 
 .PHONY: stupid.hdd
 stupid.hdd: $(BUILD_RULES)
@@ -105,9 +106,12 @@ OVMF32.fd:
 run: floppy1440.img
 	$(QEMU) $(QEMU_COMMON) \
 		-drive file=floppy1440.img,if=none,format=raw,id=boot \
-		-drive file=flat:rw:$(SYSROOTDIR),if=none,id=hdd \
+		-drive file=fat:rw:.build/sysroot,if=none,id=hdd \
 		-device floppy,drive=boot \
 		-global isa-fdc.bootindexA=0
+
+debug: QEMU_COMMON += -s -S
+debug: run
 
 .PHONY: run-iso
 run-iso: $(BUILD_RULES)
@@ -117,7 +121,7 @@ run-iso: $(BUILD_RULES)
 .PHONY: run-efi
 run-efi: OVMF32.fd $(BUILD_RULES)
 	$(QEMU) -bios OVMF32.fd \
-		-drive file=fat:rw:$(SYSROOTDIR),if=none,id=hdd \
+		-drive file=fat:rw:.build/sysroot,if=none,id=hdd \
 		-device ide-hd,drive=hdd
 
 .PHONY: bochs
@@ -131,9 +135,8 @@ bochs: $(BUILD_RULES)
 .PHONY: docs
 docs:
 	@mkdir -p docs/html
-	wget -O docs/webring.json "https://webring.devse.wiki/webring.json"
-	python3 docs/devsewebring.py docs/webring.json docs/webring.txt
-	naturaldocs -p docs/config -img docs/img -xi .build -i . -ro -o HTML docs/html
+	python3 docs/devsewebring.py -u "https://webring.devse.wiki" -o docs/webring.txt
+	naturaldocs -p docs/config -img docs/img -xi .build -xi sysroot -i . -ro -o HTML docs/html
 	cp docs/img/favicon.ico docs/html
 
 # +------------------------------------------------------------------+

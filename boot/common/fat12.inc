@@ -1,5 +1,6 @@
 	;; File: fat12.inc
 
+	;; Struc: fat_pbp
 struc fat_bpb
 {
 	.jump             db 3 dup(?)
@@ -17,7 +18,7 @@ struc fat_bpb
 }
 DEFN fat_bpb
 
-	;; Struct: fat_entry
+	;; Struc: fat_entry
 struc fat_entry
 {
 	.name          db 8 dup ?
@@ -48,8 +49,6 @@ DEFN fat_entry
 	ATTR_VOLUME_ID = 0x08
 	ATTR_DIRECTORY = 0x10
 	ATTR_ARCHIVE   = 0x20
-
-	;; Section: Globals
 
 	;; Function: fat_load_root
 fat_load_root:

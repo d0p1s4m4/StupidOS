@@ -12,7 +12,7 @@
 	mov ds, ax
 	mov es, ax
 	mov ss, ax
-	mov sp, ax
+	mov sp, 0x7c00
 	cld
 	; relocate from 0x7C00 to 0x0600
 	mov cx, 0x0100

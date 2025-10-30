@@ -3,6 +3,7 @@
 *.img
 *.bin
 *.iso
+*.hdd
 *.exe
 *~
 \#*\#
@@ -39,6 +40,5 @@ bochsrc.bxrc
 *.dbg
 webring.json
 webring.txt
-kernel/const.inc
-boot/common/const.inc
+kernel/sys/version.inc
 .build

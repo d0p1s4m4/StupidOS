@@ -37,7 +37,7 @@ disk_read_sectors:
 	ret
 @@:
 	mov si, szMsgErrorSector
-	call bios_print
+	call bios_log_error
 	ret
 .lba_read:
 	push si

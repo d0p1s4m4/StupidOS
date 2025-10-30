@@ -24,7 +24,7 @@ $(SYMSDIR)/$(KERNEL).sym: $(KERNEL).sym
 	$(MSG_INSTALL)
 	@install -D $< $@
 
-CLEANFILES += $(KERNEL).sys $(KERNEL).fas $(KERNEL).sys
+CLEANFILES += $(KERNEL).sys $(KERNEL).fas $(KERNEL).sym
 
 include stpd.inc.mk
 include stpd.clean.mk

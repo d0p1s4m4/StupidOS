@@ -1,5 +1,8 @@
+#include <stdlib.h>
+#include <string.h>
 #include <fdisk/disk.h>
 
+/*
 int
 disk_init(struct disk *dsk, struct device *dev)
 {
@@ -9,5 +12,8 @@ disk_init(struct disk *dsk, struct device *dev)
 	}
 
 	memset(dsk, 0, sizeof(struct disk));
-	disk->dev = dev;
+	dsk->dev = dev;
+
+	return (0);
 }
+*/

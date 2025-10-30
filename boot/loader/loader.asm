@@ -3,6 +3,8 @@
 
 	include '../common/const.inc'
 	include 'sys/macro.inc'
+	include 'sys/register.inc'
+	include 'sys/mmu.inc'
 	include 'multiboot.inc'
 
 	org LOADER_BASE
@@ -174,7 +176,7 @@ _start:
 .error_a20:
 	mov si, szMsgErrorA20
 .error:
-	call bios_log
+	call bios_log_error
 
 @@:
 	hlt
@@ -190,8 +192,7 @@ _start:
 	include 'video.inc'
 	include 'gdt.inc'
 	include '../common/bootinfo.inc'
-	include '../../kernel/sys/register.inc'
-	include '../../kernel/sys/mmu.inc'
+	include '../common/cfg.inc'
 
 uDrive    rb 1
 bDriveLBA db FALSE
@@ -205,10 +206,10 @@ szKernelStpdfsFile db "vmstupid.sys", 0
 szMsgStpdFSFound   db "StupidFS found", 0
 szMsgFatFallback   db "Fallback to FATFS", 0
 szMsgKernelFound   db "Kernel found, size: %x", 0
-szMsgErrorA20      db "ERROR: can't enable a20 line", 0
-szMsgErrorMemory   db "ERROR: can't detect available memory", 0
-szMsgErrorSector   db "ERROR: reading sector", CR, LF, 0
-szMsgErrorNotFound db "ERROR: kernel not found", 0
+szMsgErrorA20      db "can't enable a20 line", 0
+szMsgErrorMemory   db "can't detect available memory", 0
+szMsgErrorSector   db "reading sector", CR, LF, 0
+szMsgErrorNotFound db "kernel not found", 0
 
 	use32
 	; =========================================================================
@@ -282,7 +283,7 @@ common32:
 
 	cli ; ensure interrupt are disabled
 
-	mov eax, STPDBOOT_MAGIC
+	mov eax, BOOT_BOOTLOADER_MAGIC
 	mov ebx, boot_structure
 
 	mov ecx, 0xC0000000 + KERNEL_BASE
