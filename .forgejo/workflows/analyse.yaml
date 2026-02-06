@@ -1,0 +1,15 @@
+on: [push]
+jobs:
+  static-check:
+    runs-on: docker
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install deps
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq shellcheck cppcheck
+      - name: run shellcheck
+        run: shellcheck ./tools/version.sh
+      - name: run cppcheck
+        run: cppcheck -x c --std=c89 --quiet --error-exitcode=2 include sbin bin
