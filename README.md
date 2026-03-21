@@ -27,6 +27,20 @@ $ make
 
 Pretty easy, isn't it?
 
+## Made by human
+
+<a href="https://github.com/Supercip971/by-human">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Supercip971/by-human/main/transparent-light.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Supercip971/by-human/main/transparent-dark.svg">
+  <img height="96" align="right" alt="Made by humand, not by gen AI badge" src="https://raw.githubusercontent.com/Supercip971/by-human/main/transparent-light.svg">
+</picture>
+</a>
+
+StupidOS is made by **Humans**, and not by a generative AI.
+
+More information can be linked to the [by-human](https://github.com/Supercip971/by-human) repository.
+
 ## License
 
 <img src="https://opensource.org/wp-content/themes/osi/assets/img/osi-badge-light.svg" align="right" height="128px" alt="OSI Approved License">
